@@ -1,0 +1,11 @@
+<v-row class="fill-width align-center justify-space-between nowrap">
+  <v-col cols="3">
+    <v-subtitle>{{key}}</v-subtitle>
+  </v-col>
+  <v-col cols="3">
+    <v-text-field v-model="value" on-blur="dirty" />
+  </v-col>
+  <v-col cols="6" style="overlap: auto;" class="text-caption">
+    {{description}}
+  </v-col>
+</v-row>

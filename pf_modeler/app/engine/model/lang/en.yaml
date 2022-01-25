@@ -1,0 +1,10 @@
+ParflowKey:
+    _label: Parflow Key
+    _help: |
+      This describes a value the parflow solver may take into account.
+    key: 
+      _label: Key
+    value: 
+      _label: Value
+    description: 
+      _label: Description
