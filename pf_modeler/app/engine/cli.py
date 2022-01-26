@@ -27,7 +27,7 @@ def register_arguments(parser):
         help="A shared directory whose files can be selected from the client",
         required=True,
     )
-    return parser.parse_args()
+    return parser.parse_known_args()[0]
 
 
 class ArgumentsValidator:

@@ -57,11 +57,27 @@ Create a virtual environment to use with your `ParaView 5.10+ <https://www.parav
 
 Run the application using `ParaView: pvpython <https://www.paraview.org/>`_ executable
 
+Using environment variables:
+
 .. code-block:: console
 
     export PV_VENV=$PWD/.venv
+    export TRAME_APP=pf_modeler
     /Applications/ParaView-5.10.0.app/Contents/bin/pvpython \ # Using macOS install path as example
-        **FIXME** \
+        -m paraview.apps.trame \
+        -O ./data/output/little_washita \
+        -D ./data/database \
+        -S ./data/share
+
+
+Using command line arguments:
+
+.. code-block:: console
+
+    /Applications/ParaView-5.10.0.app/Contents/bin/pvpython \ # Using macOS install path as example
+        -m paraview.apps.trame \
+        --venv $PWD/.venv \
+        --trame-app pf_modeler \
         -O ./data/output/little_washita \
         -D ./data/database \
         -S ./data/share
