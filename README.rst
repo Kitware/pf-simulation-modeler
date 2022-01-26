@@ -35,7 +35,7 @@ Run the application using `ParaView: pvpython <https://www.paraview.org/>`_ exec
 .. code-block:: console
 
     export PV_VENV=$PWD/.venv
-    /Applications/ParaView-5.10.0.app/Contents/bin/pvpython \
+    /Applications/ParaView-5.10.0.app/Contents/bin/pvpython \ # Using macOS install path as example
         pv_run.py \
         -O ./data/output/little_washita \
         -D ./data/database \
@@ -55,27 +55,23 @@ Create a virtual environment to use with your `ParaView 5.10+ <https://www.parav
     python -m pip install -U pip
     pip install pf-simulation-modeler
 
-Run the application using `ParaView: pvpython <https://www.paraview.org/>`_ executable
-
-Using environment variables:
+Run the application using `ParaView: pvpython <https://www.paraview.org/>`_ executable with environment variables:
 
 .. code-block:: console
 
     export PV_VENV=$PWD/.venv
     export TRAME_APP=pf_modeler
-    /Applications/ParaView-5.10.0.app/Contents/bin/pvpython \ # Using macOS install path as example
-        -m paraview.apps.trame \
+    pvpython -m paraview.apps.trame \
         -O ./data/output/little_washita \
         -D ./data/database \
         -S ./data/share
 
 
-Using command line arguments:
+Or with command line arguments:
 
 .. code-block:: console
 
-    /Applications/ParaView-5.10.0.app/Contents/bin/pvpython \ # Using macOS install path as example
-        -m paraview.apps.trame \
+    pvpython -m paraview.apps.trame \
         --venv $PWD/.venv \
         --trame-app pf_modeler \
         -O ./data/output/little_washita \
