@@ -3,9 +3,7 @@ from trame.html import vuetify, Element, Div, Span, simput
 
 from parflow import Run
 
-from pf_modeler.app.engine.files import FileCategories
-
-from ..engine.files import FileDatabase
+from ..engine.files import FileDatabase, FileCategories
 
 try:
     from paraview import simple
@@ -19,8 +17,10 @@ state.update(
         "domainView": "grid",
         "soils": [],
         "currentSoil": "all",
-        "terrainFile": None,
         "indicatorFile": None,
+        "slopeXFile": None,
+        "slopeYFile": None,
+        "elevationFile": None,
     }
 )
 
@@ -56,7 +56,7 @@ def updateCurrentSoil(currentSoil, **kwargs):
 
 
 @state.change("domainView")
-def on_view_change(domainView, indicatorFile, terrainFile, **kwargs):
+def on_view_change(domainView, indicatorFile, elevationFile, **kwargs):
     initialize_globals()
     if not VIZ_ENABLED:
         return
@@ -68,22 +68,22 @@ def on_view_change(domainView, indicatorFile, terrainFile, **kwargs):
             pass
 
     elif domainView == "viz":
-        if indicatorFile is None or terrainFile is None:
+        if indicatorFile is None or elevationFile is None:
             state.domainView = "grid"
             return
 
         indicatorFilePath = FileDatabase().getEntryPath(indicatorFile)
-        terrainFilePath = FileDatabase().getEntryPath(terrainFile)
+        elevationFilePath = FileDatabase().getEntryPath(elevationFile)
 
-        if indicatorFilePath is not None and terrainFilePath is not None:
+        if indicatorFilePath is not None and elevationFilePath is not None:
             if soil_viz is None:
                 configFile = "LW_Test/LW_Test.pfidb"
                 parflowConfig = Run.from_definition(configFile)
-                parflowImage = SourceImage(parflowConfig, terrainFilePath)
+                parflowImage = SourceImage(parflowConfig, elevationFilePath)
                 soil_viz = SoilVisualization(view, parflowImage, parflowConfig)
 
             soil_viz.indicatorFilename = indicatorFilePath
-            soil_viz.parflowImage.elevationFilter.demFilename = terrainFilePath
+            soil_viz.parflowImage.elevationFilter.demFilename = elevationFilePath
             soil_viz.activate()
 
             state.update({"soils": ["all"] + list(soil_viz.soilTypes.keys())})
@@ -143,12 +143,32 @@ def domain_parameters():
 def terrain_parameters():
     Element("H1", "Terrain")
     with vuetify.VRow(classes="ma-6 justify-space-between"):
-        with Div():
+        with vuetify.VCol():
             vuetify.VSelect(
-                v_model=("terrainFile",),
-                placeholder="Select a terrain file",
+                v_model=("slopeXFile",),
+                placeholder="Select a Slope X file",
                 items=(
-                    f"Object.values(dbFiles).filter(function(file){{return file.category === '{FileCategories.Terrain}'}})",
+                    f"Object.values(dbFiles).filter(function(file){{return file.category === '{FileCategories.Slope}'}})",
+                ),
+                item_text="name",
+                item_value="id",
+            )
+        with vuetify.VCol():
+            vuetify.VSelect(
+                v_model=("slopeYFile",),
+                placeholder="Select a Slope Y file",
+                items=(
+                    f"Object.values(dbFiles).filter(function(file){{return file.category === '{FileCategories.Slope}'}})",
+                ),
+                item_text="name",
+                item_value="id",
+            )
+        with vuetify.VCol():
+            vuetify.VSelect(
+                v_model=("elevationFile",),
+                placeholder="Select an elevation file",
+                items=(
+                    f"Object.values(dbFiles).filter(function(file){{return file.category === '{FileCategories.Elevation}'}})",
                 ),
                 item_text="name",
                 item_value="id",
@@ -171,7 +191,7 @@ def create_domain_ui():
                 with vuetify.VBtn(
                     small=True,
                     value="viz",
-                    disabled=("!indicatorFile || !terrainFile",),
+                    disabled=("!indicatorFile || !elevationFile",),
                 ):
                     vuetify.VIcon("mdi-eye", small=True, classes="mr-1")
                     Span("Preview")
@@ -188,32 +208,3 @@ def create_domain_ui():
             classes="pa-0 fill-height",
         ) as parent:
             domain_viz(parent)
-
-        with Div(classes="fill-height fill-width flex-grow-1 ma-6"):
-            Element("H1", "GeomInput")
-            with vuetify.VRow(classes="ma-6 justify-space-between"):
-                simput.SimputItem(
-                    style="width:100%",
-                    itemId=("GeomInputId",),
-                )
-            Element("H1", "Domain")
-            with vuetify.VRow(classes="ma-6 justify-space-between"):
-                simput.SimputItem(style="width:100%", itemId=("DomainId",))
-            Element("H1", "Geom")
-            with vuetify.VRow(classes="ma-6 justify-space-between"):
-                simput.SimputItem(style="width:100%", itemId=("GeomId",))
-            Element("H1", "TopoSlopesY")
-            with vuetify.VRow(classes="ma-6 justify-space-between"):
-                simput.SimputItem(
-                    style="width:100%",
-                    itemId=("TopoSlopesYId",),
-                )
-            Element("H1", "TopoSlopesX")
-            with vuetify.VRow(classes="ma-6 justify-space-between"):
-                simput.SimputItem(
-                    style="width:100%",
-                    itemId=("TopoSlopesXId",),
-                )
-            Element("H1", "Mannings")
-            with vuetify.VRow(classes="ma-6 justify-space-between"):
-                simput.SimputItem(style="width:100%", itemId=("ManningsId",))

@@ -13,15 +13,18 @@ from .singleton import Singleton
 
 class FileCategories(str, Enum):
     Indicator = "INDICATOR"
-    Terrain = "TERRAIN"
+    Elevation = "ELEVATION"
+    Slope = "SLOPE"
     Other = "OTHER"
 
 
 def file_category_label(category: FileCategories) -> str:
     if category is FileCategories.Indicator:
         return "Indicator"
-    elif category is FileCategories.Terrain:
-        return "Terrain"
+    elif category is FileCategories.Elevation:
+        return "Elevation"
+    elif category is FileCategories.Slope:
+        return "Slope"
     elif category is FileCategories.Other:
         return "Other"
     else:
