@@ -3,6 +3,7 @@ import random
 import yaml
 from typing import Optional
 from enum import Enum
+import time
 
 from trame import state, trigger
 from parflowio.pyParflowio import PFData
@@ -164,42 +165,69 @@ def file_changes():
         state.DY = handle.getDY()
         state.DZ = handle.getDZ()
 
-    @state.change("dbFileExchange")
-    def saveUploadedFile(
-        dbFileExchange=None, dbSelectedFile=None, sharedir=None, **kwargs
-    ):
-        if dbFileExchange is None or dbSelectedFile is None or sharedir is None:
-            return
 
-        fileMeta = {
-            key: dbFileExchange.get(key)
-            for key in ["origin", "size", "dateModified", "dateUploaded", "type"]
-        }
-        entryId = dbSelectedFile.get("id")
+    @trigger("uploadFile")
+    def uploadFile(entryId, fileObj):
+        file_database = FileDatabase()
 
         try:
-            # File was uploaded from the user browser
-            if dbFileExchange.get("content"):
-                file_database.writeEntryData(entryId, dbFileExchange["content"])
-            # Path to file already present on the server was specified
-            elif dbFileExchange.get("localFile"):
-                file_path = os.path.abspath(
-                    os.path.join(sharedir, dbFileExchange.get("localFile"))
-                )
-                if os.path.commonpath([sharedir, file_path]) != sharedir:
-                    raise Exception("Attempting to access a file outside the sharedir.")
-                fileMeta["origin"] = os.path.basename(file_path)
+            updateEntry = {
+                "origin": fileObj["name"],
+                "size": fileObj["size"],
+                "type": fileObj["type"],
+                "dateModified": fileObj["lastModified"],
+                "dateUploaded": int(time.time()),
+            }
 
-                with open(file_path, "rb") as f:
-                    content = f.read()
-                    fileMeta["size"] = len(content)
-                    file_database.writeEntryData(entryId, content)
+            file_database.writeEntryData(entryId, fileObj["content"])
         except Exception as e:
             print(e)
             state.uploadError = "An error occurred uploading the file to the database."
             return
 
-        entry = {**file_database.getEntry(entryId), **fileMeta}
+        entry = {**file_database.getEntry(entryId), **updateEntry}
+        file_database.writeEntry(entryId, entry)
+        state.dbSelectedFile = entry
+        state.flush("dbSelectedFile")
+
+    @trigger("uploadLocalFile")
+    def uploadLocalFile(entryId, fileMeta):
+        sharedir = state['sharedir']
+
+        if sharedir is None:
+            return
+
+        file_database = FileDatabase()
+
+        updateEntry = {
+            key: fileMeta.get(key)
+            for key in ["origin", "size", "dateModified", "dateUploaded", "type"]
+        }
+
+        try:
+            updateEntry = {
+                "type": fileMeta["type"],
+                "dateModified": int(time.time()),
+                "dateUploaded": int(time.time()),
+            }
+
+            file_path = os.path.abspath(
+                os.path.join(sharedir, fileMeta["localFile"])
+            )
+            if os.path.commonpath([sharedir, file_path]) != sharedir:
+                raise Exception("Attempting to access a file outside the sharedir.")
+            updateEntry["origin"] = os.path.basename(file_path)
+
+            with open(file_path, "rb") as f:
+                content = f.read()
+                updateEntry["size"] = len(content)
+                file_database.writeEntryData(entryId, content)
+        except Exception as e:
+            print(e)
+            state.uploadError = "An error occurred uploading the file to the database."
+            return
+
+        entry = {**file_database.getEntry(entryId), **updateEntry}
         file_database.writeEntry(entryId, entry)
         state.dbSelectedFile = entry
         state.flush("dbSelectedFile")
