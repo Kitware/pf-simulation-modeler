@@ -36,8 +36,11 @@ class KeyDatabase:
 
         # Initialize model_types for parflow keys
         settings_path = os.path.join(work_dir, "pf_settings.yaml")
-        with open(settings_path, "r") as settings_file:
-            settings = yaml.safe_load(settings_file)
+        try:
+            with open(settings_path, "r") as settings_file:
+                settings = yaml.safe_load(settings_file)
+        except FileNotFoundError:
+            settings = {}
 
         # Either load from previous save or instantiate models
         model_types = self._pxm.types()

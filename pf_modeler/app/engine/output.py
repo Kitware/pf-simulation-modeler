@@ -6,6 +6,8 @@ from trame import state
 from parflow import Run
 from io import StringIO
 
+from .files import FileDatabase
+
 defaults = {
     #
     # These require reading nested keys
@@ -94,9 +96,7 @@ class RunWriter:
 
 
 def validate_run():
-    from . import file_database
-
-    parflow = RunWriter(state.work_dir, file_database)
+    parflow = RunWriter(state.work_dir, FileDatabase())
     validation = parflow.validate_run()
 
     state.projGenValidation = {"output": validation, "valid": False}

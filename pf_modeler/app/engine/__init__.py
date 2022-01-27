@@ -13,7 +13,6 @@ from trame import state, get_cli_parser
 __all__ = [
     "initialize",
     "validate_run",
-    "file_database",
     "key_database",
 ]
 
@@ -21,7 +20,6 @@ __all__ = [
 # Global instances
 # ---------------------------------------------------------
 
-file_database = None
 key_database = None
 
 # ---------------------------------------------------------
@@ -31,7 +29,7 @@ key_database = None
 
 def initialize():
     """Initialize application at startup"""
-    global file_database, key_database
+    global key_database
 
     # Add args to parser
     parser = get_cli_parser()
@@ -44,7 +42,8 @@ def initialize():
     validated_args = validator.args
 
     # Init singletons
-    file_database = FileDatabase(validated_args.get("datastore"))
+    file_database = FileDatabase()
+    file_database.datastore = validated_args.get("datastore")
     key_database = KeyDatabase(validated_args.get("work_dir"))
     entries = file_database.getEntries()
 
@@ -96,4 +95,4 @@ def initialize():
     )
 
     # Finish engine initialization
-    file_changes(file_database)
+    file_changes()

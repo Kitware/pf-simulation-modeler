@@ -7,6 +7,8 @@ from enum import Enum
 from trame import state, trigger
 from parflowio.pyParflowio import PFData
 
+from .singleton import Singleton
+
 
 class FileCategories(str, Enum):
     Indicator = "INDICATOR"
@@ -24,10 +26,22 @@ def file_category_label(category: FileCategories) -> str:
     else:
         raise Exception(f"Unknown file category: {category}")
 
-
+@Singleton
 class FileDatabase:
-    def __init__(self, datastore):
-        self.datastore = datastore
+    def __init__(self):
+        self._datastore = None
+        self.entries = {}
+
+    @property
+    def datastore(self) -> str:
+        if self._datastore is None:
+            raise Exception("Using FileDatabase before initializing its datastore")
+
+        return self._datastore
+
+    @datastore.setter
+    def datastore(self, ds):
+        self._datastore = ds
         self.entries = self._loadEntries()
 
     def addNewEntry(self, newFile):
@@ -49,8 +63,11 @@ class FileDatabase:
 
     def _loadEntries(self):
         path = self._getDbPath()
-        with open(path) as entriesFile:
-            return yaml.safe_load(entriesFile) or {}
+        try:
+            with open(path) as entriesFile:
+                return yaml.safe_load(entriesFile) or {}
+        except FileNotFoundError:
+            return {}
 
     def _getDbPath(self):
         return os.path.join(self.datastore, "pf_datastore.yaml")
@@ -99,11 +116,13 @@ class FileDatabase:
             print("The underlying file did not exist.")
 
 
-def file_changes(file_database):
+def file_changes():
     @state.change("dbSelectedFile")
     def changeCurrentFile(dbSelectedFile, dbFiles, **kwargs):
         if dbSelectedFile is None:
             return
+
+        file_database = FileDatabase()
 
         file_id = dbSelectedFile.get("id")
 
@@ -120,6 +139,8 @@ def file_changes(file_database):
 
     @state.change("indicatorFile")
     def updateComputationalGrid(indicatorFile, **kwargs):
+        file_database = FileDatabase()
+
         entry = file_database.getEntry(indicatorFile)
         state.indicatorFileDescription = entry.get("description")
 
@@ -185,6 +206,8 @@ def file_changes(file_database):
 
     @trigger("updateFiles")
     def updateFiles(update, entryId=None):
+        file_database = FileDatabase()
+
         if update == "selectFile":
             if state.dbFiles.get(entryId):
                 state.dbSelectedFile = file_database.getEntry(entryId)

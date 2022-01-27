@@ -5,6 +5,8 @@ from parflow import Run
 
 from pf_modeler.app.engine.files import FileCategories
 
+from ..engine.files import FileDatabase
+
 try:
     from paraview import simple
 
@@ -22,16 +24,9 @@ state.update(
     }
 )
 
-file_database = None
-
 
 def initialize_globals():
-    global file_database, key_database
-    if file_database is None:
-        from pf_modeler.app.engine import file_database as fs_db
-
-        file_database = fs_db
-
+    pass
 
 if VIZ_ENABLED:
     from trame.html import paraview
@@ -77,8 +72,8 @@ def on_view_change(domainView, indicatorFile, terrainFile, **kwargs):
             state.domainView = "grid"
             return
 
-        indicatorFilePath = file_database.getEntryPath(indicatorFile)
-        terrainFilePath = file_database.getEntryPath(terrainFile)
+        indicatorFilePath = FileDatabase().getEntryPath(indicatorFile)
+        terrainFilePath = FileDatabase().getEntryPath(terrainFile)
 
         if indicatorFilePath is not None and terrainFilePath is not None:
             if soil_viz is None:
