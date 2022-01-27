@@ -92,17 +92,15 @@ export default {
       } = this.formContent;
 
       if (!useLocalFile && this.file) {
-        this.set('dbFileExchange', { ...this.file, ...this.fileStats });
+        this.trigger('uploadFile', [this.value.id, this.file]);
         this.resetSelectedFile();
       } else if (useLocalFile && localFile) {
-        this.set('dbFileExchange', {
-          useLocalFile,
+        const fileMeta = {
           copyLocalFile,
           localFile,
-          dateModified: Number(new Date()),
-          dateUploaded: Number(new Date()),
           type: 'file',
-        });
+        };
+        this.trigger('uploadLocalFile', [this.value.id, fileMeta]);
       }
 
       this.$emit('input', { ...formContent });

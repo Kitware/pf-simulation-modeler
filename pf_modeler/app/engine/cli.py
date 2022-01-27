@@ -32,9 +32,9 @@ def register_arguments(parser):
 
 class ArgumentsValidator:
     def __init__(self, args):
-        self._work_dir = args.output
-        self._datastore = args.datastore
-        self._sharedir = args.sharedir
+        self._work_dir = path.abspath(args.output)
+        self._datastore = path.abspath(args.datastore)
+        self._sharedir = path.abspath(args.sharedir)
         self._warning = None
         self._valid = False
 

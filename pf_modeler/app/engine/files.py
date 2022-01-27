@@ -3,31 +3,49 @@ import random
 import yaml
 from typing import Optional
 from enum import Enum
+import time
 
 from trame import state, trigger
 from parflowio.pyParflowio import PFData
 
+from .singleton import Singleton
+
 
 class FileCategories(str, Enum):
     Indicator = "INDICATOR"
-    Terrain = "TERRAIN"
+    Elevation = "ELEVATION"
+    Slope = "SLOPE"
     Other = "OTHER"
 
 
 def file_category_label(category: FileCategories) -> str:
     if category is FileCategories.Indicator:
         return "Indicator"
-    elif category is FileCategories.Terrain:
-        return "Terrain"
+    elif category is FileCategories.Elevation:
+        return "Elevation"
+    elif category is FileCategories.Slope:
+        return "Slope"
     elif category is FileCategories.Other:
         return "Other"
     else:
         raise Exception(f"Unknown file category: {category}")
 
-
+@Singleton
 class FileDatabase:
-    def __init__(self, datastore):
-        self.datastore = datastore
+    def __init__(self):
+        self._datastore = None
+        self.entries = {}
+
+    @property
+    def datastore(self) -> str:
+        if self._datastore is None:
+            raise Exception("Using FileDatabase before initializing its datastore")
+
+        return self._datastore
+
+    @datastore.setter
+    def datastore(self, ds):
+        self._datastore = ds
         self.entries = self._loadEntries()
 
     def addNewEntry(self, newFile):
@@ -49,8 +67,11 @@ class FileDatabase:
 
     def _loadEntries(self):
         path = self._getDbPath()
-        with open(path) as entriesFile:
-            return yaml.safe_load(entriesFile) or {}
+        try:
+            with open(path) as entriesFile:
+                return yaml.safe_load(entriesFile) or {}
+        except FileNotFoundError:
+            return {}
 
     def _getDbPath(self):
         return os.path.join(self.datastore, "pf_datastore.yaml")
@@ -99,11 +120,13 @@ class FileDatabase:
             print("The underlying file did not exist.")
 
 
-def file_changes(file_database):
+def file_changes():
     @state.change("dbSelectedFile")
     def changeCurrentFile(dbSelectedFile, dbFiles, **kwargs):
         if dbSelectedFile is None:
             return
+
+        file_database = FileDatabase()
 
         file_id = dbSelectedFile.get("id")
 
@@ -120,6 +143,8 @@ def file_changes(file_database):
 
     @state.change("indicatorFile")
     def updateComputationalGrid(indicatorFile, **kwargs):
+        file_database = FileDatabase()
+
         entry = file_database.getEntry(indicatorFile)
         state.indicatorFileDescription = entry.get("description")
 
@@ -143,48 +168,77 @@ def file_changes(file_database):
         state.DY = handle.getDY()
         state.DZ = handle.getDZ()
 
-    @state.change("dbFileExchange")
-    def saveUploadedFile(
-        dbFileExchange=None, dbSelectedFile=None, sharedir=None, **kwargs
-    ):
-        if dbFileExchange is None or dbSelectedFile is None or sharedir is None:
-            return
 
-        fileMeta = {
-            key: dbFileExchange.get(key)
-            for key in ["origin", "size", "dateModified", "dateUploaded", "type"]
-        }
-        entryId = dbSelectedFile.get("id")
+    @trigger("uploadFile")
+    def uploadFile(entryId, fileObj):
+        file_database = FileDatabase()
 
         try:
-            # File was uploaded from the user browser
-            if dbFileExchange.get("content"):
-                file_database.writeEntryData(entryId, dbFileExchange["content"])
-            # Path to file already present on the server was specified
-            elif dbFileExchange.get("localFile"):
-                file_path = os.path.abspath(
-                    os.path.join(sharedir, dbFileExchange.get("localFile"))
-                )
-                if os.path.commonpath([sharedir, file_path]) != sharedir:
-                    raise Exception("Attempting to access a file outside the sharedir.")
-                fileMeta["origin"] = os.path.basename(file_path)
+            updateEntry = {
+                "origin": fileObj["name"],
+                "size": fileObj["size"],
+                "type": fileObj["type"],
+                "dateModified": fileObj["lastModified"],
+                "dateUploaded": int(time.time()),
+            }
 
-                with open(file_path, "rb") as f:
-                    content = f.read()
-                    fileMeta["size"] = len(content)
-                    file_database.writeEntryData(entryId, content)
+            file_database.writeEntryData(entryId, fileObj["content"])
         except Exception as e:
             print(e)
             state.uploadError = "An error occurred uploading the file to the database."
             return
 
-        entry = {**file_database.getEntry(entryId), **fileMeta}
+        entry = {**file_database.getEntry(entryId), **updateEntry}
+        file_database.writeEntry(entryId, entry)
+        state.dbSelectedFile = entry
+        state.flush("dbSelectedFile")
+
+    @trigger("uploadLocalFile")
+    def uploadLocalFile(entryId, fileMeta):
+        sharedir = state['sharedir']
+
+        if sharedir is None:
+            return
+
+        file_database = FileDatabase()
+
+        updateEntry = {
+            key: fileMeta.get(key)
+            for key in ["origin", "size", "dateModified", "dateUploaded", "type"]
+        }
+
+        try:
+            updateEntry = {
+                "type": fileMeta["type"],
+                "dateModified": int(time.time()),
+                "dateUploaded": int(time.time()),
+            }
+
+            file_path = os.path.abspath(
+                os.path.join(sharedir, fileMeta["localFile"])
+            )
+            if os.path.commonpath([sharedir, file_path]) != sharedir:
+                raise Exception("Attempting to access a file outside the sharedir.")
+            updateEntry["origin"] = os.path.basename(file_path)
+
+            with open(file_path, "rb") as f:
+                content = f.read()
+                updateEntry["size"] = len(content)
+                file_database.writeEntryData(entryId, content)
+        except Exception as e:
+            print(e)
+            state.uploadError = "An error occurred uploading the file to the database."
+            return
+
+        entry = {**file_database.getEntry(entryId), **updateEntry}
         file_database.writeEntry(entryId, entry)
         state.dbSelectedFile = entry
         state.flush("dbSelectedFile")
 
     @trigger("updateFiles")
     def updateFiles(update, entryId=None):
+        file_database = FileDatabase()
+
         if update == "selectFile":
             if state.dbFiles.get(entryId):
                 state.dbSelectedFile = file_database.getEntry(entryId)
