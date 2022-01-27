@@ -25,9 +25,6 @@ state.update(
 )
 
 
-def initialize_globals():
-    pass
-
 if VIZ_ENABLED:
     from trame.html import paraview
     from pf_modeler.app.engine.visualizations.image import SourceImage
