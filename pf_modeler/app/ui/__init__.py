@@ -37,6 +37,7 @@ with layout.toolbar as tb:
     pf_widgets.NavigationDropDown(v_model="currentView", views=("views",))
     vuetify.VSpacer()
     vuetify.VBtn("Save", click=ctrl.simput_save)
+    layout.content.style = "padding-left: 2rem; padding-right: 2rem;"
 
 
 # -----------------------------------------------------------------------------
@@ -67,7 +68,12 @@ with layout.content as content:
     create_domain_ui()
 
     with Div(v_if="currentView == 'Subsurface Properties'") as d:
-        d.add_child("Should be table with soil info")
+        Element("H1", "Regions")
+
+        simput.SimputItem(
+            v_for=("(soilId, index) in soilIds",),
+            itemId=("soilId",),
+        )
 
     create_project_generation(
         validation_callback=ctrl.validate_run,

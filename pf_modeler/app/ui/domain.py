@@ -2,8 +2,10 @@ from trame import state
 from trame.html import vuetify, Element, Div, Span, simput
 
 from parflow import Run
+from parflowio.pyParflowio import PFData
 
 from ..engine.files import FileDatabase, FileCategories
+from ..engine.simput import KeyDatabase
 
 try:
     from paraview import simple
@@ -34,6 +36,52 @@ if VIZ_ENABLED:
     html_view = paraview.VtkRemoteView(view)
     soil_viz = None
 
+@state.change("indicatorFile")
+def updateComputationalGrid(indicatorFile, **kwargs):
+    file_database = FileDatabase()
+    key_database = KeyDatabase()
+
+    entry = file_database.getEntry(indicatorFile)
+    state.indicatorFileDescription = entry.get("description")
+
+    filename = file_database.getEntryPath(indicatorFile)
+    try:
+        handle = PFData(filename)
+    except:
+        print(f"Could not find pfb: {filename}")
+        raise
+    handle.loadHeader()
+
+    change_set = [
+        {"id": state.gridId, "name": "Origin", "value": [handle.getX(), handle.getY(), handle.getZ()]},
+        {"id": state.gridId, "name": "Spacing", "value": [handle.getDX(), handle.getDY(), handle.getDZ()]},
+        {"id": state.gridId, "name": "Size", "value": [handle.getNX(), handle.getNY(), handle.getNZ()]},
+    ]
+
+    for soilId in state['soilIds']:
+        key_database.pxm.delete(soilId)
+
+    state['soilIds'] = []
+
+    key_database.pxm.update(change_set)
+
+    handle.loadData()
+
+    data = handle.viewDataArray()
+
+    unique_values = set()
+
+    for val in data.flat:
+        unique_values.add(val)
+
+    handle.close()
+
+    soil_ids = []
+    for val in unique_values:
+        soil = key_database.pxm.create('Soil', **{"Key": f"s{val}", "Value": val})
+        soil_ids.append(soil.id)
+
+    state['soilIds'] = soil_ids
 
 @state.change("currentSoil")
 def updateCurrentSoil(currentSoil, **kwargs):
@@ -45,7 +93,7 @@ def updateCurrentSoil(currentSoil, **kwargs):
     if currentSoil == "all":
         soil_viz.setSoilVisualizationMode("all")
     else:
-        value = soil_viz.soilTypes[currentSoil]["value"]
+        value = currentSoil
         soil_viz.setSoilVisualizationMode("selection")
         soil_viz.activateSoil(value)
 
@@ -54,7 +102,6 @@ def updateCurrentSoil(currentSoil, **kwargs):
 
 @state.change("domainView")
 def on_view_change(domainView, indicatorFile, elevationFile, **kwargs):
-    initialize_globals()
     if not VIZ_ENABLED:
         return
 
@@ -73,17 +120,23 @@ def on_view_change(domainView, indicatorFile, elevationFile, **kwargs):
         elevationFilePath = FileDatabase().getEntryPath(elevationFile)
 
         if indicatorFilePath is not None and elevationFilePath is not None:
+            pxm = KeyDatabase().pxm
+            grid = pxm.get(state["gridId"])
             if soil_viz is None:
-                configFile = "LW_Test/LW_Test.pfidb"
-                parflowConfig = Run.from_definition(configFile)
-                parflowImage = SourceImage(parflowConfig, elevationFilePath)
-                soil_viz = SoilVisualization(view, parflowImage, parflowConfig)
+                parflowImage = SourceImage(grid, elevationFilePath)
+                soil_viz = SoilVisualization(view, parflowImage)
 
             soil_viz.indicatorFilename = indicatorFilePath
             soil_viz.parflowImage.elevationFilter.demFilename = elevationFilePath
             soil_viz.activate()
 
-            state.update({"soils": ["all"] + list(soil_viz.soilTypes.keys())})
+            def soilOptionMapper(id):
+                soil = pxm.get(id)
+                return {"text": soil.Key, "value": soil.Value}
+
+            soilOptions = list(map(soilOptionMapper, state["soilIds"]))
+
+            state.update({"soils": [{"text": "All", "value": "all"}] + soilOptions})
 
 
 def domain_viz(parent):
@@ -113,29 +166,9 @@ def domain_parameters():
                 item_value="id",
             )
 
-            with vuetify.VRow():
-                with vuetify.VCol():
-                    vuetify.VTextField(v_model=("LX", 1.0), label="lx", readonly=True)
-                    vuetify.VTextField(v_model=("DX", 1.0), label="dx", readonly=True)
-                    vuetify.VTextField(v_model=("NX", 1.0), label="nx", readonly=True)
-                with vuetify.VCol():
-                    vuetify.VTextField(v_model=("LY", 1.0), label="ly", readonly=True)
-                    vuetify.VTextField(v_model=("DY", 1.0), label="dy", readonly=True)
-                    vuetify.VTextField(v_model=("NY", 1.0), label="ny", readonly=True)
-                with vuetify.VCol():
-                    vuetify.VTextField(v_model=("LZ", 1.0), label="lz", readonly=True)
-                    vuetify.VTextField(v_model=("DZ", 1.0), label="dz", readonly=True)
-                    vuetify.VTextField(v_model=("NZ", 1.0), label="nz", readonly=True)
+            Element("H3", "Grid")
 
-        with Div(classes="ma-6"):
-            Span("Lorem Ipsum documentation for Indicator file")
-            vuetify.VTextarea(
-                v_if="indicatorFileDescription",
-                value=("indicatorFileDescription", ""),
-                readonly=True,
-                style="font-family: monospace;",
-            )
-
+            simput.SimputItem(itemId=("gridId",))
 
 def terrain_parameters():
     Element("H1", "Terrain")

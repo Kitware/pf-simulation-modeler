@@ -72,6 +72,9 @@ def initialize():
             "dbFiles": entries,
             "dbSelectedFile": None if not entries else list(entries.values())[0],
             # Simput key ids
+            # Domain
+            "gridId": key_database.pxm.create("ComputationalGrid").id,
+            "soilIds": [],
         }
     )
 
