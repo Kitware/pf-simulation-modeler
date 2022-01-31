@@ -4,8 +4,8 @@ from parflowio.pyParflowio import PFData
 
 
 class ElevationFilter:
-    def __init__(self, parflowConfig, terrainFile):
-        self.parflowConfig = parflowConfig
+    def __init__(self, grid, terrainFile):
+        self.grid = grid
         self.demFilename = terrainFile
 
         self.loadedElevation = None
@@ -29,8 +29,7 @@ class ElevationFilter:
         elevationArray = vtk.vtkFloatArray()
         elevationArray.SetName(self.fieldName)
         elevationArray.SetNumberOfComponents(1)
-        grid = self.parflowConfig.ComputationalGrid
-        (kPointMax, jPointMax, iPointMax) = (grid.NZ + 1, grid.NY + 1, grid.NX + 1)
+        (kPointMax, jPointMax, iPointMax) = (self.grid.Size[2] + 1, self.grid.Size[1] + 1, self.grid.Size[0] + 1)
         elevationArray.SetNumberOfTuples(iPointMax * jPointMax * kPointMax)
 
         for k in range(kPointMax):
