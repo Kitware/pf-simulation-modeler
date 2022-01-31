@@ -13,14 +13,7 @@ from trame import state, get_cli_parser
 __all__ = [
     "initialize",
     "validate_run",
-    "key_database",
 ]
-
-# ---------------------------------------------------------
-# Global instances
-# ---------------------------------------------------------
-
-key_database = None
 
 # ---------------------------------------------------------
 # CLI handling
@@ -29,8 +22,6 @@ key_database = None
 
 def initialize():
     """Initialize application at startup"""
-    global key_database
-
     # Add args to parser
     parser = get_cli_parser()
     args = register_arguments(parser)
@@ -44,8 +35,9 @@ def initialize():
     # Init singletons
     file_database = FileDatabase()
     file_database.datastore = validated_args.get("datastore")
-    key_database = KeyDatabase(validated_args.get("work_dir"))
     entries = file_database.getEntries()
+
+    key_database = KeyDatabase()
 
     # Update state with some initial values
     state.update(
@@ -80,17 +72,6 @@ def initialize():
             "dbFiles": entries,
             "dbSelectedFile": None if not entries else list(entries.values())[0],
             # Simput key ids
-            "SolverId": key_database.Solver.id,
-            "bcPressureId": key_database.BCPressure.id,
-            "patchId": key_database.Patch.id,
-            "GeomId": key_database.Geom.id,
-            # - domain
-            "GeomInputId": key_database.GeomInput.id,
-            "DomainId": key_database.Domain.id,
-            "GeomtId": key_database.GeomInput.id,
-            "TopoSlopesYId": key_database.TopoSlopesY.id,
-            "TopoSlopesXId": key_database.TopoSlopesX.id,
-            "ManningsId": key_database.Mannings.id,
         }
     )
 

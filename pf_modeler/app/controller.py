@@ -2,16 +2,17 @@ r"""
 Bind methods to the trame controller
 """
 
+from pf_modeler.app.engine.simput import KeyDatabase
 from trame import controller as ctrl
 from . import engine
 
 
 def bind_instances():
-    ctrl.ui_set_key_database(engine.key_database)
+    ctrl.ui_set_key_database()
 
 
 def bind_methods():
-    ctrl.simput_save = engine.key_database.save
+    ctrl.simput_save = KeyDatabase().save
     ctrl.validate_run = engine.validate_run
 
 

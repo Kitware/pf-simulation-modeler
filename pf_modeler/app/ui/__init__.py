@@ -1,6 +1,7 @@
+from pf_modeler.app.engine.simput import KeyDatabase
 from trame import state, controller as ctrl
 from trame.layouts import SinglePage
-from trame.html import vuetify, simput, Div
+from trame.html import vuetify, simput, Div, Element
 from pf_modeler import html as pf_widgets
 from .domain import create_domain_ui
 from .output import create_project_generation
@@ -10,7 +11,8 @@ from .output import create_project_generation
 # -----------------------------------------------------------------------------
 
 
-def initialize_simput(key_database):
+def initialize_simput():
+    key_database = KeyDatabase()
     layout.root = simput.Simput(
         key_database.ui_manager,
         key_database.pdm,
@@ -63,15 +65,6 @@ with layout.content as content:
     )
 
     create_domain_ui()
-
-    with Div(v_if="currentView == 'Solver'"):
-        simput.SimputItem(itemId=("SolverId",))
-
-    with Div(v_if="currentView == 'Boundary Conditions'"):
-        simput.SimputItem(itemId=("bcPressureId",)),
-        simput.SimputItem(itemId=("patchId",)),
-        simput.SimputItem(itemId=("GeomtId",)),
-        simput.SimputItem(itemId=("GeomInputId",)),
 
     with Div(v_if="currentView == 'Subsurface Properties'") as d:
         d.add_child("Should be table with soil info")
