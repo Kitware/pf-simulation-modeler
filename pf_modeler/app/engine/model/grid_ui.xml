@@ -1,0 +1,15 @@
+<layouts>
+    <ui id="ComputationalGrid">
+        <row>
+            <col>
+                <input name="Origin" />
+            </col>
+            <col>
+                <input name="Spacing" />
+            </col>
+            <col>
+                <input name="Size" />
+            </col>
+        </row>
+    </ui>
+</layouts>

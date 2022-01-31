@@ -1,0 +1,18 @@
+Cycle:
+  Name:
+    _label: Name
+    type: string
+    size: 1
+  Repeat:
+    _label: Repeat
+    type: int32
+    size: 1
+SubCycle:
+  Name:
+    _label: Name
+    type: string
+    size: 1
+  Length:
+    _label: Length
+    type: int32
+    size: 1
