@@ -58,10 +58,10 @@ def updateComputationalGrid(indicatorFile, **kwargs):
         {"id": state.gridId, "name": "Size", "value": [handle.getNX(), handle.getNY(), handle.getNZ()]},
     ]
 
-    for soilId in state['soilIds']:
+    for soilId in state.soilIds:
         key_database.pxm.delete(soilId)
 
-    state['soilIds'] = []
+    state.soilIds = []
 
     key_database.pxm.update(change_set)
 
@@ -81,7 +81,7 @@ def updateComputationalGrid(indicatorFile, **kwargs):
         soil = key_database.pxm.create('Soil', **{"Key": f"s{val}", "Value": val})
         soil_ids.append(soil.id)
 
-    state['soilIds'] = soil_ids
+    state.soilIds = soil_ids
 
 @state.change("currentSoil")
 def updateCurrentSoil(currentSoil, **kwargs):
@@ -121,7 +121,7 @@ def on_view_change(domainView, indicatorFile, elevationFile, **kwargs):
 
         if indicatorFilePath is not None and elevationFilePath is not None:
             pxm = KeyDatabase().pxm
-            grid = pxm.get(state["gridId"])
+            grid = pxm.get(state.gridId)
             if soil_viz is None:
                 parflowImage = SourceImage(grid, elevationFilePath)
                 soil_viz = SoilVisualization(view, parflowImage)
@@ -134,7 +134,7 @@ def on_view_change(domainView, indicatorFile, elevationFile, **kwargs):
                 soil = pxm.get(id)
                 return {"text": soil.Key, "value": soil.Value}
 
-            soilOptions = list(map(soilOptionMapper, state["soilIds"]))
+            soilOptions = list(map(soilOptionMapper, state.soilIds))
 
             state.update({"soils": [{"text": "All", "value": "all"}] + soilOptions})
 

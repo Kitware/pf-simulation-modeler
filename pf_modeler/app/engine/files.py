@@ -166,7 +166,7 @@ def file_changes():
 
     @trigger("uploadLocalFile")
     def uploadLocalFile(entryId, fileMeta):
-        sharedir = state['sharedir']
+        sharedir = state.sharedir
 
         if sharedir is None:
             return
