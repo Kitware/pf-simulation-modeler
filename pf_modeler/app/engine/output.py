@@ -7,6 +7,7 @@ from parflow import Run
 from io import StringIO
 
 from .files import FileDatabase
+from .simput import KeyDatabase
 
 defaults = {
     #
@@ -43,7 +44,7 @@ class RunWriter:
         self.run = {}
 
     def read_from_simput(self):
-        from . import key_database
+        key_database = KeyDatabase()
 
         pxm = key_database.pxm
         extracted_keys = {}

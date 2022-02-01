@@ -4,9 +4,7 @@ from .elevation import ElevationFilter
 
 
 class SourceImage:
-    def __init__(self, parflowConfig, terrainFile):
-        self.parflowConfig = parflowConfig
-
+    def __init__(self, grid, terrainFile):
         self.zSpacing = 1
         self.eScale = 0
 
@@ -14,17 +12,16 @@ class SourceImage:
 
         # Build up image grid
         self.image = vtk.vtkImageData()
-        cg = self.parflowConfig.ComputationalGrid
-        self.image.SetOrigin(cg.Lower.X, cg.Lower.Y, cg.Lower.Z)
-        self.image.SetSpacing(cg.DX, cg.DY, cg.DZ)
-        self.image.SetDimensions(cg.NX + 1, cg.NY + 1, cg.NZ + 1)  # Point maxes
+        self.image.SetOrigin(grid.Origin[0], grid.Origin[1], grid.Origin[2])
+        self.image.SetSpacing(grid.Spacing[0], grid.Spacing[1], grid.Spacing[2])
+        self.image.SetDimensions(grid.Size[0] + 1, grid.Size[1] + 1, grid.Size[2] + 1)  # Point maxes
 
         # Attach grid to paraview source
         self.paraviewProducer = simple.TrivialProducer()
         vtkProducer = self.paraviewProducer.GetClientSideObject()
         vtkProducer.SetOutput(self.image)
 
-        self.elevationFilter = ElevationFilter(self.parflowConfig, terrainFile)
+        self.elevationFilter = ElevationFilter(grid, terrainFile)
         self.addPointArray(self.elevationFilter.getArray())
         self.elevatedSource = self.elevationFilter.getFilter(self.paraviewProducer)
 
@@ -41,9 +38,9 @@ class SourceImage:
         return self.elevatedSource
 
     def setZSpace(self, space):
-        cg = self.parflowConfig.ComputationalGrid
         self.zSpacing = space
-        self.image.SetSpacing(cg.DX, cg.DY, cg.DZ * self.zSpacing)
+        currSpacing = self.image.GetSpacing()
+        self.image.SetSpacing(currSpacing[0], currSpacing[1], currSpacing[2] * self.zSpacing)
 
         self.elevatedSource.MarkModified(self.elevatedSource)
         return self.zSpacing

@@ -1,0 +1,41 @@
+Soil:
+  Key:
+    _label: Key
+    type: string
+    size: 1
+  Value:
+    _label: Value
+    type: int32
+    size: 1
+  Perm:
+    _label: Perm
+    type: float64
+    size: 1
+  Porosity:
+    _label: Porosity
+    type: float64
+    size: 1
+  RelPermAlpha:
+    _label: RelPermAlpha
+    type: float64
+    size: 1
+  RelPermN:
+    _label: RelPermN
+    type: float64
+    size: 1
+  SatAlpha:
+    _label: SatAlpha
+    type: float64
+    size: 1
+  SatN:
+    _label: SatN
+    type: float64
+    size: 1
+  SatSRes:
+    _label: SatSRes
+    type: float64
+    size: 1
+  SatSSat:
+    _label: SatSSat
+    type: int32
+    size: 1

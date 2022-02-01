@@ -2,8 +2,6 @@ import vtk
 import numpy as np
 from paraview import simple
 
-from parflow.tools.fs import get_absolute_path
-
 from parflowio.pyParflowio import PFData
 
 from .base import AbstractVisualization
@@ -11,24 +9,12 @@ from .colors import black
 
 
 class SoilVisualization(AbstractVisualization):
-    def __init__(self, view, parflowImage, parflowConfig):
-        super().__init__(view, parflowImage, parflowConfig)
+    def __init__(self, view, parflowImage):
+        super().__init__(view, parflowImage)
         self.parflowImage = self.parflowImage
 
-        self.soilTypes = {}
-        for name in parflowConfig.GeomInput.indi_input.GeomNames:
-            self.soilTypes[name] = {
-                "name": name,
-                "value": parflowConfig.GeomInput[name].Value,
-                "permeability": parflowConfig.Geom[name].Perm.Value,
-                "porosity": parflowConfig.Geom[name].Porosity.Value,
-            }
-
-        self.indicatorFilename = get_absolute_path(
-            parflowConfig.Geom.indi_input.FileName
-        )
-
         # Viz variables
+        self.indicatorFilename = ""
         self.fieldName = "soilId"
         self.allSoilsRep = None
         self.selectedSoilRep = None
@@ -40,7 +26,7 @@ class SoilVisualization(AbstractVisualization):
 
     def getState(self):
         """Set of properties that are specific to this viz"""
-        return self.soilTypes
+        return {}
 
     # -------------------------------------------------------------------------
     # Viz setup
@@ -49,7 +35,6 @@ class SoilVisualization(AbstractVisualization):
     def _load(self):
         # Load indicator file that contains soil ids
         try:
-
             a = PFData(self.indicatorFilename)
         except:
             print(f"Could not find pfb {self.indicatorFilename}")

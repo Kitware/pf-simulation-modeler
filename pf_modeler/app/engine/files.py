@@ -1,12 +1,10 @@
 import os
 import random
 import yaml
-from typing import Optional
 from enum import Enum
 import time
 
 from trame import state, trigger
-from parflowio.pyParflowio import PFData
 
 from .singleton import Singleton
 
@@ -141,33 +139,6 @@ def file_changes():
         state.flush("dbSelectedFile")
         state.dbFiles = file_database.getEntries()
 
-    @state.change("indicatorFile")
-    def updateComputationalGrid(indicatorFile, **kwargs):
-        file_database = FileDatabase()
-
-        entry = file_database.getEntry(indicatorFile)
-        state.indicatorFileDescription = entry.get("description")
-
-        filename = file_database.getEntryPath(indicatorFile)
-        try:
-            handle = PFData(filename)
-        except:
-            print(f"Could not find pfb: {filename}")
-            return
-        handle.loadHeader()
-
-        state.NX = handle.getNX()
-        state.NY = handle.getNY()
-        state.NZ = handle.getNZ()
-
-        state.LX = handle.getX()
-        state.LY = handle.getY()
-        state.LZ = handle.getZ()
-
-        state.DX = handle.getDX()
-        state.DY = handle.getDY()
-        state.DZ = handle.getDZ()
-
 
     @trigger("uploadFile")
     def uploadFile(entryId, fileObj):
@@ -195,7 +166,7 @@ def file_changes():
 
     @trigger("uploadLocalFile")
     def uploadLocalFile(entryId, fileMeta):
-        sharedir = state['sharedir']
+        sharedir = state.sharedir
 
         if sharedir is None:
             return

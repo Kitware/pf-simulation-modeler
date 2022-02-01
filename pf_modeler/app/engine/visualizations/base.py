@@ -5,11 +5,10 @@ from abc import ABC, abstractmethod
 
 
 class AbstractVisualization(ABC):
-    def __init__(self, view, parflowImage, parflowConfig):
+    def __init__(self, view, parflowImage, *args):
         self.loaded = False
         self.view = view
         self.parflowImage = parflowImage
-        self.parflowConfig = parflowConfig
 
         # Viz variables
         self.edgeVisibility = False
