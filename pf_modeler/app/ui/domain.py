@@ -14,18 +14,20 @@ try:
 except:
     VIZ_ENABLED = False
 
-state.update(
-    {
-        "domainView": "grid",
-        "soils": [],
-        "currentSoil": "all",
-        "indicatorFile": None,
-        "slopeXFile": None,
-        "slopeYFile": None,
-        "elevationFile": None,
-    }
-)
 
+
+def initialize():
+    state.update(
+        {
+            "domainView": "grid",
+            "soils": [],
+            "currentSoil": "all",
+            "indicatorFile": None,
+            "slopeXFile": None,
+            "slopeYFile": None,
+            "elevationFile": None,
+        }
+    )
 
 if VIZ_ENABLED:
     from trame.html import paraview
@@ -205,7 +207,7 @@ def terrain_parameters():
             )
 
 
-def create_domain_ui():
+def create_ui():
     with Div(classes="d-flex flex-column fill-height", v_if="currentView == 'Domain'"):
         with vuetify.VToolbar(
             flat=True, classes="fill-width align-center grey lighten-2 flex-grow-0"

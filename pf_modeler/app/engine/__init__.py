@@ -48,6 +48,7 @@ def initialize():
                 "File Database",
                 "Simulation Type",
                 "Domain",
+                "Timing",
                 "Boundary Conditions",
                 "Subsurface Properties",
                 "Solver",
@@ -75,6 +76,8 @@ def initialize():
             # Domain
             "gridId": key_database.pxm.create("ComputationalGrid").id,
             "soilIds": [],
+            # Timing
+            "timingId": key_database.pxm.create("Timing").id,
         }
     )
 

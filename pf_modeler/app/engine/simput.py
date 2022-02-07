@@ -35,6 +35,13 @@ class KeyDatabase:
         self._ui_manager.load_language(yaml_file=os.path.join(BASE_DIR, "model/soil.yaml"))
         self._ui_manager.load_ui(xml_file=os.path.join(BASE_DIR, "model/soil_ui.xml"))
 
+        self._pxm.load_model(yaml_file=os.path.join(BASE_DIR, "model/timing.yaml"))
+        self._ui_manager.load_language(yaml_file=os.path.join(BASE_DIR, "model/timing.yaml"))
+
+        self._pxm.load_model(yaml_file=os.path.join(BASE_DIR, "model/cycle.yaml"))
+        self._ui_manager.load_language(yaml_file=os.path.join(BASE_DIR, "model/cycle.yaml"))
+        self._ui_manager.load_ui(xml_file=os.path.join(BASE_DIR, "model/cycle_ui.xml"))
+
     @property
     def pxm(self):
         return self._pxm
