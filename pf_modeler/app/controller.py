@@ -5,6 +5,7 @@ Bind methods to the trame controller
 from pf_modeler.app.engine.simput import KeyDatabase
 from trame import controller as ctrl
 from . import engine
+from . import ui
 
 
 def bind_instances():
@@ -18,6 +19,7 @@ def bind_methods():
 
 def on_start():
     engine.initialize()
+    ui.initialize()
     bind_instances()
     bind_methods()
 

@@ -3,13 +3,18 @@ from trame import state, controller as ctrl
 from trame.layouts import SinglePage
 from trame.html import vuetify, simput, Div, Element
 from pf_modeler import html as pf_widgets
-from .domain import create_domain_ui
+from .domain import create_ui as create_domain_ui, initialize as initialize_domain_ui
 from .output import create_project_generation
+from .timing import create_ui as create_timing_ui, initialize as initialize_timing_ui
+from .boundary_conditions import create_ui as create_bc_ui, initialize as initialize_bc_ui
 
 # -----------------------------------------------------------------------------
 # Initialization helper
 # -----------------------------------------------------------------------------
-
+def initialize():
+    initialize_domain_ui()
+    initialize_timing_ui()
+    initialize_bc_ui()
 
 def initialize_simput():
     key_database = KeyDatabase()
@@ -66,6 +71,12 @@ with layout.content as content:
     )
 
     create_domain_ui()
+
+    with Div(v_if="currentView == 'Timing'"):
+        create_timing_ui()
+
+    with Div(v_if="currentView == 'Boundary Conditions'"):
+        create_bc_ui()
 
     with Div(v_if="currentView == 'Subsurface Properties'") as d:
         Element("H1", "Regions")
