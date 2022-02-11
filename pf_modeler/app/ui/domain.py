@@ -74,7 +74,7 @@ def updateComputationalGrid(indicatorFile, **kwargs):
     unique_values = set()
 
     for val in data.flat:
-        unique_values.add(val)
+        unique_values.add(round(val))
 
     handle.close()
 

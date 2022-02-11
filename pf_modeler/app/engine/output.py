@@ -1,6 +1,4 @@
 import sys
-import os.path
-import yaml
 
 from trame import state
 from parflow import Run
@@ -8,96 +6,72 @@ from io import StringIO
 
 from .files import FileDatabase
 from .simput import KeyDatabase
+from .io import (
+    DefaultsIO, SoilIO, TimingIO, GridIO, CycleIO, BoundaryIO,
+)
 
-defaults = {
-    #
-    # These require reading nested keys
-    #
-    "Cycle.constant.alltime.Length": 1,
-    "Cycle.Names": "constant",
-    "Cycle.constant.Names": "alltime",
-    "Cycle.constant.Repeat": -1,
-    "Patch.x_lower.BCPressure.alltime.Value": 0,
-    "Patch.x_upper.BCPressure.alltime.Value": 0,
-    "Patch.y_lower.BCPressure.alltime.Value": 0,
-    "Patch.y_upper.BCPressure.alltime.Value": 0,
-    "Patch.z_lower.BCPressure.alltime.Value": 0,
-    "Patch.z_upper.BCPressure.alltime.Value": 0,
-    "PhaseSources.water.Geom.domain.Value": 0,
-    #
-    # These require top level __value__ keys
-    #
-    "Gravity": 1.0,
-    "FileVersion": 4,
-    "KnownSolution": "NoKnownSolution",
-    "Solver._value_": "Richards",
-    #
-    # These may be wrong in LW_Test.yaml. That key doesn't exist in pf-keys
-    #
-    "Solver.Linear.Preconditioner._value_": "PFMGOctree",
-}
+class ReplaceStdout(object):
+    """
+    A context manager to temporarely replace stdout
+    """
+    def __init__(self, stdout):
+        self._original_stdout = sys.stdout
+        self._replaced_stdout = stdout
+        sys.stdout = stdout
+    def __enter__(self):
+        return self._replaced_stdout
+    def __exit__(self, type, value, traceback):
+        sys.stdout = self._original_stdout
+        return True
 
+def create_run(name="Simulation"):
+    run = Run(name)
 
-class RunWriter:
-    def __init__(self, work_dir, filedb):
-        self.work_dir = work_dir
-        self.run = {}
+    DefaultsIO.write(run)
 
-    def read_from_simput(self):
-        key_database = KeyDatabase()
+    pxm = KeyDatabase().pxm
 
-        pxm = key_database.pxm
-        extracted_keys = {}
+    grid = pxm.get(state.gridId)
+    GridIO.write(run, proxy=grid)
 
-        for proxy_type in pxm.types():
-            definition = pxm.get_definition(proxy_type)
-            for proxy in pxm.get_instances_of_type(proxy_type):
-                for (prop_name, prop) in proxy.definition.items():
-                    if prop_name == "name" or prop_name.startswith("_"):
-                        continue
-                    value = proxy.get_property(prop_name)
-                    if value is not None:
-                        if definition.get("_exportPrefix"):
-                            name = ".".join(
-                                [
-                                    definition["_exportPrefix"],
-                                    proxy.get_property("name"),
-                                    prop["_exportSuffix"],
-                                ]
-                            )
-                        else:
-                            name = prop["_exportSuffix"]
-                        extracted_keys[name] = value
+    timing = pxm.get(state.timingId)
+    TimingIO.write(run, proxy=timing)
 
-        self.run.update(extracted_keys)
-        self.run.update(defaults)
+    for soil_id in state.soilIds:
+        soil = pxm.get(soil_id)
+        SoilIO.write(run, proxy=soil)
 
-    def validate_run(self):
-        self.read_from_simput()
-        path = os.path.join(self.work_dir, "run.yaml")
-        with open(path, "w") as runFile:
-            yaml.dump(self.run, runFile)
+    for cycle_id in state.cycleIds:
+        cycle = pxm.get(cycle_id)
+        CycleIO.write(run, proxy=cycle, pxm=KeyDatabase().pxm)
 
-        run = Run.from_definition(path)
-        run.dist("IndicatorFile_Gleeson.50z.pfb")
-        run.run()
+    for boundary_id in state.BCPressureIds:
+        boundary = pxm.get(boundary_id)
+        BoundaryIO.write(
+            run, proxy=boundary,
+            value_ids=state.BCPressureValueIds.get(boundary_id, {}),
+            pxm=KeyDatabase().pxm
+        )
 
-        try:
-            # Redirect stdout to capture validation msg
-            old_stdout = sys.stdout
-            sys.stdout = mystdout = StringIO()
+    return run
+
+def validate_run():
+    valid = False
+    output = ""
+
+    try:
+        run = create_run("PF_Simulation_Modeler")
+
+        with ReplaceStdout(StringIO()) as stdout:
             valid = run.validate() == 0
 
             if valid:
                 print("Validation passed.")
-        finally:
-            sys.stdout = old_stdout
 
-        return mystdout.getvalue()
+            output = stdout.getvalue()
 
+    except Exception:
+        output = "Error Converting App State to Parflow Run."
+        valid = False
 
-def validate_run():
-    parflow = RunWriter(state.work_dir, FileDatabase())
-    validation = parflow.validate_run()
-
-    state.projGenValidation = {"output": validation, "valid": False}
+    state.projGenValidation = {"output": output, "valid": valid}
