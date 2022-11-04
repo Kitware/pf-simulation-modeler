@@ -89,17 +89,7 @@ with layout.content as content:
     create_project_generation(
         validation_callback=ctrl.validate_run,
         validation_output="projGenValidation.output",
-        validation_check="!projGenValidation.valid",
-        run_variables={
-            key: key
-            for key in [
-                "BaseUnit",
-                "DumpInterval",
-                "StartCount",
-                "StartTime",
-                "StopTime",
-            ]
-        },
+        validation_check="projGenValidation.valid",
     )
 
 
