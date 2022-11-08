@@ -1,46 +1,39 @@
 from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vuetify, vtk
+from trame.widgets import vuetify, simput
 from pf_sim_2.widgets import pf_sim_2 as my_widgets
+from pathlib import Path
 
+from trame_simput import get_simput_manager
 
-# Create single page layout type
-# (FullScreenPage, SinglePage, SinglePageWithDrawer)
+DEF_DIR = Path('/home/local/KHQ/will.dunklin/Desktop/work/pf_sim_2/pf_sim_2/app/definitions')
+
 def initialize(server):
     state, ctrl = server.state, server.controller
     state.trame__title = "pf_sim_2"
 
+    simput_manager = get_simput_manager()
+    simput_manager.load_model(yaml_file=DEF_DIR / "model.yaml")
+    simput_manager.load_ui(xml_file=DEF_DIR / "ui.xml")
+
+    simput_widget = simput.Simput(simput_manager, prefix="ab", trame_server=server)
+    ctrl.simput_apply = simput_widget.apply
+    ctrl.simput_reset = simput_widget.reset
+
+    def create():
+        person = simput_manager.proxymanager.create('Person')
+        state.active_id = person.id
+
     with SinglePageLayout(server) as layout:
         # Toolbar
-        layout.title.set_text("Trame / vtk.js")
+        layout.title.set_text("Test")
+        layout.root = simput_widget
+
         with layout.toolbar:
             vuetify.VSpacer()
-            my_widgets.CustomWidget(
-                attribute_name="Hello",
-                py_attr_name="World",
-                click=ctrl.widget_click,
-                change=ctrl.widget_change,
-            )
-            vuetify.VSpacer()
-            vuetify.VSlider(                    # Add slider
-                v_model=("resolution", 6),      # bind variable with an initial value of 6
-                min=3, max=60,                  # slider range
-                dense=True, hide_details=True,  # presentation setup
-            )
-            with vuetify.VBtn(icon=True, click=ctrl.reset_camera):
-                vuetify.VIcon("mdi-crop-free")
-            with vuetify.VBtn(icon=True, click=ctrl.reset_resolution):
-                vuetify.VIcon("mdi-undo")
+            with vuetify.VBtn(icon=True, click=create):
+                vuetify.VIcon("mdi-plus")
 
         # Main content
         with layout.content:
-            with vuetify.VContainer(fluid=True, classes="pa-0 fill-height"):
-                with vtk.VtkView() as vtk_view:                # vtk.js view for local rendering
-                    ctrl.reset_camera = vtk_view.reset_camera  # Bind method to controller
-                    with vtk.VtkGeometryRepresentation():      # Add representation to vtk.js view
-                        vtk.VtkAlgorithm(                      # Add ConeSource to representation
-                            vtkClass="vtkConeSource",          # Set attribute value with no JS eval
-                            state=("{ resolution }",)          # Set attribute value with JS eval
-                        )
-
-        # Footer
-        # layout.footer.hide()
+            with vuetify.VContainer(fluid=True):
+                simput.SimputItem(item_id=('active_id', None))
