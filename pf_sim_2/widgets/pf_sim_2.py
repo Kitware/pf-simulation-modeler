@@ -24,3 +24,32 @@ class CustomWidget(HtmlElement):
             "click",
             "change",
         ]
+
+class FileDatabase(HtmlElement):
+    def __init__(self, **kwargs):
+        super().__init__(
+            "pf-file-database",
+            **kwargs,
+        )
+        self._attr_names += ["files", "db_update", "fileCategories", "error"]
+        self._event_names += ["input", "uploadFile", "uploadLocalFile", "updateFiles",]
+
+
+class SimulationType(HtmlElement):
+    def __init__(self, **kwargs):
+        super().__init__(
+            "pf-simulation-type",
+            **kwargs,
+        )
+        self._attr_names += ["shortcuts"]
+        # self._event_names += ["input", "uploadFile", "uploadLocalFile", "updateFiles",]
+
+
+class NavigationDropDown(HtmlElement):
+    def __init__(self, **kwargs):
+        super().__init__(
+            "pf-navigation-drop-down",
+            **kwargs,
+        )
+        self._attr_names += ["views"]
+        self._event_names += ["input"]

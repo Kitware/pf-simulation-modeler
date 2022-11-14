@@ -1,0 +1,13 @@
+ComputationalGrid:
+  Origin:
+    _label: Origin
+    type: float64
+    size: 3
+  Spacing:
+    _label: Spacing
+    type: float64
+    size: 3
+  Size:
+    _label: Size
+    type: int32
+    size: 3

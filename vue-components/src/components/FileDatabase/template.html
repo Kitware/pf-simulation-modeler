@@ -1,0 +1,183 @@
+<v-container class="fill-height" fluid>
+  <v-row class="fill-height flex-nowrap">
+    <v-col
+      cols="12"
+      sm="4"
+      class="fill-height d-flex flex-column"
+      style="border-right: 1px solid grey;"
+    >
+      <v-toolbar dense flat class="flex-grow-0">
+        <v-text-field
+          label="Search"
+          v-model="searchQuery"
+          prepend-icon="mdi-magnify"
+        >
+        </v-text-field>
+        <v-btn
+          outlined
+          small
+          icon
+          class="ml-2 align-self-start"
+          @click="newFile"
+        >
+          <v-icon> mdi-plus</v-icon>
+        </v-btn>
+      </v-toolbar>
+      <v-divider />
+      <v-list>
+        <v-list-item-group :value="value ? value.id : ''" @change="selectFile">
+          <template v-for="(file, index) in files">
+            <v-list-item
+              :key="file.id"
+              :value="file.id"
+              v-if="searchMatch(file)"
+            >
+              <div class="d-flex flex-column align-start py-2">
+                <v-icon class="pr-2">
+                  {{iconFromType(file.type)}}
+                </v-icon>
+                <span
+                  class="text-caption font-weight-thin"
+                  v-if="file.dateUploaded"
+                >
+                  {{ new Date(file.dateUploaded).toLocaleDateString()}}
+                </span>
+                <span class="text-caption font-weight-thin">
+                  {{file.category}}
+                </span>
+              </div>
+
+              <v-list-item-content class="pl-2">
+                <v-list-item-title>{{file.name}}</v-list-item-title>
+
+                <v-list-item-subtitle>
+                  {{file.description}}
+                </v-list-item-subtitle>
+              </v-list-item-content>
+              <v-icon class="ml-2" @click="removeFile(file.id)">
+                mdi-delete
+              </v-icon>
+            </v-list-item>
+
+            <v-divider :key="`divider-${index}`"></v-divider>
+          </template>
+        </v-list-item-group>
+      </v-list>
+    </v-col>
+    <v-col cols="12" sm="8">
+      <div
+        v-if="!value"
+        class="font-weight-medium flex-column d-flex justify-center align-center
+        fill-height"
+      >
+        <span v-if="hasFiles">No file selected. Select one or&nbsp;</span>
+        <span v-else>No files in database&nbsp;</span>
+        <a @click="newFile">
+          (Add a file)
+        </a>
+      </div>
+      <v-container v-else class="fill-height">
+        <v-row class="justify-start flex-nowrap align-self-start">
+          <v-col cols="12" sm="7" class="align-center">
+            <v-text-field label="Name" v-model="formContent.name" outlined />
+            <DragAndDropFiles
+              :disabled="formContent.useLocalFile"
+              class="flex-grow-1 text-caption mx-auto"
+              :file="file"
+              @uploaded="uploaded"
+            />
+            <v-divider style="margin: 1rem;"></v-divider>
+            <v-checkbox
+              v-model="formContent.useLocalFile"
+              label="Specify a local file on the server"
+            >
+            </v-checkbox>
+            <!-- <v-checkbox v-model="formContent.copyLocalFile" label="Copy file into database" :disabled="!formContent.useLocalFile">
+            </v-checkbox> -->
+            <v-text-field
+              label="File path on server"
+              v-model="formContent.localFile"
+              :disabled="!formContent.useLocalFile"
+              outlined
+            />
+
+            <v-alert v-if="error" dense outlined type="error"
+              >{{error}}</v-alert
+            >
+          </v-col>
+          <v-col cols="12" sm="5">
+            <v-select
+              label="Category"
+              :items="fileCategories"
+              v-model="formContent.category"
+              filled
+            />
+
+            <v-row class="flex-nowrap">
+              <v-list dense class="text-caption">
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-subtitle> Origin</v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-subtitle> Uploaded</v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-subtitle> Modified</v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-subtitle> Type</v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-subtitle> Size</v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+              <v-list dense class="text-caption font-weight-bold">
+                <v-list-item> {{ origin }} </v-list-item>
+                <v-list-item> {{ dateUploaded }} </v-list-item>
+                <v-list-item> {{ dateModified}} </v-list-item>
+                <v-list-item> {{ type }} </v-list-item>
+                <v-list-item> {{ size }} </v-list-item>
+              </v-list>
+            </v-row>
+          </v-col>
+        </v-row>
+        <v-row class="pa-4 grey lighten-3">
+          <v-textarea label="Description" v-model="formContent.description" />
+        </v-row>
+        <v-row class="mt-auto pt-8">
+          <v-btn
+            text
+            elevation="2"
+            color="grey"
+            class="white--text"
+            @click="downloadSelectedFile"
+          >
+            Download
+          </v-btn>
+          <v-btn
+            text
+            elevation="2"
+            color="red"
+            class="ml-auto mr-2 white--text"
+            @click="resetSelectedFile"
+          >
+            Cancel
+          </v-btn>
+          <v-btn text elevation="2" color="primary" @click="save">
+            {{ 'Save' }}
+          </v-btn>
+        </v-row>
+      </v-container>
+    </v-col>
+  </v-row>
+</v-container>

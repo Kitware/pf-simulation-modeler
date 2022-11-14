@@ -1,0 +1,36 @@
+<div class="d-flex align-center">
+  <div class="pr-2">
+    <v-btn
+      outlined
+      small
+      icon
+      :disabled="!canMoveBackward"
+      v-on:click="moveBackward"
+    >
+      <v-icon> mdi-chevron-left </v-icon>
+    </v-btn>
+  </div>
+  <div style="padding-top: 26px;">
+    <!--  Top padding balances out v-select. There's extra space underneath without. -->
+    <v-select
+      outlined
+      :items="views"
+      :value="value"
+      @change="$emit('input', $event)"
+      dense
+      style="width: 15em;"
+    />
+  </div>
+  <div class="pl-2">
+    <v-btn
+      outlined
+      small
+      icon
+      color="primary"
+      :disabled="!canMoveForward"
+      v-on:click="moveForward"
+    >
+      <v-icon> mdi-chevron-right </v-icon>
+    </v-btn>
+  </div>
+</div>
