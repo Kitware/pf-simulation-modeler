@@ -1,28 +1,22 @@
 from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vuetify, simput
+from trame.widgets import vuetify, simput, html
 from pf_sim_2.widgets import pf_sim_2 as pf_widgets
-from pathlib import Path
-from .domain import Domain
+from . import ui_elements as ui
 
-from trame_simput import get_simput_manager
-
-DEF_DIR = Path('/home/local/KHQ/will.dunklin/Desktop/work/pf_sim_2/pf_sim_2/app/definitions')
 
 def initialize(server):
     state, ctrl = server.state, server.controller
     state.trame__title = "pf_sim_2"
 
     # Initialize UI components
+    domain = ui.Domain(server)
+    timing = ui.Timing(server)
+    boundary_conditions = ui.BoundaryConditions(server)
 
-    simput_manager = get_simput_manager()
-    simput_manager.load_model(yaml_file=DEF_DIR / "grid.yaml")
-    simput_manager.load_ui(xml_file=DEF_DIR / "grid_ui.xml")
-
-    domain = Domain(server, simput_manager.proxymanager)
-
-    simput_widget = simput.Simput(simput_manager, trame_server=server)
+    simput_widget = simput.Simput(ctrl.get_simput_manager(), trame_server=server)
     ctrl.simput_apply = simput_widget.apply
     ctrl.simput_reset = simput_widget.reset
+    simput_widget.reload_domain()
 
     with SinglePageLayout(server) as layout:
         # Toolbar
@@ -62,5 +56,11 @@ def initialize(server):
                     ),
                 )
 
-            domain.page()
-            #     simput.SimputItem(item_id=('active_id', None))
+            with html.Div(v_if="currentView === 'Domain'"):
+                domain.page()
+
+            with html.Div(v_if="currentView === 'Timing'"):
+                timing.page()
+
+            with html.Div(v_if="currentView === 'Boundary Conditions'"):
+                boundary_conditions.page()

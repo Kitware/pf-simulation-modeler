@@ -2,10 +2,15 @@ r"""
 Define your classes and create the instances that you need to expose
 """
 import logging
+from pathlib import Path
 import sys
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+
+from trame_simput import get_simput_manager
+
+DEF_DIR = Path('/home/local/KHQ/will.dunklin/Desktop/work/pf_sim_2/pf_sim_2/app/definitions')
 
 # ---------------------------------------------------------
 # Engine class
@@ -16,11 +21,7 @@ class MyBusinessLogic:
     def __init__(self, server):
         self._server = server
 
-        # initialize state + controller
         state, ctrl = server.state, server.controller
-        # state.resolution = 6
-        # ctrl.reset_resolution = self.reset_resolution
-        # state.change("resolution")(self.on_resolution_change)
 
         state.update(
             {
@@ -54,11 +55,23 @@ class MyBusinessLogic:
         ctrl.uploadLocalFile = self.uploadLocalFile
         ctrl.updateFiles = self.updateFiles
 
-    # def reset_resolution(self):
-    #     self._server.state.resolution = 6
+        # Simput
+        self.simput_manager = get_simput_manager()
 
-    # def on_resolution_change(self, resolution, **kwargs):
-    #     logger.info(f">>> ENGINE(a): Slider updating resolution to {resolution}")
+        self.pxm = self.simput_manager.proxymanager
+
+        ctrl.get_pxm = lambda: self.pxm
+        ctrl.get_simput_manager = lambda: self.simput_manager
+
+        # add item
+        self.simput_manager.load_model(yaml_file=DEF_DIR / "grid.yaml")
+        self.simput_manager.load_ui(xml_file=DEF_DIR / "grid_ui.xml")
+        self.simput_manager.load_model(yaml_file=DEF_DIR / "cycle.yaml")
+        self.simput_manager.load_ui(xml_file=DEF_DIR / "cycle_ui.xml")
+        self.simput_manager.load_model(yaml_file=DEF_DIR / "timing.yaml")
+
+        state.gridId = self.pxm.create("ComputationalGrid").id
+        state.timingId = self.pxm.create("Timing").id
 
     def uploadFile(self, kwargs):
         logger.info(f">>> uploadLocalFile: {kwargs}")
@@ -68,7 +81,6 @@ class MyBusinessLogic:
 
     def updateFiles(self, update, entryId=None):
         logger.info(f">>> updateFiles: {update} {entryId}")
-
 
 # ---------------------------------------------------------
 # Server binding
@@ -85,25 +97,7 @@ def initialize(server):
     def protocols_ready(**initial_state):
         logger.info(f">>> ENGINE(b): Server is ready {initial_state}")
 
-    # Add args to parser
-    # parser = get_cli_parser()
-    # args = register_arguments(parser)
-
-    # Add validated args to initial state
-    # validator = ArgumentsValidator(args)
-    # if not validator.valid:
-    #     parser.print_help(sys.stderr)
-    # validated_args = validator.args
-
-    # Init singletons
-    # file_database = FileDatabase()
-    # file_database.datastore = validated_args.get("datastore")
-    # entries = file_database.getEntries()
-
-
-    # file_changes()
-
-    ctrl.on_server_ready.add(protocols_ready)
+    # ctrl.on_server_ready.add(protocols_ready)
 
     engine = MyBusinessLogic(server)
     return engine

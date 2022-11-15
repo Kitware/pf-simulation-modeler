@@ -1,0 +1,21 @@
+Timing:
+  BaseUnit:
+    _label: Base Unit
+    type: float64
+    size: 1
+  StartCount:
+    _label: Start Count
+    type: int32
+    size: 1
+  StartTime:
+    _label: Start Time
+    type: int32
+    size: 1
+  StopTime:
+    _label: Stop Time
+    type: int32
+    size: 1
+  DumpInterval:
+    _label: Dump Interval
+    type: int32
+    size: 1

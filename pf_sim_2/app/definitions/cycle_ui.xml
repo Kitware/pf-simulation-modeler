@@ -1,0 +1,22 @@
+<layouts>
+    <ui id="Cycle">
+        <row>
+            <col>
+                <input name="Name" />
+            </col>
+            <col>
+                <input name="Repeat" />
+            </col>
+        </row>
+    </ui>
+    <ui id="SubCycle">
+        <row>
+            <col>
+                <input name="Name" />
+            </col>
+            <col>
+                <input name="Length" />
+            </col>
+        </row>
+    </ui>
+</layouts>
