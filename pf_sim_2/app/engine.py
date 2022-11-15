@@ -4,6 +4,7 @@ Define your classes and create the instances that you need to expose
 import logging
 from pathlib import Path
 import sys
+import yaml
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -69,9 +70,14 @@ class MyBusinessLogic:
         self.simput_manager.load_model(yaml_file=DEF_DIR / "cycle.yaml")
         self.simput_manager.load_ui(xml_file=DEF_DIR / "cycle_ui.xml")
         self.simput_manager.load_model(yaml_file=DEF_DIR / "timing.yaml")
+        self.simput_manager.load_model(yaml_file=DEF_DIR / "boundary.yaml")
+        self.simput_manager.load_ui(xml_file=DEF_DIR / "boundary_ui.xml")
 
         state.gridId = self.pxm.create("ComputationalGrid").id
         state.timingId = self.pxm.create("Timing").id
+
+        # on view change
+        state.change("currentView", self.on_currentView_change)
 
     def uploadFile(self, kwargs):
         logger.info(f">>> uploadLocalFile: {kwargs}")
@@ -81,6 +87,29 @@ class MyBusinessLogic:
 
     def updateFiles(self, update, entryId=None):
         logger.info(f">>> updateFiles: {update} {entryId}")
+
+    def on_currentView_change(self, currentView, **kwargs):
+        if currentView == 'Boundary Conditions':
+            model_file = DEF_DIR / "boundary.yaml"
+            with open(model_file)as f:
+                model = yaml.load(f)
+
+            cycles = list(map(lambda cycle: {"text": cycle['Name'], "value": cycle.id}, self.pxm.get_instances_of_type("Cycle")))
+
+            model["BCPressure"]["Cycle"]["domains"] = [
+                {"type": "LabelList", "values": cycles}
+            ]
+
+            sub_cycles = list(map(lambda cycle: {"text": cycle['Name'], "value": cycle.id}, self.pxm.get_instances_of_type("SubCycle")))
+
+            model["BCPressureValue"]["SubCycle"]["domains"] = [
+                {"type": "LabelList", "values": sub_cycles}
+            ]
+
+            model_content = yaml.dump(model)
+            self.simput_manager.load_model(yaml_content=model_content)
+            self.simput_manager.load_language(yaml_content=model_content)
+
 
 # ---------------------------------------------------------
 # Server binding

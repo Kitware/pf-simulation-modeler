@@ -1,0 +1,26 @@
+<layouts>
+    <ui id="BCPressure">
+        <row>
+            <col>
+                <input name="Patch" />
+            </col>
+            <col>
+                <input name="Type" />
+            </col>
+            <col>
+                <input name="Cycle" />
+            </col>
+        </row>
+    </ui>
+    <ui id="BCPressureValue">
+        <row>
+            <col></col>
+            <col>
+                <input name="SubCycle" />
+            </col>
+            <col>
+                <input name="Value" />
+            </col>
+        </row>
+    </ui>
+</layouts>

@@ -1,0 +1,29 @@
+BCPressure:
+  Patch:
+    _label: Patch
+    type: string
+    size: 1
+  Type:
+    _label: Type
+    type: string
+    size: 1
+    domains:
+      - type: LabelList
+        values:
+          - text: Constant Flux
+            value: FluxConst
+          - text: Overland Flow
+            value: OverlandFlow
+  Cycle:
+    _label: Cycle
+    type: string
+    size: 1
+BCPressureValue:
+  SubCycle:
+    _label: Sub Cycle
+    type: string
+    size: 1
+  Value:
+    _label: Value
+    type: float64
+    size: 1
