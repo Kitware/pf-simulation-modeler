@@ -47,7 +47,7 @@ class Domain:
                     v_model=("slopeYFile",),
                     placeholder="Select a Slope Y file",
                     items=(
-                        '[]'
+                        'placeholder'
                         # f"Object.values(dbFiles).filter(function(file){{return file.category === '{FileCategories.Slope}'}})",
                     ),
                     item_text="name",
@@ -58,7 +58,7 @@ class Domain:
                     v_model=("elevationFile",),
                     placeholder="Select an elevation file",
                     items=(
-                        '[]'
+                        'placeholder'
                         # f"Object.values(dbFiles).filter(function(file){{return file.category === '{FileCategories.Elevation}'}})",
                     ),
                     item_text="name",
@@ -73,6 +73,7 @@ class Domain:
                     v_model=("indicatorFile", None),
                     placeholder="Select an indicator file",
                     items=(
+                        'placeholder'
                         # f"Object.values(dbFiles).filter(function(file){{return file.category === '{FileCategories.Indicator}'}})",
                     ),
                     item_text="name",

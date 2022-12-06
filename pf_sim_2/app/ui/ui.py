@@ -1,17 +1,18 @@
 from trame.ui.vuetify import SinglePageLayout
 from trame.widgets import vuetify, simput, html
 from pf_sim_2.widgets import pf_sim_2 as pf_widgets
-from . import ui_elements as ui
-
+from .domain import Domain
+from .timing import Timing
+from .boundary_conditions import BoundaryConditions
 
 def initialize(server):
     state, ctrl = server.state, server.controller
     state.trame__title = "pf_sim_2"
 
     # Initialize UI components
-    domain = ui.Domain(server)
-    timing = ui.Timing(server)
-    boundary_conditions = ui.BoundaryConditions(server)
+    domain = Domain(server)
+    timing = Timing(server)
+    boundary_conditions = BoundaryConditions(server)
 
     simput_widget = simput.Simput(ctrl.get_simput_manager(), trame_server=server)
     ctrl.simput_apply = simput_widget.apply

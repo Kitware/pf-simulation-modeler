@@ -3,7 +3,6 @@ Define your classes and create the instances that you need to expose
 """
 import logging
 from pathlib import Path
-import sys
 import yaml
 
 logger = logging.getLogger(__name__)
@@ -11,7 +10,7 @@ logger.setLevel(logging.INFO)
 
 from trame_simput import get_simput_manager
 
-DEF_DIR = Path('/home/local/KHQ/will.dunklin/Desktop/work/pf_sim_2/pf_sim_2/app/definitions')
+DEF_DIR = Path('/home/local/KHQ/will.dunklin/Desktop/work/pf_sim_2/pf_sim_2/app/engine/model')
 
 # ---------------------------------------------------------
 # Engine class
@@ -28,8 +27,10 @@ class MyBusinessLogic:
             {
                 "dbFiles": {},
                 "fileCategories": [
-                    # {"value": cat.value, "text": file_category_label(cat)}
-                    # for cat in FileCategories
+                    'Indicator',
+                    'Elevation',
+                    'Slope',
+                    'Other',
                 ],
                 "uploadError": "",
                 "dbSelectedFile": None,
@@ -122,11 +123,6 @@ def initialize(server):
     # @state.change("resolution")
     # def resolution_changed(resolution, **kwargs):
     #     logger.info(f">>> ENGINE(b): Slider updating resolution to {resolution}")
-
-    def protocols_ready(**initial_state):
-        logger.info(f">>> ENGINE(b): Server is ready {initial_state}")
-
-    # ctrl.on_server_ready.add(protocols_ready)
 
     engine = MyBusinessLogic(server)
     return engine
