@@ -5,6 +5,7 @@ from .domain import Domain
 from .timing import Timing
 from .boundary_conditions import BoundaryConditions
 
+
 def initialize(server):
     state, ctrl = server.state, server.controller
     state.trame__title = "pf_sim_2"

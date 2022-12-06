@@ -4,13 +4,15 @@ Define your classes and create the instances that you need to expose
 import logging
 from pathlib import Path
 import yaml
+from trame_simput import get_simput_manager
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-from trame_simput import get_simput_manager
-
-DEF_DIR = Path('/home/local/KHQ/will.dunklin/Desktop/work/pf_sim_2/pf_sim_2/app/engine/model')
+DEF_DIR = Path(
+    "/home/local/KHQ/will.dunklin/Desktop/work/pf_sim_2/pf_sim_2/app/engine/model"
+)
 
 # ---------------------------------------------------------
 # Engine class
@@ -27,14 +29,13 @@ class MyBusinessLogic:
             {
                 "dbFiles": {},
                 "fileCategories": [
-                    'Indicator',
-                    'Elevation',
-                    'Slope',
-                    'Other',
+                    "Indicator",
+                    "Elevation",
+                    "Slope",
+                    "Other",
                 ],
                 "uploadError": "",
                 "dbSelectedFile": None,
-
                 "currentView": "File Database",
                 "views": [
                     "File Database",
@@ -90,18 +91,28 @@ class MyBusinessLogic:
         logger.info(f">>> updateFiles: {update} {entryId}")
 
     def on_currentView_change(self, currentView, **kwargs):
-        if currentView == 'Boundary Conditions':
+        if currentView == "Boundary Conditions":
             model_file = DEF_DIR / "boundary.yaml"
-            with open(model_file)as f:
+            with open(model_file) as f:
                 model = yaml.load(f)
 
-            cycles = list(map(lambda cycle: {"text": cycle['Name'], "value": cycle.id}, self.pxm.get_instances_of_type("Cycle")))
+            cycles = list(
+                map(
+                    lambda cycle: {"text": cycle["Name"], "value": cycle.id},
+                    self.pxm.get_instances_of_type("Cycle"),
+                )
+            )
 
             model["BCPressure"]["Cycle"]["domains"] = [
                 {"type": "LabelList", "values": cycles}
             ]
 
-            sub_cycles = list(map(lambda cycle: {"text": cycle['Name'], "value": cycle.id}, self.pxm.get_instances_of_type("SubCycle")))
+            sub_cycles = list(
+                map(
+                    lambda cycle: {"text": cycle["Name"], "value": cycle.id},
+                    self.pxm.get_instances_of_type("SubCycle"),
+                )
+            )
 
             model["BCPressureValue"]["SubCycle"]["domains"] = [
                 {"type": "LabelList", "values": sub_cycles}

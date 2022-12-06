@@ -22,9 +22,21 @@ class Domain:
         )
 
         change_set = [
-            {"id": state.gridId, "name": "Origin", "value": [10, 10, 10]}, # TODO: add the original handler code
-            {"id": state.gridId, "name": "Spacing", "value": [10, 10, 10]}, # TODO: see above
-            {"id": state.gridId, "name": "Size", "value": [10, 10, 10]}, # TODO: see above
+            {
+                "id": state.gridId,
+                "name": "Origin",
+                "value": [10, 10, 10],
+            },  # TODO: add the original handler code
+            {
+                "id": state.gridId,
+                "name": "Spacing",
+                "value": [10, 10, 10],
+            },  # TODO: see above
+            {
+                "id": state.gridId,
+                "name": "Size",
+                "value": [10, 10, 10],
+            },  # TODO: see above
         ]
         self.pxm.update(change_set)
 
@@ -36,7 +48,7 @@ class Domain:
                     v_model=("slopeXFile",),
                     placeholder="Select a Slope X file",
                     items=(
-                        'placeholder'
+                        "placeholder"
                         # f"Object.values(dbFiles).filter(function(file){{return file.category === '{FileCategories.Slope}'}})",
                     ),
                     item_text="name",
@@ -47,7 +59,7 @@ class Domain:
                     v_model=("slopeYFile",),
                     placeholder="Select a Slope Y file",
                     items=(
-                        'placeholder'
+                        "placeholder"
                         # f"Object.values(dbFiles).filter(function(file){{return file.category === '{FileCategories.Slope}'}})",
                     ),
                     item_text="name",
@@ -58,7 +70,7 @@ class Domain:
                     v_model=("elevationFile",),
                     placeholder="Select an elevation file",
                     items=(
-                        'placeholder'
+                        "placeholder"
                         # f"Object.values(dbFiles).filter(function(file){{return file.category === '{FileCategories.Elevation}'}})",
                     ),
                     item_text="name",
@@ -73,7 +85,7 @@ class Domain:
                     v_model=("indicatorFile", None),
                     placeholder="Select an indicator file",
                     items=(
-                        'placeholder'
+                        "placeholder"
                         # f"Object.values(dbFiles).filter(function(file){{return file.category === '{FileCategories.Indicator}'}})",
                     ),
                     item_text="name",
@@ -81,7 +93,7 @@ class Domain:
                 )
 
                 html.H3("Grid")
-                simput.SimputItem(item_id=('gridId', None))
+                simput.SimputItem(item_id=("gridId", None))
 
     def page(self):
         with html.Div(classes="d-flex flex-column fill-height"):
@@ -94,7 +106,9 @@ class Domain:
                     rounded=True, mandatory=True, v_model=("domainView",)
                 ):
                     with vuetify.VBtn(small=True, value="grid"):
-                        vuetify.VIcon("mdi-format-align-left", small=True, classes="mr-1")
+                        vuetify.VIcon(
+                            "mdi-format-align-left", small=True, classes="mr-1"
+                        )
                         html.Span("Parameters")
                     with vuetify.VBtn(
                         small=True,

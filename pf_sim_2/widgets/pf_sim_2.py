@@ -25,6 +25,7 @@ class CustomWidget(HtmlElement):
             "change",
         ]
 
+
 class FileDatabase(HtmlElement):
     def __init__(self, **kwargs):
         super().__init__(
@@ -32,7 +33,7 @@ class FileDatabase(HtmlElement):
             **kwargs,
         )
         self._attr_names += ["files", "db_update", "fileCategories", "error"]
-        self._event_names += ["input", "uploadFile", "uploadLocalFile", "updateFiles",]
+        self._event_names += ["input", "uploadFile", "uploadLocalFile", "updateFiles"]
 
 
 class SimulationType(HtmlElement):
