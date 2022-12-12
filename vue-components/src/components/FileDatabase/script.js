@@ -5,7 +5,7 @@ export default {
   components: {
     DragAndDropFiles,
   },
-  props: ['files', 'fileCategories', 'value', 'db-update', 'error', 'uploadFile', 'uploadLocalFile', ],
+  props: ['files', 'fileCategories', 'value', 'error'],
   data() {
     return {
       searchQuery: '',
@@ -44,15 +44,13 @@ export default {
       this.file = file;
     },
     selectFile(id) {
-      console.log('selectFile', id);
-      // this.trigger(this.dbUpdate, ['selectFile', id]);
+      this.trame.trigger('updateFile', ['selectFile', id]);
     },
     removeFile(id) {
-      console.log('removeFile', id);
-      // this.trigger(this.dbUpdate, ['removeFile', id]);
+      this.trame.trigger('updateFile', ['removeFile', id]);
     },
     downloadSelectedFile() {
-      // this.trigger(this.dbUpdate, ['downloadSelectedFile', this.value.id]);
+      this.trame.trigger('updateFile', ['downloadSelectedFile', this.value.id]);
     },
     resetSelectedFile() {
       this.file = null;
@@ -92,9 +90,8 @@ export default {
         size,
         ...formContent
       } = this.formContent;
-      console.log('formContent', this.formContent);
       if (!useLocalFile && this.file) {
-        this.$emit('uploadFile', { 'entryId': this.value.id ?? 'hi', 'fileObj': this.file });
+        this.trame.trigger('uploadFile', [this.value.id, this.file]);
         this.resetSelectedFile();
       } else if (useLocalFile && localFile) {
         const fileMeta = {
@@ -102,7 +99,7 @@ export default {
           localFile,
           type: 'file',
         };
-        this.$emit('uploadLocalFile', this.value.id, fileMeta);
+        this.trame.trigger('uploadLocalFile', [this.value.id, fileMeta]);
       }
 
       this.$emit('input', { ...formContent });
@@ -141,5 +138,7 @@ export default {
       this.cancel();
     },
   },
-  // inject: ['set', 'trigger'],
+  inject: [
+    'trame'
+  ],
 };

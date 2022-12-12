@@ -76,7 +76,7 @@
           (Add a file)
         </a>
       </div>
-      <v-container v-else class="fill-height">
+      <v-container v-else-if="value.id" class="fill-height">
         <v-row class="justify-start flex-nowrap align-self-start">
           <v-col cols="12" sm="7" class="align-center">
             <v-text-field label="Name" v-model="formContent.name" outlined />

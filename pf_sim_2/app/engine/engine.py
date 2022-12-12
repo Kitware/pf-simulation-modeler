@@ -5,7 +5,8 @@ import logging
 from pathlib import Path
 import yaml
 from trame_simput import get_simput_manager
-
+from . import files
+from .cli import ArgumentsValidator
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -27,15 +28,6 @@ class MyBusinessLogic:
 
         state.update(
             {
-                "dbFiles": {},
-                "fileCategories": [
-                    "Indicator",
-                    "Elevation",
-                    "Slope",
-                    "Other",
-                ],
-                "uploadError": "",
-                "dbSelectedFile": None,
                 "currentView": "File Database",
                 "views": [
                     "File Database",
@@ -47,16 +39,8 @@ class MyBusinessLogic:
                     "Solver",
                     "Project Generation",
                 ],
-                #
-                # **validated_args,
-                # "dbFiles": entries,
-                # "dbSelectedFile": None if not entries else list(entries.values())[0],
             }
         )
-
-        ctrl.uploadFile = self.uploadFile
-        ctrl.uploadLocalFile = self.uploadLocalFile
-        ctrl.updateFiles = self.updateFiles
 
         # Simput
         self.simput_manager = get_simput_manager()
@@ -80,15 +64,6 @@ class MyBusinessLogic:
 
         # on view change
         state.change("currentView", self.on_currentView_change)
-
-    def uploadFile(self, kwargs):
-        logger.info(f">>> uploadLocalFile: {kwargs}")
-
-    def uploadLocalFile(self, entryId, fileMeta):
-        logger.info(f">>> uploadLocalFile: {entryId} {fileMeta}")
-
-    def updateFiles(self, update, entryId=None):
-        logger.info(f">>> updateFiles: {update} {entryId}")
 
     def on_currentView_change(self, currentView, **kwargs):
         if currentView == "Boundary Conditions":
@@ -130,6 +105,15 @@ class MyBusinessLogic:
 
 def initialize(server):
     state, ctrl = server.state, server.controller
+
+    args = server.cli.parse_known_args()[0]
+    print(args)
+
+    validator = ArgumentsValidator(args)
+    if not validator.valid:
+        raise RuntimeError("Invalid arguments")
+
+    files.initialize(server, validator.args)
 
     # @state.change("resolution")
     # def resolution_changed(resolution, **kwargs):

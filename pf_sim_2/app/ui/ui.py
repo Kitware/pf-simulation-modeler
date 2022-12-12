@@ -39,11 +39,7 @@ def initialize(server):
                     files=("dbFiles",),
                     fileCategories=("fileCategories",),
                     error=("uploadError",),
-                    db_update="updateFiles",
-                    v_model="dbSelectedFile",
-                    uploadFile=(ctrl.uploadFile, "[$event]"),
-                    uploadLocalFile=ctrl.uploadLocalFile,
-                    updateFiles=ctrl.updateFiles,
+                    v_model=("dbSelectedFile",),
                 )
                 pf_widgets.SimulationType(
                     v_if="currentView === 'Simulation Type'",
