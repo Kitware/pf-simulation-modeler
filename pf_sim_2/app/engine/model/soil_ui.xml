@@ -1,0 +1,36 @@
+<layouts>
+    <ui id="Soil">
+        <row>
+            <col>
+                <input name="Key" />
+            </col>
+            <col>
+                <input name="Value" />
+            </col>
+            <col>
+                <input name="Perm" />
+            </col>
+            <col>
+                <input name="Porosity" />
+            </col>
+            <col>
+                <input name="RelPermAlpha" />
+            </col>
+            <col>
+                <input name="RelPermN" />
+            </col>
+            <col>
+                <input name="SatAlpha" />
+            </col>
+            <col>
+                <input name="SatN" />
+            </col>
+            <col>
+                <input name="SatSRes" />
+            </col>
+            <col>
+                <input name="SatSSat" />
+            </col>
+        </row>
+    </ui>
+</layouts>

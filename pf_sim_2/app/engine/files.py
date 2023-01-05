@@ -129,8 +129,6 @@ class FileLogic:
         ctrl.trigger("updateFile")(self.updateFile)
 
     def uploadFile(self, entryId, fileObj):
-        # logger.info(f">>> uploadFile: {entryId}")
-
         if not fileObj or not entryId:
             logger.info("No file or entryId provided")
             return
@@ -158,11 +156,46 @@ class FileLogic:
         self.state.dbSelectedFile = entry
 
     def uploadLocalFile(self, entryId, fileMeta):
-        logger.info(f">>> uploadLocalFile: {entryId} {fileMeta}")
+        sharedir = self.state.sharedir
+
+        if sharedir is None:
+            return
+
+        file_database = FileDatabase()
+
+        updateEntry = {
+            key: fileMeta.get(key)
+            for key in ["origin", "size", "dateModified", "dateUploaded", "type"]
+        }
+
+        try:
+            updateEntry = {
+                "type": fileMeta["type"],
+                "dateModified": int(time.time()),
+                "dateUploaded": int(time.time()),
+            }
+
+            file_path = os.path.abspath(os.path.join(sharedir, fileMeta["localFile"]))
+            if os.path.commonpath([sharedir, file_path]) != sharedir:
+                raise Exception("Attempting to access a file outside the sharedir.")
+            updateEntry["origin"] = os.path.basename(file_path)
+
+            with open(file_path, "rb") as f:
+                content = f.read()
+                updateEntry["size"] = len(content)
+                file_database.writeEntryData(entryId, content)
+        except Exception as e:
+            print(e)
+            self.state.uploadError = (
+                "An error occurred uploading the file to the database."
+            )
+            return
+
+        entry = {**file_database.getEntry(entryId), **updateEntry}
+        file_database.writeEntry(entryId, entry)
+        self.state.dbSelectedFile = entry
 
     def updateFile(self, update, entryId=None):
-        # logger.info(f">>> updateFile: {update} {entryId}")
-
         file_database = FileDatabase()
 
         if update == "selectFile":

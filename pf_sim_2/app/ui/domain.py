@@ -3,11 +3,7 @@ from trame.widgets import vuetify, html, simput
 
 class Domain:
     def __init__(self, server):
-        state, ctrl = server.state, server.controller
-        self.server = server
-        self.state = state
-        self.ctrl = ctrl
-        self.pxm = ctrl.get_pxm()
+        state = server.state
 
         state.update(
             {
@@ -21,25 +17,6 @@ class Domain:
             }
         )
 
-        change_set = [
-            {
-                "id": state.gridId,
-                "name": "Origin",
-                "value": [10, 10, 10],
-            },  # TODO: add the original handler code
-            {
-                "id": state.gridId,
-                "name": "Spacing",
-                "value": [10, 10, 10],
-            },  # TODO: see above
-            {
-                "id": state.gridId,
-                "name": "Size",
-                "value": [10, 10, 10],
-            },  # TODO: see above
-        ]
-        self.pxm.update(change_set)
-
     def terrain_parameters(self):
         html.H1("Terrain")
         with vuetify.VRow(classes="ma-6 justify-space-between"):
@@ -48,8 +25,7 @@ class Domain:
                     v_model=("slopeXFile",),
                     placeholder="Select a Slope X file",
                     items=(
-                        "placeholder"
-                        # f"Object.values(dbFiles).filter(function(file){{return file.category === '{FileCategories.Slope}'}})",
+                        "Object.values(dbFiles).filter(function(file){return file.category === 'Slope'})",
                     ),
                     item_text="name",
                     item_value="id",
@@ -59,8 +35,7 @@ class Domain:
                     v_model=("slopeYFile",),
                     placeholder="Select a Slope Y file",
                     items=(
-                        "placeholder"
-                        # f"Object.values(dbFiles).filter(function(file){{return file.category === '{FileCategories.Slope}'}})",
+                        "Object.values(dbFiles).filter(function(file){return file.category === 'Slope'})",
                     ),
                     item_text="name",
                     item_value="id",
@@ -70,8 +45,7 @@ class Domain:
                     v_model=("elevationFile",),
                     placeholder="Select an elevation file",
                     items=(
-                        "placeholder"
-                        # f"Object.values(dbFiles).filter(function(file){{return file.category === '{FileCategories.Elevation}'}})",
+                        "Object.values(dbFiles).filter(function(file){return file.category === 'Elevation'})",
                     ),
                     item_text="name",
                     item_value="id",
@@ -85,8 +59,7 @@ class Domain:
                     v_model=("indicatorFile", None),
                     placeholder="Select an indicator file",
                     items=(
-                        "placeholder"
-                        # f"Object.values(dbFiles).filter(function(file){{return file.category === '{FileCategories.Indicator}'}})",
+                        "Object.values(dbFiles).filter(function(file){return file.category === 'Indicator'})",
                     ),
                     item_text="name",
                     item_value="id",

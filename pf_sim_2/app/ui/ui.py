@@ -62,3 +62,10 @@ def initialize(server):
 
             with html.Div(v_if="currentView === 'Boundary Conditions'"):
                 boundary_conditions.page()
+
+            with html.Div(v_if="currentView === 'Subsurface Properties'"):
+                html.H1("Regions")
+
+                simput.SimputItem(
+                    v_for=("(soilId, index) in soilIds",), item_id=("soilId", None)
+                )

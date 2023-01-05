@@ -6,6 +6,7 @@ from pathlib import Path
 import yaml
 from trame_simput import get_simput_manager
 from . import files
+from . import domain
 from .cli import ArgumentsValidator
 
 logger = logging.getLogger(__name__)
@@ -50,7 +51,7 @@ class MyBusinessLogic:
         ctrl.get_pxm = lambda: self.pxm
         ctrl.get_simput_manager = lambda: self.simput_manager
 
-        # add item
+        # Load models
         self.simput_manager.load_model(yaml_file=DEF_DIR / "grid.yaml")
         self.simput_manager.load_ui(xml_file=DEF_DIR / "grid_ui.xml")
         self.simput_manager.load_model(yaml_file=DEF_DIR / "cycle.yaml")
@@ -58,8 +59,9 @@ class MyBusinessLogic:
         self.simput_manager.load_model(yaml_file=DEF_DIR / "timing.yaml")
         self.simput_manager.load_model(yaml_file=DEF_DIR / "boundary.yaml")
         self.simput_manager.load_ui(xml_file=DEF_DIR / "boundary_ui.xml")
+        self.simput_manager.load_model(yaml_file=DEF_DIR / "soil.yaml")
+        self.simput_manager.load_ui(xml_file=DEF_DIR / "soil_ui.xml")
 
-        state.gridId = self.pxm.create("ComputationalGrid").id
         state.timingId = self.pxm.create("Timing").id
 
         # on view change
@@ -106,6 +108,8 @@ class MyBusinessLogic:
 def initialize(server):
     state, ctrl = server.state, server.controller
 
+    engine = MyBusinessLogic(server)
+
     args = server.cli.parse_known_args()[0]
     print(args)
 
@@ -115,9 +119,6 @@ def initialize(server):
 
     files.initialize(server, validator.args)
 
-    # @state.change("resolution")
-    # def resolution_changed(resolution, **kwargs):
-    #     logger.info(f">>> ENGINE(b): Slider updating resolution to {resolution}")
+    domain.initialize(server)
 
-    engine = MyBusinessLogic(server)
     return engine
