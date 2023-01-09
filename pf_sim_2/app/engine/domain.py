@@ -1,5 +1,6 @@
 from parflowio.pyParflowio import PFData
 from .files import FileDatabase
+from .snippets import DomainSnippet
 
 
 class DomainLogic:
@@ -69,6 +70,12 @@ class DomainLogic:
             soil_ids.append(soil.id)
 
         self.state.soilIds = soil_ids
+
+        # Update the domain snippet
+        snippet = DomainSnippet(self.state, self.ctrl)
+        snippet.set_indicator_file(entry.get("origin"))
+        snippet.set_grid(self.state.gridId)
+        snippet.set_soils(soil_ids)
 
 
 def initialize(server):

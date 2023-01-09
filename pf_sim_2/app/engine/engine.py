@@ -27,19 +27,21 @@ class MyBusinessLogic:
 
         state, ctrl = server.state, server.controller
 
+        views = [
+            "File Database",
+            "Simulation Type",
+            "Domain",
+            "Timing",
+            "Boundary Conditions",
+            "Subsurface Properties",
+            "Solver",
+            "Project Generation",
+        ]
         state.update(
             {
                 "currentView": "File Database",
-                "views": [
-                    "File Database",
-                    "Simulation Type",
-                    "Domain",
-                    "Timing",
-                    "Boundary Conditions",
-                    "Subsurface Properties",
-                    "Solver",
-                    "Project Generation",
-                ],
+                "views": views,
+                "snippets": {view: "" for view in views},
             }
         )
 
