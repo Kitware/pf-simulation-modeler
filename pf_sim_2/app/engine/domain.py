@@ -11,6 +11,13 @@ class DomainLogic:
 
         state.update(
             {
+                "domainView": "grid",
+                "soils": [],
+                "currentSoil": "all",
+                "indicatorFile": None,
+                "slopeXFile": None,
+                "slopeYFile": None,
+                "elevationFile": None,
                 "soilIds": [],
                 "gridId": self.pxm.create("ComputationalGrid").id,
             }

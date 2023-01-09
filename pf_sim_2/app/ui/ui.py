@@ -1,8 +1,8 @@
 from trame.ui.vuetify import SinglePageLayout
 from trame.widgets import vuetify, simput, html
 from pf_sim_2.widgets import pf_sim_2 as pf_widgets
-from .domain import Domain
-from .timing import Timing
+from .domain import domain
+from .timing import timing
 from .boundary_conditions import BoundaryConditions
 
 
@@ -11,8 +11,6 @@ def initialize(server):
     state.trame__title = "pf_sim_2"
 
     # Initialize UI components
-    domain = Domain(server)
-    timing = Timing(server)
     boundary_conditions = BoundaryConditions(server)
 
     simput_widget = simput.Simput(ctrl.get_simput_manager(), trame_server=server)
@@ -55,10 +53,10 @@ def initialize(server):
                 )
 
             with html.Div(v_if="currentView === 'Domain'"):
-                domain.page()
+                domain()
 
             with html.Div(v_if="currentView === 'Timing'"):
-                timing.page()
+                timing(ctrl)
 
             with html.Div(v_if="currentView === 'Boundary Conditions'"):
                 boundary_conditions.page()

@@ -7,6 +7,7 @@ import yaml
 from trame_simput import get_simput_manager
 from . import files
 from . import domain
+from . import timing
 from .cli import ArgumentsValidator
 
 logger = logging.getLogger(__name__)
@@ -47,9 +48,7 @@ class MyBusinessLogic:
 
         # Simput
         self.simput_manager = get_simput_manager()
-
         self.pxm = self.simput_manager.proxymanager
-
         ctrl.get_pxm = lambda: self.pxm
         ctrl.get_simput_manager = lambda: self.simput_manager
 
@@ -63,8 +62,6 @@ class MyBusinessLogic:
         self.simput_manager.load_ui(xml_file=DEF_DIR / "boundary_ui.xml")
         self.simput_manager.load_model(yaml_file=DEF_DIR / "soil.yaml")
         self.simput_manager.load_ui(xml_file=DEF_DIR / "soil_ui.xml")
-
-        state.timingId = self.pxm.create("Timing").id
 
         # on view change
         state.change("currentView", self.on_currentView_change)
@@ -105,11 +102,7 @@ class MyBusinessLogic:
 # ---------------------------------------------------------
 # Server binding
 # ---------------------------------------------------------
-
-
 def initialize(server):
-    state, ctrl = server.state, server.controller
-
     engine = MyBusinessLogic(server)
 
     args = server.cli.parse_known_args()[0]
@@ -120,7 +113,7 @@ def initialize(server):
         raise RuntimeError("Invalid arguments")
 
     files.initialize(server, validator.args)
-
     domain.initialize(server)
+    timing.initialize(server)
 
     return engine
