@@ -10,20 +10,36 @@
     </v-row>
     <v-row class="justify-center align-center pt-6">
       <div class="text-h5 pr-4">Features</div>
-      <v-checkbox class="pa-4" v-model="shortcuts.wells" label="Wells">
-      </v-checkbox>
-      <v-checkbox class="pa-4" v-model="shortcuts.climate" label="Climate">
+      <v-checkbox
+        class="pa-4"
+        v-model="formContent.wells"
+        @change="updateFormContent"
+        label="Wells"
+      >
       </v-checkbox>
       <v-checkbox
         class="pa-4"
-        v-model="shortcuts.contaminants"
+        v-model="formContent.climate"
+        @change="updateFormContent"
+        label="Climate"
+      >
+      </v-checkbox>
+      <v-checkbox
+        class="pa-4"
+        v-model="formContent.contaminants"
+        @change="updateFormContent"
         label="Contaminants"
       >
       </v-checkbox>
     </v-row>
     <v-row class="justify-center align-center">
       <div class="text-h5 pr-4">Saturation</div>
-      <v-radio-group row v-model="shortcuts.saturated" class="pa-4">
+      <v-radio-group
+        row
+        v-model="formContent.saturated"
+        @change="updateFormContent"
+        class="pa-4"
+      >
         <v-radio value="Variably Saturated" label="Variably Saturated" />
         <v-radio value="Fully Saturated" label="Fully Saturated" />
       </v-radio-group>

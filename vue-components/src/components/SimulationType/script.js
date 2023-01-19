@@ -1,4 +1,14 @@
 export default {
   name: 'SimulationType',
-  props: ['shortcuts'],
+  props: ['value'],
+  data() {
+    return {
+      formContent: { ...(this.value || {}) },
+    };
+  },
+  methods: {
+    updateFormContent() {
+      this.$emit('input', { ...this.formContent });
+    },
+  },
 };

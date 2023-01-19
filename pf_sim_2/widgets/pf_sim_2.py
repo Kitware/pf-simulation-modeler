@@ -25,7 +25,7 @@ class SimulationType(HtmlElement):
             "pf-simulation-type",
             **kwargs,
         )
-        self._attr_names += ["shortcuts"]
+        self._event_names += ["input"]
 
 
 class NavigationDropDown(HtmlElement):

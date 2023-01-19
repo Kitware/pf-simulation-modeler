@@ -41,7 +41,7 @@ def initialize(server):
                 )
                 pf_widgets.SimulationType(
                     v_if="currentView === 'Simulation Type'",
-                    shortcuts=(
+                    v_model=(
                         "simTypeShortcuts",
                         {
                             "wells": False,
@@ -52,18 +52,18 @@ def initialize(server):
                     ),
                 )
 
-            with html.Div(v_if="currentView === 'Domain'"):
-                domain()
+                with html.Div(v_if="currentView === 'Domain'"):
+                    domain()
 
-            with html.Div(v_if="currentView === 'Timing'"):
-                timing(ctrl)
+                with html.Div(v_if="currentView === 'Timing'"):
+                    timing(ctrl)
 
-            with html.Div(v_if="currentView === 'Boundary Conditions'"):
-                boundary_conditions.page()
+                with html.Div(v_if="currentView === 'Boundary Conditions'"):
+                    boundary_conditions.page()
 
-            with html.Div(v_if="currentView === 'Subsurface Properties'"):
-                html.H1("Regions")
+                with html.Div(v_if="currentView === 'Subsurface Properties'"):
+                    html.H1("Regions")
 
-                simput.SimputItem(
-                    v_for=("(soilId, index) in soilIds",), item_id=("soilId", None)
-                )
+                    simput.SimputItem(
+                        v_for=("(soilId, index) in soilIds",), item_id=("soilId", None)
+                    )
