@@ -1,6 +1,5 @@
 from parflowio.pyParflowio import PFData
 from .files import FileDatabase
-from .snippets import DomainSnippet
 
 
 class DomainLogic:
@@ -15,6 +14,7 @@ class DomainLogic:
                 "soils": [],
                 "currentSoil": "all",
                 "indicatorFile": None,
+                "indicatorFileName": None,
                 "slopeXFile": None,
                 "slopeYFile": None,
                 "elevationFile": None,
@@ -30,7 +30,7 @@ class DomainLogic:
             return
 
         entry = file_database.getEntry(indicatorFile)
-        self.state.indicatorFileDescription = entry.get("description")
+        self.state.indicatorFileName = entry.get("origin")
 
         filename = file_database.getEntryPath(indicatorFile)
         try:
@@ -77,12 +77,6 @@ class DomainLogic:
             soil_ids.append(soil.id)
 
         self.state.soilIds = soil_ids
-
-        # Update the domain snippet
-        snippet = DomainSnippet(self.state, self.ctrl)
-        snippet.set_indicator_file(entry.get("origin"))
-        snippet.set_grid(self.state.gridId)
-        snippet.set_soils(soil_ids)
 
 
 def initialize(server):

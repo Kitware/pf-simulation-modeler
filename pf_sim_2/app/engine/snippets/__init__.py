@@ -1,5 +1,5 @@
-from .domain import DomainSnippet
+from .base import initialize
 
 __all__ = [
-    "DomainSnippet",
+    "initialize",
 ]

@@ -8,6 +8,7 @@ from trame_simput import get_simput_manager
 from . import files
 from . import domain
 from . import timing
+from . import snippets
 from .cli import ArgumentsValidator
 
 logger = logging.getLogger(__name__)
@@ -27,6 +28,7 @@ class MyBusinessLogic:
         self._server = server
 
         state, ctrl = server.state, server.controller
+        self.state = state
 
         views = [
             "File Database",
@@ -64,39 +66,38 @@ class MyBusinessLogic:
         self.simput_manager.load_ui(xml_file=DEF_DIR / "soil_ui.xml")
 
         # on view change
-        state.change("currentView", self.on_currentView_change)
+        @state.change("currentView")
+        def on_currentView_change(currentView, **kwargs):
+            if currentView == "Boundary Conditions":
+                model_file = DEF_DIR / "boundary.yaml"
+                with open(model_file) as f:
+                    model = yaml.safe_load(f)
 
-    def on_currentView_change(self, currentView, **kwargs):
-        if currentView == "Boundary Conditions":
-            model_file = DEF_DIR / "boundary.yaml"
-            with open(model_file) as f:
-                model = yaml.load(f)
-
-            cycles = list(
-                map(
-                    lambda cycle: {"text": cycle["Name"], "value": cycle.id},
-                    self.pxm.get_instances_of_type("Cycle"),
+                cycles = list(
+                    map(
+                        lambda cycle: {"text": cycle["Name"], "value": cycle.id},
+                        self.pxm.get_instances_of_type("Cycle"),
+                    )
                 )
-            )
 
-            model["BCPressure"]["Cycle"]["domains"] = [
-                {"type": "LabelList", "values": cycles}
-            ]
+                model["BCPressure"]["Cycle"]["domains"] = [
+                    {"type": "LabelList", "values": cycles}
+                ]
 
-            sub_cycles = list(
-                map(
-                    lambda cycle: {"text": cycle["Name"], "value": cycle.id},
-                    self.pxm.get_instances_of_type("SubCycle"),
+                sub_cycles = list(
+                    map(
+                        lambda cycle: {"text": cycle["Name"], "value": cycle.id},
+                        self.pxm.get_instances_of_type("SubCycle"),
+                    )
                 )
-            )
 
-            model["BCPressureValue"]["SubCycle"]["domains"] = [
-                {"type": "LabelList", "values": sub_cycles}
-            ]
+                model["BCPressureValue"]["SubCycle"]["domains"] = [
+                    {"type": "LabelList", "values": sub_cycles}
+                ]
 
-            model_content = yaml.dump(model)
-            self.simput_manager.load_model(yaml_content=model_content)
-            self.simput_manager.load_language(yaml_content=model_content)
+                model_content = yaml.dump(model)
+                self.simput_manager.load_model(yaml_content=model_content)
+                self.simput_manager.load_language(yaml_content=model_content)
 
 
 # ---------------------------------------------------------
@@ -115,5 +116,7 @@ def initialize(server):
     files.initialize(server, validator.args)
     domain.initialize(server)
     timing.initialize(server)
+
+    snippets.initialize(server)
 
     return engine
