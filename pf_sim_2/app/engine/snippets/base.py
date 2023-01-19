@@ -6,7 +6,7 @@ from .domain_builder import DomainBuilderSnippet
 class PreambleSnippet:
     @property
     def snippet(self):
-        return """# Parflow Simulation Modeler - Project Generation Snippets
+        return """# Parflow Simulation Modeler - Project Generation Code
 import sys
 
 from parflow import Run
@@ -31,7 +31,9 @@ def initialize(server):
     domain_snippet = DomainSnippet(state, ctrl)
     domain_builder = DomainBuilderSnippet()
 
-    def generate_snippets():
+    state.generated_code = ""
+
+    def generate_code():
         # Timing page
         timing_snippet.set_timing_info(state.timingId)
 
@@ -48,7 +50,7 @@ def initialize(server):
 
         print(domain_builder_params)
 
-        return "\n\n".join(
+        code = "\n\n".join(
             [
                 PreambleSnippet().snippet,
                 domain_builder.snippet(domain_builder_params),
@@ -56,10 +58,11 @@ def initialize(server):
                 domain_snippet.snippet,
             ]
         )
+        state.generated_code = code
+        return code
 
-    ctrl.generate_snippets = generate_snippets
+    ctrl.generate_code = generate_code
 
     @state.change("currentView")
     def on_currentView_change(currentView, **kwargs):
-        code = generate_snippets()
-        print(f'Code:\n{code}')
+        generate_code()

@@ -41,6 +41,6 @@ class DomainBuilderSnippet:
                 "    .homogeneous_subsurface('domain', specific_storage=1.0e-5, isotropic=True) \\",
                 f"    .zero_flux(zero_flux_patches, '{'constant'}', '{'alltime'}') \\",
                 f"    .slopes_mannings('domain', slope_x='{slope_x}', slope_y='{slope_y}', mannings=5.52e-6) \\",
-                "    .ic_pressure('domain', patch='z_upper', pressure='press.init.pfb')"
+                "    .ic_pressure('domain', patch='z_upper', pressure='press.init.pfb')",
             ]
         )

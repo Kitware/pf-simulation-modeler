@@ -67,3 +67,10 @@ def initialize(server):
                     simput.SimputItem(
                         v_for=("(soilId, index) in soilIds",), item_id=("soilId", None)
                     )
+
+                with html.Div(v_if="currentView === 'Code Generation'"):
+                    html.H1("Generator")
+
+                    vuetify.VTextarea(
+                        v_model=("generated_code",), rows=28, row_height=20
+                    )
