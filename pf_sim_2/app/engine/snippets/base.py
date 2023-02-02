@@ -2,6 +2,7 @@ from .timing import TimingSnippet
 from .domain import DomainSnippet
 from .domain_builder import DomainBuilderSnippet
 from .boundary_conditions import BoundaryConditionsSnippet
+from .subsurface_properties import SubsurfacePropertiesSnippet
 
 
 class PreambleSnippet:
@@ -31,6 +32,7 @@ def initialize(server):
     domain_snippet = DomainSnippet(state, ctrl)
     domain_builder = DomainBuilderSnippet()
     boundary_snippet = BoundaryConditionsSnippet(state, ctrl)
+    subsurface_snippet = SubsurfacePropertiesSnippet(state, ctrl)
 
     state.generated_code = ""
 
@@ -48,14 +50,15 @@ def initialize(server):
         # Boundary Conditions page
         boundary_snippet.set_boundary_conditions()
 
+        # Subsurface Properties
+        subsurface_snippet.set_soils()
+
         # DomainBuilder params
         domain_builder_params = {
             **boundary_snippet.domain_builder_params,
             **domain_snippet.domain_builder_params,
             **state.simTypeShortcuts,
         }
-
-        # print(domain_builder_params)
 
         code = "\n\n".join(
             [
@@ -64,6 +67,7 @@ def initialize(server):
                 timing_snippet.snippet,
                 domain_snippet.snippet,
                 boundary_snippet.snippet,
+                subsurface_snippet.snippet,
             ]
         )
         state.generated_code = code
