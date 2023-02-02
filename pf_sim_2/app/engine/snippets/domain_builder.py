@@ -1,23 +1,35 @@
 class DomainBuilderSnippet:
-    def snippet(self, domain_builder_params):
-        if not domain_builder_params:
+    def snippet(self, params):
+        if not params:
             return ""
 
-        origin = domain_builder_params.get("origin")
-        spacing = domain_builder_params.get("spacing")
-        size = domain_builder_params.get("size")
+        # Domain
+        origin = params.get("origin")
+        spacing = params.get("spacing")
+        size = params.get("size")
 
-        slope_x = domain_builder_params.get("slope_x")
-        slope_y = domain_builder_params.get("slope_y")
+        slope_x = params.get("slope_x")
+        slope_y = params.get("slope_y")
 
-        wells = domain_builder_params.get("wells")
-        contaminants = domain_builder_params.get("contaminants")
-        variably_saturated = (
-            domain_builder_params.get("saturated") == "Variably Saturated"
-        )
+        # Simulation Type
+        wells = params.get("wells")
+        contaminants = params.get("contaminants")
+        variably_saturated = params.get("saturated") == "Variably Saturated"
 
-        if not all([origin, spacing, size, slope_x, slope_y]):
+        # Boundary Conditions
+        patches = params.get("patches")
+        zero_flux = params.get("zero_flux")
+
+        if not all([origin, spacing, size, slope_x, slope_y, patches, zero_flux]):
             return ""
+
+        zero_flux_patches = ""
+        zero_flux_code = []
+        for (cycle, subcycle), group in zero_flux.items():
+            zero_flux_patches += f"{group['name']} = '{group['patches']}'\n"
+            zero_flux_code.append(
+                f"    .zero_flux({group['name']}, '{cycle}', '{subcycle}') \\"
+            )
 
         return "\n".join(
             [
@@ -27,8 +39,8 @@ class DomainBuilderSnippet:
                 f"    {origin[2]}, {origin[2] + (spacing[2] * size[2])}",
                 "]",
                 "",
-                "domain_patches = 'x_lower x_upper y_lower y_upper z_lower z_upper'",
-                "zero_flux_patches = 'x_lower x_upper y_lower y_upper z_lower'",
+                f"domain_patches = '{' '.join(patches)}'",
+                zero_flux_patches,
                 "",
                 "DomainBuilder(LW_Test) \\",
                 "    .no_wells() \\" if not wells else "    \\",
@@ -39,7 +51,7 @@ class DomainBuilderSnippet:
                 "    .water('domain') \\",
                 "    .box_domain('box_input', 'domain', bounds, domain_patches) \\",
                 "    .homogeneous_subsurface('domain', specific_storage=1.0e-5, isotropic=True) \\",
-                f"    .zero_flux(zero_flux_patches, '{'constant'}', '{'alltime'}') \\",
+                "\n".join(zero_flux_code),
                 f"    .slopes_mannings('domain', slope_x='{slope_x}', slope_y='{slope_y}', mannings=5.52e-6) \\",
                 "    .ic_pressure('domain', patch='z_upper', pressure='press.init.pfb')",
             ]

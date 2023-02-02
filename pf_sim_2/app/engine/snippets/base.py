@@ -1,6 +1,7 @@
 from .timing import TimingSnippet
 from .domain import DomainSnippet
 from .domain_builder import DomainBuilderSnippet
+from .boundary_conditions import BoundaryConditionsSnippet
 
 
 class PreambleSnippet:
@@ -8,7 +9,6 @@ class PreambleSnippet:
     def snippet(self):
         return """# Parflow Simulation Modeler - Project Generation Code
 import sys
-
 from parflow import Run
 from parflow.tools.fs import get_absolute_path
 from parflow.tools.builders import SubsurfacePropertiesBuilder, DomainBuilder
@@ -30,25 +30,31 @@ def initialize(server):
     timing_snippet = TimingSnippet(state, ctrl)
     domain_snippet = DomainSnippet(state, ctrl)
     domain_builder = DomainBuilderSnippet()
+    boundary_snippet = BoundaryConditionsSnippet(state, ctrl)
 
     state.generated_code = ""
 
     def generate_code():
-        # Timing page
-        timing_snippet.set_timing_info(state.timingId)
-
         # Domain page
         domain_snippet.set_indicator_file(state.indicatorFileName)
         domain_snippet.set_grid(state.gridId)
         domain_snippet.set_soils(state.soilIds)
         domain_snippet.set_terrain_files(state.slopeXFile, state.slopeYFile)
 
+        # Timing page
+        timing_snippet.set_timing_info(state.timingId)
+
+        # Boundary Conditions page
+        boundary_snippet.set_boundary_conditions()
+
+        # DomainBuilder params
         domain_builder_params = {
+            **boundary_snippet.domain_builder_params,
             **domain_snippet.domain_builder_params,
             **state.simTypeShortcuts,
         }
 
-        print(domain_builder_params)
+        # print(domain_builder_params)
 
         code = "\n\n".join(
             [
@@ -56,6 +62,7 @@ def initialize(server):
                 domain_builder.snippet(domain_builder_params),
                 timing_snippet.snippet,
                 domain_snippet.snippet,
+                boundary_snippet.snippet,
             ]
         )
         state.generated_code = code

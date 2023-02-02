@@ -9,6 +9,7 @@ from . import files
 from . import domain
 from . import timing
 from . import snippets
+from . import boundary_conditions
 from .cli import ArgumentsValidator
 
 logger = logging.getLogger(__name__)
@@ -44,6 +45,8 @@ class MyBusinessLogic:
                     "Project Generation",
                     "Code Generation",
                 ],
+                "cycle_defs": {},
+                "subcycle_defs": {},
             }
         )
 
@@ -94,6 +97,11 @@ class MyBusinessLogic:
                     {"type": "LabelList", "values": sub_cycles}
                 ]
 
+                state.cycle_defs = {cycle["value"]: cycle["text"] for cycle in cycles}
+                state.subcycle_defs = {
+                    cycle["value"]: cycle["text"] for cycle in sub_cycles
+                }
+
                 model_content = yaml.dump(model)
                 self.simput_manager.load_model(yaml_content=model_content)
                 self.simput_manager.load_language(yaml_content=model_content)
@@ -115,6 +123,7 @@ def initialize(server):
     files.initialize(server, validator.args)
     domain.initialize(server)
     timing.initialize(server)
+    boundary_conditions.initialize(server)
 
     snippets.initialize(server)
 

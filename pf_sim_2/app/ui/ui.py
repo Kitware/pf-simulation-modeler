@@ -3,15 +3,12 @@ from trame.widgets import vuetify, simput, html
 from pf_sim_2.widgets import pf_sim_2 as pf_widgets
 from .domain import domain
 from .timing import timing
-from .boundary_conditions import BoundaryConditions
+from .boundary_conditions import boundary_conditions
 
 
 def initialize(server):
     state, ctrl = server.state, server.controller
-    state.trame__title = "pf_sim_2"
-
-    # Initialize UI components
-    boundary_conditions = BoundaryConditions(server)
+    state.trame__title = "Parflow Simulation Modeler"
 
     simput_widget = simput.Simput(ctrl.get_simput_manager(), trame_server=server)
     ctrl.simput_apply = simput_widget.apply
@@ -20,7 +17,10 @@ def initialize(server):
 
     with SinglePageLayout(server) as layout:
         # Toolbar
-        layout.title.set_text("PF Migration Test")
+        layout.title.set_text("Parflow Simulation Modeler")
+        layout.icon.add_child(
+            vuetify.VIcon("mdi-water-opacity", color="blue", large=True)
+        )
         layout.root = simput_widget
 
         with layout.toolbar:
@@ -59,7 +59,7 @@ def initialize(server):
                     timing(ctrl)
 
                 with html.Div(v_if="currentView === 'Boundary Conditions'"):
-                    boundary_conditions.page()
+                    boundary_conditions()
 
                 with html.Div(v_if="currentView === 'Subsurface Properties'"):
                     html.H1("Regions")
