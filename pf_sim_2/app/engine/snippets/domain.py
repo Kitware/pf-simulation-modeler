@@ -9,16 +9,14 @@ class DomainSnippet:
 
         self.domain_builder_params = {}
 
-    def set_indicator_file(self, indicator_file_name):
-        if not indicator_file_name:
-            return
+    def set_indicator_file(self):
         self.indicator_code = (
             "LW_Test.GeomInput.indi_input.InputType = 'IndicatorField'\n"
-            + f"LW_Test.Geom.indi_input.FileName = '{indicator_file_name}'"
+            + f"LW_Test.Geom.indi_input.FileName = '{self.state.indicatorFileName}'"
         )
 
-    def set_grid(self, grid_id):
-        proxy = self.pxm.get(grid_id)
+    def set_grid(self):
+        proxy = self.pxm.get(self.state.gridId)
         if not proxy:
             return
 
@@ -48,16 +46,13 @@ class DomainSnippet:
         self.domain_builder_params["spacing"] = spacing
         self.domain_builder_params["size"] = size
 
-    def set_terrain_files(self, slope_x, slope_y):
-        if not slope_x or not slope_y:
-            return
+    def set_terrain_files(self):
+        self.domain_builder_params["slope_x"] = self.state.slopeXFile
+        self.domain_builder_params["slope_y"] = self.state.slopeYFile
 
-        self.domain_builder_params["slope_x"] = slope_x
-        self.domain_builder_params["slope_y"] = slope_y
-
-    def set_soils(self, soil_ids):
+    def set_soils(self):
         soils = []
-        for soildId in soil_ids:
+        for soildId in self.state.soilIds:
             proxy = self.pxm.get(soildId)
             if not proxy:
                 continue

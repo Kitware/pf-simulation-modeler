@@ -36,13 +36,14 @@ def initialize(server):
 
     def generate_code():
         # Domain page
-        domain_snippet.set_indicator_file(state.indicatorFileName)
-        domain_snippet.set_grid(state.gridId)
-        domain_snippet.set_soils(state.soilIds)
-        domain_snippet.set_terrain_files(state.slopeXFile, state.slopeYFile)
+        domain_snippet.set_indicator_file()
+        domain_snippet.set_grid()
+        domain_snippet.set_soils()
+        domain_snippet.set_terrain_files()
 
         # Timing page
-        timing_snippet.set_timing_info(state.timingId)
+        timing_snippet.set_timing_info()
+        timing_snippet.set_cycles()
 
         # Boundary Conditions page
         boundary_snippet.set_boundary_conditions()
