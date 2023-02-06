@@ -129,7 +129,10 @@ class BoundaryConditionsSnippet:
 
             patches.append(code)
 
-        self.bc_explicit_code = "\n".join(patches)
+        code = "# Boundary Conditions\n"
+        code += "LW_Test.BCPressure.PatchNames = LW_Test.Geom.domain.Patches\n"
+        code += "\n".join(patches)
+        self.bc_explicit_code = code
 
     @property
     def snippet(self):

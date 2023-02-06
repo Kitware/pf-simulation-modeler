@@ -10,10 +10,10 @@ class DomainSnippet:
         self.domain_builder_params = {}
 
     def set_indicator_file(self):
-        self.indicator_code = (
-            "LW_Test.GeomInput.indi_input.InputType = 'IndicatorField'\n"
-            + f"LW_Test.Geom.indi_input.FileName = '{self.state.indicatorFileName}'"
-        )
+        code = "LW_Test.GeomInput.Names = 'box_input indi_input'\n\n"
+        code += "LW_Test.GeomInput.indi_input.InputType = 'IndicatorField'\n"
+        code += f"LW_Test.Geom.indi_input.FileName = '{self.state.indicatorFileName}'\n"
+        self.indicator_code = code
 
     def set_grid(self):
         proxy = self.pxm.get(self.state.gridId)
@@ -60,7 +60,7 @@ class DomainSnippet:
             soils.append((proxy.get_property("key"), proxy.get_property("Value")))
 
         soil_list = " ".join([key for (key, _) in soils])
-        self.soil_code = f"LW_Test.Geom.terrain_input.Soil_Values = '{soil_list}'"
+        self.soil_code = f"LW_Test.GeomInput.indi_input.GeomNames = '{soil_list}'"
 
         for (key, value) in soils:
             self.soil_code += f"\nLW_Test.GeomInput.{key}.Value = {value}"

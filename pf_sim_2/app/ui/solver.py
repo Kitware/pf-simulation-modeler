@@ -8,16 +8,16 @@ def solver():
         html.H2("Outputs")
         with vuetify.VChipGroup(v_model=("solver_outputs",), multiple=True):
             with vuetify.VChip(outlined=True, filter=True):
-                html.H4('Subsurface Data')
+                html.H4("Subsurface Data")
 
             with vuetify.VChip(outlined=True, filter=True):
-                html.H4('Pressure')
+                html.H4("Pressure")
 
             with vuetify.VChip(outlined=True, filter=True):
-                html.H4('Saturation')
+                html.H4("Saturation")
 
             with vuetify.VChip(outlined=True, filter=True):
-                html.H4('Mask')
+                html.H4("Mask")
 
     with vuetify.VContainer(fluid=True):
         html.H2("Parameters")
@@ -28,4 +28,3 @@ def solver():
             simput.SimputItem(item_id=("solverNonlinearId", None))
             html.H3("Linear Parameters")
             simput.SimputItem(item_id=("solverLinearId", None))
-

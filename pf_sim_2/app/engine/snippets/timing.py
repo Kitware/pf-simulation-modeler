@@ -14,15 +14,18 @@ class TimingSnippet:
         if not proxy:
             return
 
-        self.timing_info_code = "\n".join(
-            [
-                f"LW_Test.TimingInfo.BaseUnit = {proxy.get_property('BaseUnit')}",
-                f"LW_Test.TimingInfo.StartCount = {proxy.get_property('StartCount')}",
-                f"LW_Test.TimingInfo.StartTime = {proxy.get_property('StartTime')}",
-                f"LW_Test.TimingInfo.StopTime = {proxy.get_property('StopTime')}",
-                f"LW_Test.TimingInfo.DumpInterval = {proxy.get_property('DumpInterval')}",
-            ]
+        code = "# Timing Info\n"
+        code += f"LW_Test.TimingInfo.BaseUnit = {proxy.get_property('BaseUnit')}\n"
+        code += f"LW_Test.TimingInfo.StartCount = {proxy.get_property('StartCount')}\n"
+        code += f"LW_Test.TimingInfo.StartTime = {proxy.get_property('StartTime')}\n"
+        code += f"LW_Test.TimingInfo.StopTime = {proxy.get_property('StopTime')}\n"
+        code += (
+            f"LW_Test.TimingInfo.DumpInterval = {proxy.get_property('DumpInterval')}\n"
         )
+        code += "LW_Test.TimeStep.Type = 'Constant'\n"
+        code += "LW_Test.TimeStep.Value = 1.0\n"
+
+        self.timing_info_code = code
 
     def set_cycles(self):
         cycles = []

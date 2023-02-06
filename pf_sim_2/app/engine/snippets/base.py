@@ -10,9 +10,7 @@ class PreambleSnippet:
     @property
     def snippet(self):
         return """# Parflow Simulation Modeler - Project Generation Code
-import sys
 from parflow import Run
-from parflow.tools.fs import get_absolute_path
 from parflow.tools.builders import SubsurfacePropertiesBuilder, DomainBuilder
 
 
@@ -72,12 +70,13 @@ def initialize(server):
         code = "\n\n".join(
             [
                 PreambleSnippet().snippet,
-                domain_builder.snippet(domain_builder_params),
-                timing_snippet.snippet,
                 domain_snippet.snippet,
+                timing_snippet.snippet,
+                domain_builder.snippet(domain_builder_params),
                 boundary_snippet.snippet,
                 subsurface_snippet.snippet,
                 solver_snippet.snippet,
+                "LW_Test.run()\n",
             ]
         )
         state.generated_code = code

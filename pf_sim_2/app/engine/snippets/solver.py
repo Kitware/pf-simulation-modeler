@@ -20,11 +20,12 @@ class SolverSnippet:
 
     def set_output(self):
         outputs = self.state.solver_outputs
-        self.output_code = "# Outputs\n"
-        self.output_code += f"LW_Test.Solver.PrintSubsurfData = {0 in outputs}\n"
-        self.output_code += f"LW_Test.Solver.PrintPressure = {1 in outputs}\n"
-        self.output_code += f"LW_Test.Solver.PrintSaturation = {2 in outputs}\n"
-        self.output_code += f"LW_Test.Solver.PrintMask = {3 in outputs}\n"
+        code = "# Outputs\n"
+        code += f"LW_Test.Solver.PrintSubsurfData = {0 in outputs}\n"
+        code += f"LW_Test.Solver.PrintPressure = {1 in outputs}\n"
+        code += f"LW_Test.Solver.PrintSaturation = {2 in outputs}\n"
+        code += f"LW_Test.Solver.PrintMask = {3 in outputs}\n"
+        self.output_code = code
 
     def set_general(self):
         proxy: Proxy = self.pxm.get(self.state.solverId)
@@ -38,12 +39,13 @@ class SolverSnippet:
         max_convergence_failures = get_prop(proxy, "MaxConvergenceFailures", 8)
         terrain_following_grid = get_prop(proxy, "TerrainFollowingGrid", True)
 
-        self.general_code = "# General Solver parameters\n"
-        self.general_code += f"LW_Test.Solver.MaxIter = {max_iter}\n"
-        self.general_code += f"LW_Test.Solver.Drop = {drop}\n"
-        self.general_code += f"LW_Test.Solver.AbsTol = {abs_tol}\n"
-        self.general_code += f"LW_Test.Solver.MaxConvergenceFailures = {max_convergence_failures}\n"
-        self.general_code += f"LW_Test.Solver.TerrainFollowingGrid = {terrain_following_grid}\n"
+        code = "# General Solver parameters\n"
+        code += f"LW_Test.Solver.MaxIter = {max_iter}\n"
+        code += f"LW_Test.Solver.Drop = {drop}\n"
+        code += f"LW_Test.Solver.AbsTol = {abs_tol}\n"
+        code += f"LW_Test.Solver.MaxConvergenceFailures = {max_convergence_failures}\n"
+        code += f"LW_Test.Solver.TerrainFollowingGrid = {terrain_following_grid}\n"
+        self.general_code = code
 
     def set_nonlinear(self):
         proxy: Proxy = self.pxm.get(self.state.solverNonlinearId)
@@ -58,14 +60,15 @@ class SolverSnippet:
         globalization = get_prop(proxy, "Globalization", "LineSearch")
         variable_dz = get_prop(proxy, "VariableDz", False)
 
-        self.nonlinear_code = "# Nonlinear Solver parameters\n"
-        self.nonlinear_code += f"LW_Test.Solver.Nonlinear.MaxIter = {max_iter}\n"
-        self.nonlinear_code += f"LW_Test.Solver.Nonlinear.ResidualTol = {residual_tol}\n"
-        self.nonlinear_code += f"LW_Test.Solver.Nonlinear.EtaValue = {eta_value}\n"
-        self.nonlinear_code += f"LW_Test.Solver.Nonlinear.DerivativeEpsilon = {derivative_epsilon}\n"
-        self.nonlinear_code += f"LW_Test.Solver.Nonlinear.StepTol = {step_tol}\n"
-        self.nonlinear_code += f"LW_Test.Solver.Nonlinear.Globalization = {globalization}\n"
-        self.nonlinear_code += f"LW_Test.Solver.Nonlinear.VariableDz = {variable_dz}\n"
+        code = "# Nonlinear Solver parameters\n"
+        code += f"LW_Test.Solver.Nonlinear.MaxIter = {max_iter}\n"
+        code += f"LW_Test.Solver.Nonlinear.ResidualTol = {residual_tol}\n"
+        code += f"LW_Test.Solver.Nonlinear.EtaValue = {eta_value}\n"
+        code += f"LW_Test.Solver.Nonlinear.DerivativeEpsilon = {derivative_epsilon}\n"
+        code += f"LW_Test.Solver.Nonlinear.StepTol = {step_tol}\n"
+        code += f"LW_Test.Solver.Nonlinear.Globalization = '{globalization}'\n"
+        code += f"LW_Test.Solver.Nonlinear.VariableDz = {variable_dz}\n"
+        self.nonlinear_code = code
 
     def set_linear(self):
         proxy: Proxy = self.pxm.get(self.state.solverLinearId)
@@ -75,15 +78,13 @@ class SolverSnippet:
         krylov_dimension = get_prop(proxy, "KrylovDimension", 70)
         max_restarts = get_prop(proxy, "MaxRestarts", 2)
 
-        self.linear_code = "# Linear Solver parameters\n"
-        self.linear_code += f"LW_Test.Solver.Linear.KrylovDimension = {krylov_dimension}\n"
-        self.linear_code += f"LW_Test.Solver.Linear.MaxRestarts = {max_restarts}\n"
+        code = "# Linear Solver parameters\n"
+        code += f"LW_Test.Solver.Linear.KrylovDimension = {krylov_dimension}\n"
+        code += f"LW_Test.Solver.Linear.MaxRestarts = {max_restarts}\n"
+        self.linear_code = code
 
     @property
     def snippet(self):
-        return (
-            self.output_code + "\n" +
-            self.general_code + "\n" +
-            self.nonlinear_code + "\n" +
-            self.linear_code
+        return "\n".join(
+            [self.output_code, self.general_code, self.nonlinear_code, self.linear_code]
         )

@@ -72,7 +72,8 @@ def initialize(server):
                     with html.Div(v_if="soilIds.length > 0"):
                         simput.SimputItem(item_id=("domainId", None))
                         simput.SimputItem(
-                            v_for=("(soilId, index) in soilIds",), item_id=("soilId", None)
+                            v_for=("(soilId, index) in soilIds",),
+                            item_id=("soilId", None),
                         )
 
                 with html.Div(v_if="currentView === 'Solver'"):
