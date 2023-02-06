@@ -10,6 +10,7 @@ from . import domain
 from . import timing
 from . import snippets
 from . import boundary_conditions
+from . import solver
 from .cli import ArgumentsValidator
 
 logger = logging.getLogger(__name__)
@@ -42,7 +43,7 @@ class MyBusinessLogic:
                     "Boundary Conditions",
                     "Subsurface Properties",
                     "Solver",
-                    "Project Generation",
+                    # "Project Generation",
                     "Code Generation",
                 ],
                 "cycle_defs": {},
@@ -66,6 +67,8 @@ class MyBusinessLogic:
         self.simput_manager.load_ui(xml_file=DEF_DIR / "boundary_ui.xml")
         self.simput_manager.load_model(yaml_file=DEF_DIR / "soil.yaml")
         self.simput_manager.load_ui(xml_file=DEF_DIR / "soil_ui.xml")
+        self.simput_manager.load_model(yaml_file=DEF_DIR / "solver.yaml")
+        self.simput_manager.load_ui(xml_file=DEF_DIR / "solver_ui.xml")
 
         # on view change
         @state.change("currentView")
@@ -124,6 +127,7 @@ def initialize(server):
     domain.initialize(server)
     timing.initialize(server)
     boundary_conditions.initialize(server)
+    solver.initialize(server)
 
     snippets.initialize(server)
 

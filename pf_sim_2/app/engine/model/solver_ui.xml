@@ -1,0 +1,56 @@
+<layouts>
+    <ui id="Solver">
+        <row>
+            <col>
+                <input name="MaxIter" />
+            </col>
+            <col>
+                <input name="Drop" />
+            </col>
+            <col>
+                <input name="AbsTol" />
+            </col>
+            <col>
+                <input name="MaxConvergenceFailures" />
+            </col>
+            <col>
+                <input name="TerrainFollowingGrid" />
+            </col>
+        </row>
+    </ui>
+    <ui id="SolverNonlinear">
+        <row>
+            <col>
+                <input name="MaxIter" />
+            </col>
+            <col>
+                <input name="ResidualTol" />
+            </col>
+            <col>
+                <input name="EtaValue" />
+            </col>
+            <col>
+                <input name="DerivativeEpsilon" />
+            </col>
+            <col>
+                <input name="StepTol" />
+            </col>
+            <col>
+                <input name="Globalization" />
+            </col>
+            <col>
+                <input name="VariableDz" />
+            </col>
+        </row>
+    </ui>
+    <ui id="SolverLinear">
+        <row>
+            <col>
+                <input name="KrylovDimension" />
+            </col>
+            <col>
+                <input name="MaxRestarts" />
+            </col>
+        </row>
+    </ui>
+</layouts>

@@ -3,6 +3,7 @@ from trame.widgets import vuetify, simput, html
 from pf_sim_2.widgets import pf_sim_2 as pf_widgets
 from .domain import domain
 from .timing import timing
+from .solver import solver
 from .boundary_conditions import boundary_conditions
 
 
@@ -67,6 +68,9 @@ def initialize(server):
                     simput.SimputItem(
                         v_for=("(soilId, index) in soilIds",), item_id=("soilId", None)
                     )
+
+                with html.Div(v_if="currentView === 'Solver'"):
+                    solver()
 
                 with html.Div(v_if="currentView === 'Code Generation'"):
                     html.H1("Generator")

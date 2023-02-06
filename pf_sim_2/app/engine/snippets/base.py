@@ -3,6 +3,7 @@ from .domain import DomainSnippet
 from .domain_builder import DomainBuilderSnippet
 from .boundary_conditions import BoundaryConditionsSnippet
 from .subsurface_properties import SubsurfacePropertiesSnippet
+from .solver import SolverSnippet
 
 
 class PreambleSnippet:
@@ -33,10 +34,12 @@ def initialize(server):
     domain_builder = DomainBuilderSnippet()
     boundary_snippet = BoundaryConditionsSnippet(state, ctrl)
     subsurface_snippet = SubsurfacePropertiesSnippet(state, ctrl)
+    solver_snippet = SolverSnippet(state, ctrl)
 
     state.generated_code = ""
 
-    def generate_code():
+    @state.change("currentView")
+    def generate_code(**kwargs):
         # Domain page
         domain_snippet.set_indicator_file()
         domain_snippet.set_grid()
@@ -50,8 +53,14 @@ def initialize(server):
         # Boundary Conditions page
         boundary_snippet.set_boundary_conditions()
 
-        # Subsurface Properties
+        # Subsurface Properties page
         subsurface_snippet.set_soils()
+
+        # Solver page
+        solver_snippet.set_output()
+        solver_snippet.set_general()
+        solver_snippet.set_nonlinear()
+        solver_snippet.set_linear()
 
         # DomainBuilder params
         domain_builder_params = {
@@ -68,13 +77,10 @@ def initialize(server):
                 domain_snippet.snippet,
                 boundary_snippet.snippet,
                 subsurface_snippet.snippet,
+                solver_snippet.snippet,
             ]
         )
         state.generated_code = code
         return code
 
     ctrl.generate_code = generate_code
-
-    @state.change("currentView")
-    def on_currentView_change(currentView, **kwargs):
-        generate_code()

@@ -1,0 +1,111 @@
+Solver:
+  MaxIter:
+    _label: MaxIter
+    type: int32
+    size: 1
+  Drop:
+    _label: Drop
+    type: float64
+    size: 1
+  AbsTol:
+    _label: AbsTol
+    type: float64
+    size: 1
+  MaxConvergenceFailures:
+    _label: MaxConvergenceFailures
+    type: int32
+    size: 1
+  TerrainFollowingGrid:
+    _label: TerrainFollowingGrid
+    type: bool
+    size: 1
+
+SolverNonlinear:
+  MaxIter:
+    _label: MaxIter
+    type: int32
+    size: 1
+  ResidualTol:
+    _label: ResidualTol
+    type: float64
+    size: 1
+  # EtaChoice:
+  #   _label: EtaChoice
+  #   type: string
+  #   size: 1
+  #   domains:
+  #     - type: LabelList
+  #       values:
+  #         - text: EtaConstant
+  #           value: EtaConstant
+  #         - text: Walker1
+  #           value: Walker1
+  #         - text: Walker2
+  #           value: Walker2
+  EtaValue:
+    _label: EtaValue
+    type: float64
+    size: 1
+  # EtaAlpha:
+  #   _label: EtaAlpha
+  #   type: float64
+  #   size: 1
+  # EtaGamma:
+  #   _label: EtaGamma
+  #   type: float64
+  #   size: 1
+  # UseJacobian:
+  #   _label: UseJacobian
+  #   type: bool
+  #   size: 1
+  DerivativeEpsilon:
+    _label: DerivativeEpsilon
+    type: float64
+    size: 1
+  StepTol:
+    _label: StepTol
+    type: float64
+    size: 1
+  Globalization:
+    _label: Globalization
+    type: string
+    size: 1
+    domains:
+      - type: LabelList
+        values:
+          - text: LineSearch
+            value: LineSearch
+          - text: InexactNewton
+            value: InexactNewton
+  VariableDz:
+    _label: VariableDz
+    type: bool
+    size: 1
+
+SolverLinear:
+  # Preconditioner:
+  #   _label: Preconditioner
+  #   type: string
+  #   size: 1
+  #   domains:
+  #     - type: LabelList
+  #       values:
+  #         - text: NoPC
+  #           value: NoPC
+  #         - text: MGSemi
+  #           value: MGSemi
+  #         - text: PFMG
+  #           value: PFMG
+  #         - text: PFMGOctree
+  #           value: PFMGOctree
+  #         - text: SMG
+  #           value: SMG
+  # TODO: Add support for the preconditioners: https://parflow.readthedocs.io/en/latest/keys.html#richards-equation-solver-parameters
+  KrylovDimension:
+    _label: KrylovDimension
+    type: int32
+    size: 1
+  MaxRestarts:
+    _label: MaxRestarts
+    type: int32
+    size: 1
