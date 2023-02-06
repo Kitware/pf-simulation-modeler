@@ -19,6 +19,7 @@ class DomainLogic:
                 "slopeYFile": None,
                 "elevationFile": None,
                 "soilIds": [],
+                "domainId": self.pxm.create("Domain").id,
                 "gridId": self.pxm.create("ComputationalGrid").id,
             }
         )
@@ -73,7 +74,7 @@ class DomainLogic:
 
         soil_ids = []
         for val in unique_values:
-            soil = self.pxm.create("Soil", **{"Key": f"s{val}", "Value": val})
+            soil = self.pxm.create("Soil", **{"key": f"s{val}", "Value": val})
             soil_ids.append(soil.id)
 
         self.state.soilIds = soil_ids

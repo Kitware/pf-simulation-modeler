@@ -9,11 +9,11 @@ class SubsurfacePropertiesSnippet:
         self.code = ""
 
     def set_soils(self):
-        props = self.pxm.get_definition("Soil").keys()
+        props = [k for k in self.pxm.get_definition("Soil").keys() if k != "Value"]
         table_len = [len(prop) for prop in props]
 
         soils = []
-        for soil_id in self.state.soilIds:
+        for soil_id in [self.state.domainId, *self.state.soilIds]:
             proxy: Proxy = self.pxm.get(soil_id)
             if not proxy:
                 continue
@@ -21,6 +21,12 @@ class SubsurfacePropertiesSnippet:
             values = {}
             for i, prop in enumerate(props):
                 value = proxy.get_property(prop)
+
+                if value is None:
+                    value = "-"
+                if soil_id == self.state.domainId and prop == "key":
+                    value = "domain"
+
                 values[prop] = value
 
                 table_len[i] = max(table_len[i], len(str(value)))
@@ -54,5 +60,4 @@ class SubsurfacePropertiesSnippet:
 
     @property
     def snippet(self):
-
         return self.code

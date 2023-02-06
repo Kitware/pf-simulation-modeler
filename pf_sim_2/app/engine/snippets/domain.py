@@ -57,7 +57,7 @@ class DomainSnippet:
             if not proxy:
                 continue
 
-            soils.append((proxy.get_property("Key"), proxy.get_property("Value")))
+            soils.append((proxy.get_property("key"), proxy.get_property("Value")))
 
         soil_list = " ".join([key for (key, _) in soils])
         self.soil_code = f"LW_Test.Geom.terrain_input.Soil_Values = '{soil_list}'"

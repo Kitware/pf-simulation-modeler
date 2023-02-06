@@ -65,9 +65,15 @@ def initialize(server):
                 with html.Div(v_if="currentView === 'Subsurface Properties'"):
                     html.H1("Regions")
 
-                    simput.SimputItem(
-                        v_for=("(soilId, index) in soilIds",), item_id=("soilId", None)
-                    )
+                    with html.Div(v_if="soilIds.length === 0"):
+                        html.H2("No regions defined")
+                        html.P("Choose an indicator file to define regions.")
+
+                    with html.Div(v_if="soilIds.length > 0"):
+                        simput.SimputItem(item_id=("domainId", None))
+                        simput.SimputItem(
+                            v_for=("(soilId, index) in soilIds",), item_id=("soilId", None)
+                        )
 
                 with html.Div(v_if="currentView === 'Solver'"):
                     solver()

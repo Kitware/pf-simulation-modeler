@@ -4,7 +4,6 @@
       cols="12"
       sm="4"
       class="fill-height d-flex flex-column"
-      style="border-right: 1px solid grey;"
     >
       <v-toolbar dense flat class="flex-grow-0">
         <v-text-field
@@ -64,7 +63,9 @@
         </v-list-item-group>
       </v-list>
     </v-col>
-    <v-col cols="12" sm="8">
+    <v-col cols="12" sm="8"
+      style="border-left: 1px solid grey;"
+    >
       <div
         v-if="!value"
         class="font-weight-medium flex-column d-flex justify-center align-center
