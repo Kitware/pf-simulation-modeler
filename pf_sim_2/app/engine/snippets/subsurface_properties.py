@@ -34,30 +34,35 @@ class SubsurfacePropertiesSnippet:
 
         table_len = [t + 2 for t in table_len]
 
-        code = "LW_subsurface_properties = '''\n"
+        code = "subsurface_properties = '''\n"
         # Generate the headers for the columns
         line = ""
         for i, prop in enumerate(props):
             line += prop.ljust(table_len[i])
-        line += "\n"
-        code += line
+        code += line.strip() + "\n"
 
         # Populate the values for each soil
         for soil in soils:
             line = ""
             for i, prop in enumerate(props):
                 line += str(soil[prop]).ljust(table_len[i])
-            line += "\n"
-            code += line
+            code += line.strip() + "\n"
 
         code += "'''\n\n"
         code += "# Setting subsurface properties\n"
         code += "SubsurfacePropertiesBuilder(LW_Test) \\\n"
-        code += "    .load_txt_content(LW_subsurface_properties) \\\n"
+        code += "    .load_txt_content(subsurface_properties) \\\n"
         code += "    .apply()\n"
 
         self.code = code
 
     @property
+    def header(self):
+        header = "# ------------------------------\n"
+        header += "# Subsurface properties\n"
+        header += "# ------------------------------\n"
+        return header
+
+    @property
     def snippet(self):
-        return self.code
+        return self.header + self.code

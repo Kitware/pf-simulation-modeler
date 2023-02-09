@@ -14,8 +14,7 @@ class TimingSnippet:
         if not proxy:
             return
 
-        code = "# Timing Info\n"
-        code += f"LW_Test.TimingInfo.BaseUnit = {proxy.get_property('BaseUnit')}\n"
+        code = f"LW_Test.TimingInfo.BaseUnit = {proxy.get_property('BaseUnit')}\n"
         code += f"LW_Test.TimingInfo.StartCount = {proxy.get_property('StartCount')}\n"
         code += f"LW_Test.TimingInfo.StartTime = {proxy.get_property('StartTime')}\n"
         code += f"LW_Test.TimingInfo.StopTime = {proxy.get_property('StopTime')}\n"
@@ -66,5 +65,12 @@ class TimingSnippet:
         self.time_cycle_code = code
 
     @property
+    def header(self):
+        header = "# ------------------------------\n"
+        header += "# Timing\n"
+        header += "# ------------------------------"
+        return header
+
+    @property
     def snippet(self):
-        return "\n\n".join([self.timing_info_code, self.time_cycle_code])
+        return "\n".join([self.header, self.timing_info_code, self.time_cycle_code])

@@ -31,28 +31,31 @@ class DomainBuilderSnippet:
                 f"    .zero_flux({group['name']}, '{cycle}', '{subcycle}') \\"
             )
 
-        return "\n".join(
-            [
-                "bounds = [",
-                f"    {origin[0]}, {origin[0] + (spacing[0] * size[0])},",
-                f"    {origin[1]}, {origin[1] + (spacing[1] * size[1])},",
-                f"    {origin[2]}, {origin[2] + (spacing[2] * size[2])}",
-                "]",
-                "",
-                f"domain_patches = '{' '.join(patches)}'",
-                zero_flux_patches,
-                "",
-                "DomainBuilder(LW_Test) \\",
-                "    .no_wells() \\" if not wells else "    \\",
-                "    .no_contaminants() \\" if not contaminants else "    \\",
-                "    .variably_saturated() \\"
-                if variably_saturated
-                else "    .fully_saturated() \\",
-                "    .water('domain') \\",
-                "    .box_domain('box_input', 'domain', bounds, domain_patches) \\",
-                "    .homogeneous_subsurface('domain', specific_storage=1.0e-5, isotropic=True) \\",
-                "\n".join(zero_flux_code),
-                f"    .slopes_mannings('domain', slope_x='{slope_x}', slope_y='{slope_y}', mannings=5.52e-6) \\",
-                "    .ic_pressure('domain', patch='z_upper', pressure='press.init.pfb')",
-            ]
+        code = "# ------------------------------\n"
+        code += "# Domain Builder\n"
+        code += "# ------------------------------\n"
+        code += "bounds = [\n"
+        code += f"    {origin[0]}, {origin[0] + (spacing[0] * size[0])},\n"
+        code += f"    {origin[1]}, {origin[1] + (spacing[1] * size[1])},\n"
+        code += f"    {origin[2]}, {origin[2] + (spacing[2] * size[2])}\n"
+        code += "]\n\n"
+        code += f"domain_patches = '{' '.join(patches)}'\n"
+        code += zero_flux_patches + "\n"
+        code += "DomainBuilder(LW_Test) \\\n"
+        if not wells:
+            code += "    .no_wells() \\\n"
+        if not contaminants:
+            code += "    .no_contaminants() \\\n"
+        if variably_saturated:
+            code += "    .variably_saturated() \\\n"
+        else:
+            code += "    .fully_saturated() \\\n"
+        code += "    .water('domain') \\\n"
+        code += "    .box_domain('box_input', 'domain', bounds, domain_patches) \\\n"
+        code += "    .homogeneous_subsurface('domain', specific_storage=1.0e-5, isotropic=True) \\\n"
+        code += "\n".join(zero_flux_code) + "\n"
+        code += f"    .slopes_mannings('domain', slope_x='{slope_x}', slope_y='{slope_y}', mannings=5.52e-6) \\\n"
+        code += (
+            "    .ic_pressure('domain', patch='z_upper', pressure='press.init.pfb')\n"
         )
+        return code

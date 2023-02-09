@@ -84,7 +84,20 @@ class SolverSnippet:
         self.linear_code = code
 
     @property
+    def header(self):
+        header = "# ------------------------------\n"
+        header += "# Solver\n"
+        header += "# ------------------------------"
+        return header
+
+    @property
     def snippet(self):
         return "\n".join(
-            [self.output_code, self.general_code, self.nonlinear_code, self.linear_code]
+            [
+                self.header,
+                self.output_code,
+                self.general_code,
+                self.nonlinear_code,
+                self.linear_code,
+            ]
         )

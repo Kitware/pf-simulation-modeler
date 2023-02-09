@@ -129,7 +129,9 @@ class BoundaryConditionsSnippet:
 
             patches.append(code)
 
-        code = "# Boundary Conditions\n"
+        code = "# ------------------------------\n"
+        code += "# Boundary Conditions\n"
+        code += "# ------------------------------\n"
         code += "LW_Test.BCPressure.PatchNames = LW_Test.Geom.domain.Patches\n"
         code += "\n".join(patches)
         self.bc_explicit_code = code
