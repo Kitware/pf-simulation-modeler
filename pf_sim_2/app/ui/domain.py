@@ -1,4 +1,5 @@
 from trame.widgets import vuetify, html, simput
+from .snippet import show_snippet
 
 
 def terrain_parameters():
@@ -54,7 +55,7 @@ def domain_parameters():
             simput.SimputItem(item_id=("gridId", None))
 
 
-def domain():
+def domain(ctrl):
     with html.Div(classes="d-flex flex-column fill-height"):
         with vuetify.VToolbar(
             flat=True, classes="fill-width align-center grey lighten-2 flex-grow-0"
@@ -80,6 +81,8 @@ def domain():
         ):
             domain_parameters()
             terrain_parameters()
+
+        show_snippet(ctrl, "domain")
 
         with vuetify.VContainer(
             v_if="domainView=='viz'",

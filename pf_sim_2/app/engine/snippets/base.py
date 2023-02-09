@@ -34,7 +34,13 @@ def initialize(server):
     subsurface_snippet = SubsurfacePropertiesSnippet(state, ctrl)
     solver_snippet = SolverSnippet(state, ctrl)
 
-    state.generated_code = ""
+    state.update(
+        {
+            "generated_code": "",
+            "display_snippet": False,
+            "active_snippet": "",
+        }
+    )
 
     @state.change("currentView")
     def generate_code(**kwargs):
@@ -67,7 +73,7 @@ def initialize(server):
             **state.simTypeShortcuts,
         }
 
-        code = "\n\n".join(
+        code = "\n".join(
             [
                 PreambleSnippet().snippet,
                 domain_snippet.snippet,
@@ -76,10 +82,33 @@ def initialize(server):
                 boundary_snippet.snippet,
                 subsurface_snippet.snippet,
                 solver_snippet.snippet,
-                "LW_Test.run()\n",
+                "\nLW_Test.run()\n",
             ]
         )
         state.generated_code = code
         return code
 
+    def get_snippet(snippet):
+        generate_code()
+        if snippet == "domain":
+            state.active_snippet = domain_snippet.snippet
+        elif snippet == "timing":
+            state.active_snippet = timing_snippet.snippet
+        elif snippet == "boundary":
+            state.active_snippet = boundary_snippet.snippet
+        elif snippet == "subsurface":
+            state.active_snippet = subsurface_snippet.snippet
+        elif snippet == "solver":
+            state.active_snippet = solver_snippet.snippet
+        else:
+            state.active_snippet = "# Error: No snippet found"
+
+    def toggle_snippet(snippet):
+        state.display_snippet = not state.display_snippet
+        if state.display_snippet:
+            print("getting snippet", snippet)
+            get_snippet(snippet)
+
+    ctrl.toggle_snippet = toggle_snippet
     ctrl.generate_code = generate_code
+    ctrl.get_snippet = get_snippet

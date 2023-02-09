@@ -1,5 +1,5 @@
 from trame.ui.vuetify import SinglePageLayout
-from trame.widgets import vuetify, simput, html
+from trame.widgets import vuetify, simput, html, code
 from pf_sim_2.widgets import pf_sim_2 as pf_widgets
 from .domain import domain
 from .timing import timing
@@ -19,9 +19,8 @@ def initialize(server):
     with SinglePageLayout(server) as layout:
         # Toolbar
         layout.title.set_text("Parflow Simulation Modeler")
-        layout.icon.add_child(
+        with layout.icon:
             vuetify.VIcon("mdi-water-opacity", color="blue", large=True)
-        )
         layout.root = simput_widget
 
         with layout.toolbar:
@@ -54,7 +53,7 @@ def initialize(server):
                 )
 
                 with html.Div(v_if="currentView === 'Domain'"):
-                    domain()
+                    domain(ctrl)
 
                 with html.Div(v_if="currentView === 'Timing'"):
                     timing(ctrl)
@@ -81,7 +80,13 @@ def initialize(server):
 
                 with html.Div(v_if="currentView === 'Code Generation'"):
                     html.H1("Generator")
-
-                    vuetify.VTextarea(
-                        v_model=("generated_code",), rows=28, row_height=20
-                    )
+                    with vuetify.VContainer(
+                        fluid=True, classes="fill-height pa-0 justify-center"
+                    ):
+                        code.Editor(
+                            style="width: 100%; height: 85vh;",
+                            value=("generated_code",),
+                            options=("editor_options", {}),
+                            language="python",
+                            theme=("editor_theme", "vs-dark"),
+                        )
