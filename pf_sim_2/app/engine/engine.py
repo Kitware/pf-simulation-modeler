@@ -60,6 +60,8 @@ class MyBusinessLogic:
         # Load models
         self.simput_manager.load_model(yaml_file=DEF_DIR / "grid.yaml")
         self.simput_manager.load_ui(xml_file=DEF_DIR / "grid_ui.xml")
+        self.simput_manager.load_model(yaml_file=DEF_DIR / "domain.yaml")
+        self.simput_manager.load_ui(xml_file=DEF_DIR / "domain_ui.xml")
         self.simput_manager.load_model(yaml_file=DEF_DIR / "cycle.yaml")
         self.simput_manager.load_ui(xml_file=DEF_DIR / "cycle_ui.xml")
         self.simput_manager.load_model(yaml_file=DEF_DIR / "timing.yaml")

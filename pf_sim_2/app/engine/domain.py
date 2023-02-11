@@ -1,3 +1,4 @@
+from trame_simput.core.proxy import Proxy
 from parflowio.pyParflowio import PFData
 from .files import FileDatabase
 
@@ -7,6 +8,9 @@ class DomainLogic:
         self.state = state
         self.ctrl = ctrl
         self.pxm = ctrl.get_pxm()
+
+        grid_proxy: Proxy = self.pxm.create("ComputationalGrid")
+        grid_proxy.on(self.update_bounds)
 
         state.update(
             {
@@ -20,9 +24,37 @@ class DomainLogic:
                 "elevationFile": None,
                 "soilIds": [],
                 "domainId": self.pxm.create("Domain").id,
-                "gridId": self.pxm.create("ComputationalGrid").id,
+                "gridId": grid_proxy.id,
+                "bounds_id": self.pxm.create("Bounds").id,
+                "patches_id": self.pxm.create("Patches").id,
             }
         )
+
+    def update_bounds(self, topic, **kwargs):
+        if topic != "update":
+            return
+
+        proxy: Proxy = self.pxm.get(self.state.gridId)
+        if not proxy:
+            return
+
+        origin = proxy.get_property("Origin")
+        spacing = proxy.get_property("Spacing")
+        size = proxy.get_property("Size")
+
+        if not all([origin, spacing, size]):
+            return
+
+        x_bound = origin[0] + spacing[0] * size[0]
+        y_bound = origin[1] + spacing[1] * size[1]
+        z_bound = origin[2] + spacing[2] * size[2]
+
+        proxy: Proxy = self.pxm.get(self.state.bounds_id)
+        if not proxy:
+            return
+        proxy.set_property("XBound", x_bound)
+        proxy.set_property("YBound", y_bound)
+        proxy.set_property("ZBound", z_bound)
 
     def updateComputationalGrid(self, indicatorFile, **kwargs):
         file_database = FileDatabase()

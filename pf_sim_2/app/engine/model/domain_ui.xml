@@ -1,0 +1,52 @@
+<layouts>
+    <ui id="ComputationalGrid">
+        <row>
+            <col>
+                <input name="Origin" />
+            </col>
+            <col>
+                <input name="Spacing" />
+            </col>
+            <col>
+                <input name="Size" />
+            </col>
+        </row>
+    </ui>
+
+    <ui id="Patches">
+        <col>
+            <row>
+                <input name="XLower" />
+            </row>
+            <row>
+                <input name="XUpper" />
+            </row>
+            <row>
+                <input name="YLower" />
+            </row>
+            <row>
+                <input name="YUpper" />
+            </row>
+            <row>
+                <input name="ZLower" />
+            </row>
+            <row>
+                <input name="ZUpper" />
+            </row>
+        </col>
+    </ui>
+
+    <ui id="Bounds">
+        <row>
+            <col>
+                <input name="XBound" />
+            </col>
+            <col>
+                <input name="YBound" />
+            </col>
+            <col>
+                <input name="ZBound" />
+            </col>
+        </row>
+    </ui>
+</layouts>

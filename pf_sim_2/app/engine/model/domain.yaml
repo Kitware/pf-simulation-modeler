@@ -1,0 +1,59 @@
+ComputationalGrid:
+  Origin:
+    _label: Origin
+    type: float64
+    size: 3
+  Spacing:
+    _label: Spacing
+    type: float64
+    size: 3
+  Size:
+    _label: Size
+    type: int32
+    size: 3
+
+Patches:
+  XLower:
+    _label: X Lower Patch
+    type: string
+    size: 1
+    initial: 'x_lower'
+  XUpper:
+    _label: X Upper Patch
+    type: string
+    size: 1
+    initial: 'x_upper'
+  YLower:
+    _label: Y Lower Patch
+    type: string
+    size: 1
+    initial: 'y_lower'
+  YUpper:
+    _label: Y Upper Patch
+    type: string
+    size: 1
+    initial: 'y_upper'
+  ZLower:
+    _label: Z Lower Patch
+    type: string
+    size: 1
+    initial: 'z_lower'
+  ZUpper:
+    _label: Z Upper Patch
+    type: string
+    size: 1
+    initial: 'z_upper'
+
+Bounds:
+  XBound:
+    _label: X Bound
+    type: float64
+    size: 1
+  YBound:
+    _label: Y Bound
+    type: float64
+    size: 1
+  ZBound:
+    _label: Z Bound
+    type: float64
+    size: 1
