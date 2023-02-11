@@ -5,6 +5,7 @@ from .domain import domain
 from .timing import timing
 from .solver import solver
 from .boundary_conditions import boundary_conditions
+from .snippet import show_snippet
 
 
 def initialize(server):
@@ -59,7 +60,7 @@ def initialize(server):
                     timing(ctrl)
 
                 with html.Div(v_if="currentView === 'Boundary Conditions'"):
-                    boundary_conditions()
+                    boundary_conditions(ctrl)
 
                 with html.Div(v_if="currentView === 'Subsurface Properties'"):
                     html.H1("Regions")
@@ -74,9 +75,10 @@ def initialize(server):
                             v_for=("(soilId, index) in soilIds",),
                             item_id=("soilId", None),
                         )
+                    show_snippet(ctrl, "subsurface_properties")
 
                 with html.Div(v_if="currentView === 'Solver'"):
-                    solver()
+                    solver(ctrl)
 
                 with html.Div(v_if="currentView === 'Code Generation'"):
                     html.H1("Generator")

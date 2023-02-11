@@ -43,6 +43,10 @@ def initialize(server):
     )
 
     @state.change("currentView")
+    def clear_snippet(**kwargs):
+        state.display_snippet = False
+
+    @state.change("currentView")
     def generate_code(**kwargs):
         # Domain page
         domain_snippet.set_indicator_file()
@@ -94,9 +98,9 @@ def initialize(server):
             state.active_snippet = domain_snippet.snippet
         elif snippet == "timing":
             state.active_snippet = timing_snippet.snippet
-        elif snippet == "boundary":
+        elif snippet == "boundary_conditions":
             state.active_snippet = boundary_snippet.snippet
-        elif snippet == "subsurface":
+        elif snippet == "subsurface_properties":
             state.active_snippet = subsurface_snippet.snippet
         elif snippet == "solver":
             state.active_snippet = solver_snippet.snippet
@@ -106,7 +110,6 @@ def initialize(server):
     def toggle_snippet(snippet):
         state.display_snippet = not state.display_snippet
         if state.display_snippet:
-            print("getting snippet", snippet)
             get_snippet(snippet)
 
     ctrl.toggle_snippet = toggle_snippet

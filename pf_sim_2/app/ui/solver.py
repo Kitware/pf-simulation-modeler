@@ -1,7 +1,8 @@
 from trame.widgets import vuetify, html, simput
+from .snippet import show_snippet
 
 
-def solver():
+def solver(ctrl):
     html.H1("Solver")
 
     with vuetify.VContainer(fluid=True):
@@ -28,3 +29,5 @@ def solver():
             simput.SimputItem(item_id=("solverNonlinearId", None))
             html.H3("Linear Parameters")
             simput.SimputItem(item_id=("solverLinearId", None))
+
+    show_snippet(ctrl, "solver")

@@ -1,4 +1,5 @@
 from trame.widgets import vuetify, html, simput
+from .snippet import show_snippet
 
 
 def timing(ctrl):
@@ -39,3 +40,5 @@ def timing(ctrl):
     with vuetify.VBtn(click=(ctrl.create_cycle, "['Cycle']")):
         vuetify.VIcon("mdi-plus")
         html.Span("Add Cycle")
+
+    show_snippet(ctrl, "timing")
