@@ -45,9 +45,9 @@ class DomainLogic:
         if not all([origin, spacing, size]):
             return
 
-        x_bound = origin[0] + spacing[0] * size[0]
-        y_bound = origin[1] + spacing[1] * size[1]
-        z_bound = origin[2] + spacing[2] * size[2]
+        x_bound = [origin[0], origin[0] + spacing[0] * size[0]]
+        y_bound = [origin[1], origin[1] + spacing[1] * size[1]]
+        z_bound = [origin[2], origin[2] + spacing[2] * size[2]]
 
         proxy: Proxy = self.pxm.get(self.state.bounds_id)
         if not proxy:
@@ -55,6 +55,8 @@ class DomainLogic:
         proxy.set_property("XBound", x_bound)
         proxy.set_property("YBound", y_bound)
         proxy.set_property("ZBound", z_bound)
+        proxy.commit()
+        self.ctrl.simput_push(id=proxy.id)
 
     def updateComputationalGrid(self, indicatorFile, **kwargs):
         file_database = FileDatabase()

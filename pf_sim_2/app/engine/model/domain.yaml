@@ -48,12 +48,12 @@ Bounds:
   XBound:
     _label: X Bound
     type: float64
-    size: 1
+    size: 2
   YBound:
     _label: Y Bound
     type: float64
-    size: 1
+    size: 2
   ZBound:
     _label: Z Bound
     type: float64
-    size: 1
+    size: 2

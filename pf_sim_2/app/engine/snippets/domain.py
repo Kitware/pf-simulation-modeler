@@ -1,3 +1,4 @@
+from trame_simput.core.proxy import Proxy
 from ..files import FileDatabase
 
 
@@ -9,6 +10,7 @@ class DomainSnippet:
         self.indicator_code = ""
         self.grid_code = ""
         self.soil_code = ""
+        self.patches_code = ""
 
         self.domain_builder_params = {}
 
@@ -32,11 +34,31 @@ class DomainSnippet:
         code += f"LW_Test.ComputationalGrid.NX = {size[0]}\n"
         code += f"LW_Test.ComputationalGrid.NY = {size[1]}\n"
         code += f"LW_Test.ComputationalGrid.NZ = {size[2]}\n\n"
+        code += "bounds = [\n"
+        code += f"    {origin[0]}, {origin[0] + (spacing[0] * size[0])},\n"
+        code += f"    {origin[1]}, {origin[1] + (spacing[1] * size[1])},\n"
+        code += f"    {origin[2]}, {origin[2] + (spacing[2] * size[2])}\n"
+        code += "]\n"
         self.grid_code = code
 
         self.domain_builder_params["origin"] = origin
         self.domain_builder_params["spacing"] = spacing
         self.domain_builder_params["size"] = size
+
+    def set_patches(self):
+        proxy: Proxy = self.pxm.get(self.state.patches_id)
+        if not proxy:
+            return
+
+        code = f"domain_patches = '"
+        code += f"{proxy.get_property('XLower')} "
+        code += f"{proxy.get_property('XUpper')} "
+        code += f"{proxy.get_property('YLower')} "
+        code += f"{proxy.get_property('YUpper')} "
+        code += f"{proxy.get_property('ZLower')} "
+        code += f"{proxy.get_property('ZUpper')}"
+        code += "'\n"
+        self.patches_code = code
 
     def set_terrain_files(self):
         file_database = FileDatabase()
@@ -83,5 +105,5 @@ class DomainSnippet:
     @property
     def snippet(self):
         return "\n".join(
-            [self.header, self.grid_code, self.indicator_code, self.soil_code, ""]
+            [self.header, self.grid_code, self.patches_code, self.indicator_code, self.soil_code, ""]
         )

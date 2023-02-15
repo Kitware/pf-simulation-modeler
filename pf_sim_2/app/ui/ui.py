@@ -15,6 +15,7 @@ def initialize(server):
     simput_widget = simput.Simput(ctrl.get_simput_manager(), trame_server=server)
     ctrl.simput_apply = simput_widget.apply
     ctrl.simput_reset = simput_widget.reset
+    ctrl.simput_push = simput_widget.push
     simput_widget.reload_domain()
 
     with SinglePageLayout(server) as layout:

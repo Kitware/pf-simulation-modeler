@@ -51,6 +51,7 @@ def initialize(server):
         # Domain page
         domain_snippet.set_indicator_file()
         domain_snippet.set_grid()
+        domain_snippet.set_patches()
         domain_snippet.set_soils()
         domain_snippet.set_terrain_files()
 

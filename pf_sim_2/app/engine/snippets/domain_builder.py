@@ -34,12 +34,6 @@ class DomainBuilderSnippet:
         code = "# ------------------------------\n"
         code += "# Domain Builder\n"
         code += "# ------------------------------\n"
-        code += "bounds = [\n"
-        code += f"    {origin[0]}, {origin[0] + (spacing[0] * size[0])},\n"
-        code += f"    {origin[1]}, {origin[1] + (spacing[1] * size[1])},\n"
-        code += f"    {origin[2]}, {origin[2] + (spacing[2] * size[2])}\n"
-        code += "]\n\n"
-        code += f"domain_patches = '{' '.join(patches)}'\n"
         code += zero_flux_patches + "\n"
         code += "DomainBuilder(LW_Test) \\\n"
         if not wells:
