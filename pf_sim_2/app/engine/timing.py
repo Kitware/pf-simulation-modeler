@@ -4,11 +4,11 @@ class TimingLogic:
         self.ctrl = ctrl
         self.pxm = ctrl.get_pxm()
 
-        state.timingId = self.pxm.create("Timing").id
         state.update(
             {
-                "cycleIds": [],
-                "subCycleIds": {},
+                "cycle_ids": [],
+                "sub_cycle_ids": {},
+                "timing_id": self.pxm.create("Timing").id,
             }
         )
 
@@ -44,16 +44,16 @@ class TimingLogic:
         return proxy
 
     def update_cycle_list(self, *args, **kwargs):
-        cycleIds = []
-        subCycleIds = {}
+        cycle_ids = []
+        sub_cycle_ids = {}
         for cycle in self.pxm.get_instances_of_type("Cycle"):
-            cycleIds.append(cycle.id)
-            subCycleIds[cycle.id] = []
-            for subCycleId in cycle.own:
-                subCycleIds[cycle.id].append(subCycleId)
+            cycle_ids.append(cycle.id)
+            sub_cycle_ids[cycle.id] = []
+            for sub_cycle_id in cycle.own:
+                sub_cycle_ids[cycle.id].append(sub_cycle_id)
 
-        self.state.cycleIds = cycleIds
-        self.state.subCycleIds = subCycleIds
+        self.state.cycle_ids = cycle_ids
+        self.state.sub_cycle_ids = sub_cycle_ids
 
 
 def initialize(server):

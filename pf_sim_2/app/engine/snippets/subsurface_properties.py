@@ -13,7 +13,7 @@ class SubsurfacePropertiesSnippet:
         table_len = [len(prop) for prop in props]
 
         soils = []
-        for soil_id in [self.state.domainId, *self.state.soilIds]:
+        for soil_id in [self.state.domain_id, *self.state.soil_ids]:
             proxy: Proxy = self.pxm.get(soil_id)
             if not proxy:
                 continue
@@ -24,7 +24,7 @@ class SubsurfacePropertiesSnippet:
 
                 if value is None:
                     value = "-"
-                if soil_id == self.state.domainId and prop == "key":
+                if soil_id == self.state.domain_id and prop == "key":
                     value = "domain"
 
                 values[prop] = value

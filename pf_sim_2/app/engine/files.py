@@ -112,15 +112,15 @@ class FileLogic:
         state.update(
             {
                 **args,
-                "fileCategories": [
+                "file_categories": [
                     "Indicator",
                     "Elevation",
                     "Slope",
                     "Other",
                 ],
-                "uploadError": "",
-                "dbFiles": entries,
-                "dbSelectedFile": None if not entries else list(entries.values())[0],
+                "upload_error": "",
+                "db_files": entries,
+                "db_selected_file": None if not entries else list(entries.values())[0],
             }
         )
 
@@ -146,14 +146,14 @@ class FileLogic:
             file_database.writeEntryData(entryId, fileObj["content"])
         except Exception as e:
             logger.error(f">>> Error uploading file: {e}")
-            self.state.uploadError = (
+            self.state.upload_error = (
                 "An error occurred uploading the file to the database."
             )
             return
 
         entry = {**file_database.getEntry(entryId), **updateEntry}
         file_database.writeEntry(entryId, entry)
-        self.state.dbSelectedFile = entry
+        self.state.db_selected_file = entry
 
     def uploadLocalFile(self, entryId, fileMeta):
         sharedir = self.state.sharedir
@@ -186,36 +186,37 @@ class FileLogic:
                 file_database.writeEntryData(entryId, content)
         except Exception as e:
             print(e)
-            self.state.uploadError = (
+            self.state.upload_error = (
                 "An error occurred uploading the file to the database."
             )
             return
 
         entry = {**file_database.getEntry(entryId), **updateEntry}
         file_database.writeEntry(entryId, entry)
-        self.state.dbSelectedFile = entry
+        self.state.db_selected_file = entry
 
     def updateFile(self, update, entryId=None):
         file_database = FileDatabase()
 
         if update == "selectFile":
-            if self.state.dbFiles.get(entryId):
-                self.state.dbSelectedFile = file_database.getEntry(entryId)
+            if self.state.db_files.get(entryId):
+                self.state.db_selected_file = file_database.getEntry(entryId)
             else:
-                self.state.dbSelectedFile = None
+                self.state.db_selected_file = None
 
         elif update == "removeFile":
             file_database.deleteEntry(entryId)
-            self.state.dbFiles = file_database.getEntries()
-            if self.state.dbSelectedFile and entryId == self.state.dbSelectedFile.get(
-                "id"
+            self.state.db_files = file_database.getEntries()
+            if (
+                self.state.db_selected_file
+                and entryId == self.state.db_selected_file.get("id")
             ):
-                self.state.dbSelectedFile = None
+                self.state.db_selected_file = None
 
         elif update == "downloadSelectedFile":
             self.state.dbFileExchange = file_database.getEntryData(entryId)
 
-        self.state.uploadError = ""
+        self.state.upload_error = ""
 
 
 def initialize(server, args):
@@ -223,25 +224,25 @@ def initialize(server, args):
 
     FileLogic(state, ctrl, args)
 
-    @state.change("dbSelectedFile")
-    def changeCurrentFile(dbSelectedFile, **kwargs):
-        if dbSelectedFile is None:
+    @state.change("db_selected_file")
+    def changeCurrentFile(db_selected_file, **kwargs):
+        if db_selected_file is None:
             return
 
         file_database = FileDatabase()
-        file_id = dbSelectedFile.get("id")
+        file_id = db_selected_file.get("id")
 
         if not file_id:
-            dbSelectedFile = file_database.addNewEntry(dbSelectedFile)
-            dbSelectedFile = None
+            db_selected_file = file_database.addNewEntry(db_selected_file)
+            db_selected_file = None
         else:
             current_entry = file_database.getEntry(file_id)
-            dbSelectedFile = {**current_entry, **dbSelectedFile}
-            file_database.writeEntry(file_id, dbSelectedFile)
+            db_selected_file = {**current_entry, **db_selected_file}
+            file_database.writeEntry(file_id, db_selected_file)
 
         state.update(
             {
-                "dbSelectedFile": dbSelectedFile,
+                "db_selected_file": db_selected_file,
             }
         )
-        state.dbFiles = file_database.getEntries()
+        state.db_files = file_database.getEntries()

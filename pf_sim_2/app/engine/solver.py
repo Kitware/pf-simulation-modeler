@@ -9,9 +9,9 @@ class SolverLogic:
                 "solver_outputs": [1, 2, 3],
             }
         )
-        state.solverId = self.pxm.create("Solver").id
-        state.solverNonlinearId = self.pxm.create("SolverNonlinear").id
-        state.solverLinearId = self.pxm.create("SolverLinear").id
+        state.solver_id = self.pxm.create("Solver").id
+        state.solver_nonlinear_id = self.pxm.create("SolverNonlinear").id
+        state.solver_linear_id = self.pxm.create("SolverLinear").id
 
 
 def initialize(server):

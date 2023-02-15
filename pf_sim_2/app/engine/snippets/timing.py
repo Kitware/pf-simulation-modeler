@@ -10,7 +10,7 @@ class TimingSnippet:
         self.time_cycle_code = ""
 
     def set_timing_info(self):
-        proxy: Proxy = self.pxm.get(self.state.timingId)
+        proxy: Proxy = self.pxm.get(self.state.timing_id)
         if not proxy:
             return
 
@@ -29,7 +29,7 @@ class TimingSnippet:
     def set_cycles(self):
         cycles = []
         names = []
-        for cycle_id in self.state.cycleIds:
+        for cycle_id in self.state.cycle_ids:
             proxy: Proxy = self.pxm.get(cycle_id)
             if not proxy:
                 continue

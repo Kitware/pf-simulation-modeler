@@ -27,7 +27,7 @@ def initialize(server):
 
         with layout.toolbar:
             vuetify.VSpacer()
-            pf_widgets.NavigationDropDown(v_model="currentView", views=("views",))
+            pf_widgets.NavigationDropDown(v_model="current_view", views=("views",))
             vuetify.VSpacer()
             vuetify.VBtn("Save", click=ctrl.simput_apply)
 
@@ -35,14 +35,14 @@ def initialize(server):
         with layout.content:
             with vuetify.VContainer(fluid=True):
                 pf_widgets.FileDatabase(
-                    v_if="currentView === 'File Database'",
-                    files=("dbFiles",),
-                    fileCategories=("fileCategories",),
-                    error=("uploadError",),
-                    v_model=("dbSelectedFile",),
+                    v_if="current_view === 'File Database'",
+                    files=("db_files",),
+                    fileCategories=("file_categories",),
+                    error=("upload_error",),
+                    v_model=("db_selected_file",),
                 )
                 pf_widgets.SimulationType(
-                    v_if="currentView === 'Simulation Type'",
+                    v_if="current_view === 'Simulation Type'",
                     v_model=(
                         "simTypeShortcuts",
                         {
@@ -54,34 +54,34 @@ def initialize(server):
                     ),
                 )
 
-                with html.Div(v_if="currentView === 'Domain'"):
+                with html.Div(v_if="current_view === 'Domain'"):
                     domain(ctrl)
 
-                with html.Div(v_if="currentView === 'Timing'"):
+                with html.Div(v_if="current_view === 'Timing'"):
                     timing(ctrl)
 
-                with html.Div(v_if="currentView === 'Boundary Conditions'"):
+                with html.Div(v_if="current_view === 'Boundary Conditions'"):
                     boundary_conditions(ctrl)
 
-                with html.Div(v_if="currentView === 'Subsurface Properties'"):
+                with html.Div(v_if="current_view === 'Subsurface Properties'"):
                     html.H1("Regions")
 
-                    with html.Div(v_if="soilIds.length === 0"):
+                    with html.Div(v_if="soil_ids.length === 0"):
                         html.H2("No regions defined")
                         html.P("Choose an indicator file to define regions.")
 
-                    with html.Div(v_if="soilIds.length > 0"):
-                        simput.SimputItem(item_id=("domainId", None))
+                    with html.Div(v_if="soil_ids.length > 0"):
+                        simput.SimputItem(item_id=("domain_id", None))
                         simput.SimputItem(
-                            v_for=("(soilId, index) in soilIds",),
-                            item_id=("soilId", None),
+                            v_for=("(soil_id, index) in soil_ids",),
+                            item_id=("soil_id", None),
                         )
                     show_snippet(ctrl, "subsurface_properties")
 
-                with html.Div(v_if="currentView === 'Solver'"):
+                with html.Div(v_if="current_view === 'Solver'"):
                     solver(ctrl)
 
-                with html.Div(v_if="currentView === 'Code Generation'"):
+                with html.Div(v_if="current_view === 'Code Generation'"):
                     html.H1("Generator")
                     with vuetify.VContainer(
                         fluid=True, classes="fill-height pa-0 justify-center"

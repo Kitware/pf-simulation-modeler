@@ -20,7 +20,7 @@ class BoundaryConditionsSnippet:
         cycle_subcycle_pairs = set()
         self.patches = []
 
-        for id in self.state.BCPressureIds:
+        for id in self.state.bc_pressure_ids:
             proxy: Proxy = self.pxm.get(id)
             if not proxy:
                 continue
@@ -31,7 +31,7 @@ class BoundaryConditionsSnippet:
             p_cycle = self.state.cycle_defs.get(p_cycle, p_cycle)
 
             p_subcycle = {}
-            for value_id in self.state.BCPressureValueIds.get(id, []):
+            for value_id in self.state.bc_pressure_value_ids.get(id, []):
                 proxy: Proxy = self.pxm.get(value_id)
                 if not proxy:
                     continue

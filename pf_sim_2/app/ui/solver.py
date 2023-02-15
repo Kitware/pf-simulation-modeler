@@ -24,10 +24,10 @@ def solver(ctrl):
         html.H2("Parameters")
         with vuetify.VContainer(fluid=True):
             html.H3("General Parameters")
-            simput.SimputItem(item_id=("solverId", None))
+            simput.SimputItem(item_id=("solver_id", None))
             html.H3("Nonlinear Parameters")
-            simput.SimputItem(item_id=("solverNonlinearId", None))
+            simput.SimputItem(item_id=("solver_nonlinear_id", None))
             html.H3("Linear Parameters")
-            simput.SimputItem(item_id=("solverLinearId", None))
+            simput.SimputItem(item_id=("solver_linear_id", None))
 
     show_snippet(ctrl, "solver")

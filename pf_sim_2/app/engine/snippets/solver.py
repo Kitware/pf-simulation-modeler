@@ -28,7 +28,7 @@ class SolverSnippet:
         self.output_code = code
 
     def set_general(self):
-        proxy: Proxy = self.pxm.get(self.state.solverId)
+        proxy: Proxy = self.pxm.get(self.state.solver_id)
         if not proxy:
             return
 
@@ -48,7 +48,7 @@ class SolverSnippet:
         self.general_code = code
 
     def set_nonlinear(self):
-        proxy: Proxy = self.pxm.get(self.state.solverNonlinearId)
+        proxy: Proxy = self.pxm.get(self.state.solver_nonlinear_id)
         if not proxy:
             return
 
@@ -71,7 +71,7 @@ class SolverSnippet:
         self.nonlinear_code = code
 
     def set_linear(self):
-        proxy: Proxy = self.pxm.get(self.state.solverLinearId)
+        proxy: Proxy = self.pxm.get(self.state.solver_linear_id)
         if not proxy:
             return
 

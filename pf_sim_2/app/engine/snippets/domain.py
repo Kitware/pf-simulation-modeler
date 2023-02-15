@@ -15,7 +15,7 @@ class DomainSnippet:
         self.domain_builder_params = {}
 
     def set_grid(self):
-        proxy = self.pxm.get(self.state.gridId)
+        proxy = self.pxm.get(self.state.grid_id)
         if not proxy:
             return
 
@@ -50,7 +50,7 @@ class DomainSnippet:
         if not proxy:
             return
 
-        code = f"domain_patches = '"
+        code = "domain_patches = '"
         code += f"{proxy.get_property('XLower')} "
         code += f"{proxy.get_property('XUpper')} "
         code += f"{proxy.get_property('YLower')} "
@@ -63,13 +63,13 @@ class DomainSnippet:
     def set_terrain_files(self):
         file_database = FileDatabase()
         # Slope X
-        entry = file_database.getEntry(self.state.slopeXFile)
+        entry = file_database.getEntry(self.state.slope_x_file)
         if not entry:
             return
         self.domain_builder_params["slope_x"] = entry.get("origin")
 
         # Slope Y
-        entry = file_database.getEntry(self.state.slopeYFile)
+        entry = file_database.getEntry(self.state.slope_y_file)
         if not entry:
             return
         self.domain_builder_params["slope_y"] = entry.get("origin")
@@ -77,13 +77,15 @@ class DomainSnippet:
     def set_indicator_file(self):
         code = "LW_Test.GeomInput.Names = 'box_input indi_input'\n\n"
         code += "LW_Test.GeomInput.indi_input.InputType = 'IndicatorField'\n"
-        code += f"LW_Test.Geom.indi_input.FileName = '{self.state.indicatorFileName}'\n"
+        code += (
+            f"LW_Test.Geom.indi_input.FileName = '{self.state.indicator_filename}'\n"
+        )
         self.indicator_code = code
 
     def set_soils(self):
         soils = []
-        for soildId in self.state.soilIds:
-            proxy = self.pxm.get(soildId)
+        for soild_id in self.state.soil_ids:
+            proxy = self.pxm.get(soild_id)
             if not proxy:
                 continue
 
@@ -105,5 +107,12 @@ class DomainSnippet:
     @property
     def snippet(self):
         return "\n".join(
-            [self.header, self.grid_code, self.patches_code, self.indicator_code, self.soil_code, ""]
+            [
+                self.header,
+                self.grid_code,
+                self.patches_code,
+                self.indicator_code,
+                self.soil_code,
+                "",
+            ]
         )

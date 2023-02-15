@@ -18,8 +18,8 @@ class BCLogic:
 
         state.update(
             {
-                "BCPressureIds": bc_pressure_ids,
-                "BCPressureValueIds": {},
+                "bc_pressure_ids": bc_pressure_ids,
+                "bc_pressure_value_ids": {},
             }
         )
 
@@ -35,17 +35,17 @@ class BCLogic:
             return
 
         # Delete values defined for other cycles
-        for value_id in self.state.BCPressureValueIds.get(id, []):
+        for value_id in self.state.bc_pressure_value_ids.get(id, []):
             self.pxm.delete(value_id)
 
         # Create new values for the new cycle
-        BCPressureValueIds = {**self.state.BCPressureValueIds}
-        BCPressureValueIds[id] = [
+        bc_pressure_value_ids = {**self.state.bc_pressure_value_ids}
+        bc_pressure_value_ids[id] = [
             self.pxm.create("BCPressureValue", SubCycle=sub_cycle_id).id
             for sub_cycle_id in cycle.own
         ]
 
-        self.state.BCPressureValueIds = BCPressureValueIds
+        self.state.bc_pressure_value_ids = bc_pressure_value_ids
         self.state.flush()
 
 

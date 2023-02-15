@@ -34,7 +34,7 @@ class MyBusinessLogic:
 
         state.update(
             {
-                "currentView": "File Database",
+                "current_view": "File Database",
                 "views": [
                     "File Database",
                     "Simulation Type",
@@ -73,9 +73,9 @@ class MyBusinessLogic:
         self.simput_manager.load_ui(xml_file=DEF_DIR / "solver_ui.xml")
 
         # on view change
-        @state.change("currentView")
-        def on_currentView_change(currentView, **kwargs):
-            if currentView == "Boundary Conditions":
+        @state.change("current_view")
+        def on_current_view_change(current_view, **kwargs):
+            if current_view == "Boundary Conditions":
                 model_file = DEF_DIR / "boundary.yaml"
                 with open(model_file) as f:
                     model = yaml.safe_load(f)

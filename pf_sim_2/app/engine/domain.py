@@ -14,17 +14,17 @@ class DomainLogic:
 
         state.update(
             {
-                "domainView": "grid",
+                "domain_view": "grid",
                 "soils": [],
-                "currentSoil": "all",
-                "indicatorFile": None,
-                "indicatorFileName": None,
-                "slopeXFile": None,
-                "slopeYFile": None,
-                "elevationFile": None,
-                "soilIds": [],
-                "domainId": self.pxm.create("Domain").id,
-                "gridId": grid_proxy.id,
+                "current_soil": "all",
+                "indicator_file": None,
+                "indicator_filename": None,
+                "slope_x_file": None,
+                "slope_y_file": None,
+                "elevation_file": None,
+                "soil_ids": [],
+                "domain_id": self.pxm.create("Domain").id,
+                "grid_id": grid_proxy.id,
                 "bounds_id": self.pxm.create("Bounds").id,
                 "patches_id": self.pxm.create("Patches").id,
             }
@@ -34,7 +34,7 @@ class DomainLogic:
         if topic != "update":
             return
 
-        proxy: Proxy = self.pxm.get(self.state.gridId)
+        proxy: Proxy = self.pxm.get(self.state.grid_id)
         if not proxy:
             return
 
@@ -58,16 +58,16 @@ class DomainLogic:
         proxy.commit()
         self.ctrl.simput_push(id=proxy.id)
 
-    def updateComputationalGrid(self, indicatorFile, **kwargs):
+    def updateComputationalGrid(self, indicator_file, **kwargs):
         file_database = FileDatabase()
 
-        if not indicatorFile:
+        if not indicator_file:
             return
 
-        entry = file_database.getEntry(indicatorFile)
-        self.state.indicatorFileName = entry.get("origin")
+        entry = file_database.getEntry(indicator_file)
+        self.state.indicator_filename = entry.get("origin")
 
-        filename = file_database.getEntryPath(indicatorFile)
+        filename = file_database.getEntryPath(indicator_file)
         try:
             handle = PFData(filename)
         except Exception as e:
@@ -77,25 +77,25 @@ class DomainLogic:
 
         change_set = [
             {
-                "id": self.state.gridId,
+                "id": self.state.grid_id,
                 "name": "Origin",
                 "value": [handle.getX(), handle.getY(), handle.getZ()],
             },
             {
-                "id": self.state.gridId,
+                "id": self.state.grid_id,
                 "name": "Spacing",
                 "value": [handle.getDX(), handle.getDY(), handle.getDZ()],
             },
             {
-                "id": self.state.gridId,
+                "id": self.state.grid_id,
                 "name": "Size",
                 "value": [handle.getNX(), handle.getNY(), handle.getNZ()],
             },
         ]
         self.pxm.update(change_set)
 
-        for soilId in self.state.soilIds:
-            self.pxm.delete(soilId)
+        for soil_id in self.state.soil_ids:
+            self.pxm.delete(soil_id)
 
         handle.loadData()
         data = handle.viewDataArray()
@@ -111,7 +111,7 @@ class DomainLogic:
             soil = self.pxm.create("Soil", **{"key": f"s{val}", "Value": val})
             soil_ids.append(soil.id)
 
-        self.state.soilIds = soil_ids
+        self.state.soil_ids = soil_ids
 
 
 def initialize(server):
@@ -119,6 +119,6 @@ def initialize(server):
 
     domain_logic = DomainLogic(state, ctrl)
 
-    @state.change("indicatorFile")
-    def updateComputationalGrid(indicatorFile, **kwargs):
-        domain_logic.updateComputationalGrid(indicatorFile)
+    @state.change("indicator_file")
+    def updateComputationalGrid(indicator_file, **kwargs):
+        domain_logic.updateComputationalGrid(indicator_file)

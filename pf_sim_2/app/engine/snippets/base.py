@@ -42,11 +42,11 @@ def initialize(server):
         }
     )
 
-    @state.change("currentView")
+    @state.change("current_view")
     def clear_snippet(**kwargs):
         state.display_snippet = False
 
-    @state.change("currentView")
+    @state.change("current_view")
     def generate_code(**kwargs):
         # Domain page
         domain_snippet.set_indicator_file()
