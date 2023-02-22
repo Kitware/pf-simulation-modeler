@@ -58,7 +58,26 @@ def terrain_parameters():
 def bounds():
     html.H1("Bounds")
     html.P("Box domain")
-    simput.SimputItem(item_id=("bounds_id",))
+    bounds = {
+        "X Bound": "x_bound",
+        "Y Bound": "y_bound",
+        "Z Bound": "z_bound",
+    }
+    with html.Div(classes="d-flex flex-row"):
+        for name, bound in bounds.items():
+            with html.Div(classes="px-2 d-flex flex-md-column"):
+                vuetify.VTextField(
+                    v_model=(f"{bound}[0]",),
+                    label=name,
+                    readonly=True,
+                    hide_details=True,
+                )
+                vuetify.VTextField(
+                    v_model=(f"{bound}[1]",),
+                    readonly=True,
+                    hide_details=True,
+                    classes="ma-0 pa-0",
+                )
 
     html.H1("Patches", classes="pt-12")
     html.P("Define patch names")

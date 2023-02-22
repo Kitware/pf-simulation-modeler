@@ -43,17 +43,3 @@ Patches:
     type: string
     size: 1
     initial: 'z_upper'
-
-Bounds:
-  XBound:
-    _label: X Bound
-    type: float64
-    size: 2
-  YBound:
-    _label: Y Bound
-    type: float64
-    size: 2
-  ZBound:
-    _label: Z Bound
-    type: float64
-    size: 2

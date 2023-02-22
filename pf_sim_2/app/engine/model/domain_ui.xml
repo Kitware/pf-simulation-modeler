@@ -35,18 +35,4 @@
             </row>
         </col>
     </ui>
-
-    <ui id="Bounds">
-        <row>
-            <col>
-                <input name="XBound" />
-            </col>
-            <col>
-                <input name="YBound" />
-            </col>
-            <col>
-                <input name="ZBound" />
-            </col>
-        </row>
-    </ui>
 </layouts>

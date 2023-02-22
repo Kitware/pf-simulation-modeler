@@ -1,5 +1,5 @@
-from .ui import initialize
+from .ui import UI
 
 __all__ = [
-    "initialize",
+    "UI",
 ]

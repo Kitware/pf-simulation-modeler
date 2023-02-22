@@ -23,10 +23,14 @@ class DomainLogic:
                 "slope_y_file": None,
                 "elevation_file": None,
                 "soil_ids": [],
+                # Simput
                 "domain_id": self.pxm.create("Domain").id,
                 "grid_id": grid_proxy.id,
-                "bounds_id": self.pxm.create("Bounds").id,
                 "patches_id": self.pxm.create("Patches").id,
+                # Bounds
+                "x_bound": ["", ""],
+                "y_bound": ["", ""],
+                "z_bound": ["", ""],
             }
         )
 
@@ -45,20 +49,11 @@ class DomainLogic:
         if not all([origin, spacing, size]):
             return
 
-        x_bound = [origin[0], origin[0] + spacing[0] * size[0]]
-        y_bound = [origin[1], origin[1] + spacing[1] * size[1]]
-        z_bound = [origin[2], origin[2] + spacing[2] * size[2]]
+        self.state.x_bound = [origin[0], origin[0] + spacing[0] * size[0]]
+        self.state.y_bound = [origin[1], origin[1] + spacing[1] * size[1]]
+        self.state.z_bound = [origin[2], origin[2] + spacing[2] * size[2]]
 
-        proxy: Proxy = self.pxm.get(self.state.bounds_id)
-        if not proxy:
-            return
-        proxy.set_property("XBound", x_bound)
-        proxy.set_property("YBound", y_bound)
-        proxy.set_property("ZBound", z_bound)
-        proxy.commit()
-        self.ctrl.simput_push(id=proxy.id)
-
-    def updateComputationalGrid(self, indicator_file, **kwargs):
+    def update_grid(self, indicator_file, **kwargs):
         file_database = FileDatabase()
 
         if not indicator_file:
@@ -119,6 +114,4 @@ def initialize(server):
 
     domain_logic = DomainLogic(state, ctrl)
 
-    @state.change("indicator_file")
-    def updateComputationalGrid(indicator_file, **kwargs):
-        domain_logic.updateComputationalGrid(indicator_file)
+    state.change("indicator_file")(domain_logic.update_grid)
