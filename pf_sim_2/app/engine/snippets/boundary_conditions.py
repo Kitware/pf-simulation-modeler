@@ -138,4 +138,5 @@ class BoundaryConditionsSnippet:
 
     @property
     def snippet(self):
+        self.set_boundary_conditions()
         return self.bc_explicit_code

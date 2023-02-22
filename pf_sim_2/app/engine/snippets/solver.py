@@ -92,6 +92,10 @@ class SolverSnippet:
 
     @property
     def snippet(self):
+        self.set_output()
+        self.set_general()
+        self.set_nonlinear()
+        self.set_linear()
         return "\n".join(
             [
                 self.header,

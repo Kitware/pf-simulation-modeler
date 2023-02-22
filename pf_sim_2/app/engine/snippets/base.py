@@ -49,42 +49,25 @@ def initialize(server):
     @state.change("current_view")
     def generate_code(**kwargs):
         # Domain page
-        domain_snippet.set_indicator_file()
-        domain_snippet.set_grid()
-        domain_snippet.set_patches()
-        domain_snippet.set_soils()
-        domain_snippet.set_terrain_files()
-
-        # Timing page
-        timing_snippet.set_timing_info()
-        timing_snippet.set_cycles()
+        domain_code = domain_snippet.snippet
 
         # Boundary Conditions page
-        boundary_snippet.set_boundary_conditions()
-
-        # Subsurface Properties page
-        subsurface_snippet.set_soils()
-
-        # Solver page
-        solver_snippet.set_output()
-        solver_snippet.set_general()
-        solver_snippet.set_nonlinear()
-        solver_snippet.set_linear()
+        boundary_code = boundary_snippet.snippet
 
         # DomainBuilder params
-        domain_builder_params = {
-            **boundary_snippet.domain_builder_params,
-            **domain_snippet.domain_builder_params,
-            **state.simTypeShortcuts,
-        }
+        # domain_builder_params = {
+        #     **boundary_snippet.domain_builder_params,
+        #     **domain_snippet.domain_builder_params,
+        #     **state.simTypeShortcuts,
+        # }
 
         code = "\n".join(
             [
                 PreambleSnippet().snippet,
-                domain_snippet.snippet,
+                domain_code,
                 timing_snippet.snippet,
-                domain_builder.snippet(domain_builder_params),
-                boundary_snippet.snippet,
+                # domain_builder.snippet(domain_builder_params),
+                boundary_code,
                 subsurface_snippet.snippet,
                 solver_snippet.snippet,
                 "\nLW_Test.run()\n",
@@ -94,7 +77,6 @@ def initialize(server):
         return code
 
     def get_snippet(snippet):
-        generate_code()
         if snippet == "domain":
             state.active_snippet = domain_snippet.snippet
         elif snippet == "timing":

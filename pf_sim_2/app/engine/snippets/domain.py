@@ -106,6 +106,11 @@ class DomainSnippet:
 
     @property
     def snippet(self):
+        self.set_grid()
+        self.set_patches()
+        self.set_terrain_files()
+        self.set_indicator_file()
+        self.set_soils()
         return "\n".join(
             [
                 self.header,

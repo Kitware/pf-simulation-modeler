@@ -65,4 +65,5 @@ class SubsurfacePropertiesSnippet:
 
     @property
     def snippet(self):
+        self.set_soils()
         return self.header + self.code
