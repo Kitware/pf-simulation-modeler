@@ -26,12 +26,13 @@ class UI:
         self.ctrl.add("on_server_reload")(self.update_ui)
         self.update_ui()
 
-    def update_ui(self, **kwargs):
+    def update_ui(self, *args, **kwargs):
         with SinglePageLayout(self.server) as layout:
-            # Toolbar
             layout.title.set_text("Parflow Simulation Modeler")
             with layout.icon:
                 vuetify.VIcon("mdi-water-opacity", color="blue", large=True)
+
+            self.simput_widget.clear()
             layout.root = self.simput_widget
 
             with layout.toolbar:
@@ -50,6 +51,7 @@ class UI:
                         error=("upload_error",),
                         v_model=("db_selected_file",),
                     )
+
                     pf_widgets.SimulationType(
                         v_if="current_view === 'Simulation Type'",
                         v_model=(

@@ -1,5 +1,6 @@
 from trame.app import get_server
-from . import engine, ui
+import engine
+import ui
 
 
 def main(
