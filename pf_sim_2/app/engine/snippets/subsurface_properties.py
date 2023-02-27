@@ -6,7 +6,25 @@ class SubsurfacePropertiesSnippet:
         self.state, self.ctrl = state, ctrl
         self.pxm = self.ctrl.get_pxm()
 
-        self.code = ""
+        self.soil_name_code = ""
+        self.soil_code = ""
+
+    def set_soil_names(self):
+        soils = []
+        for soild_id in self.state.soil_ids:
+            proxy = self.pxm.get(soild_id)
+            if not proxy:
+                continue
+
+            soils.append((proxy.get_property("key"), proxy.get_property("Value")))
+
+        soil_list = " ".join([key for (key, _) in soils])
+        code = f"{self.state.sim_name}.GeomInput.{self.state.indicator_geom_name}.GeomNames = '{soil_list}'"
+
+        for (key, value) in soils:
+            code += f"\n{self.state.sim_name}.GeomInput.{key}.Value = {value}"
+
+        self.soil_name_code = code + "\n"
 
     def set_soils(self):
         props = [k for k in self.pxm.get_definition("Soil").keys() if k != "Value"]
@@ -54,7 +72,7 @@ class SubsurfacePropertiesSnippet:
         code += "    .load_txt_content(subsurface_properties) \\\n"
         code += "    .apply()\n"
 
-        self.code = code
+        self.soil_code = code
 
     @property
     def header(self):
@@ -65,5 +83,6 @@ class SubsurfacePropertiesSnippet:
 
     @property
     def snippet(self):
+        self.set_soil_names()
         self.set_soils()
-        return self.header + self.code
+        return self.header + self.soil_name_code + "\n" + self.soil_code

@@ -9,7 +9,6 @@ class DomainSnippet:
 
         self.indicator_code = ""
         self.grid_code = ""
-        self.soil_code = ""
         self.patches_code = ""
 
         self.domain_builder_params = {}
@@ -80,21 +79,6 @@ class DomainSnippet:
         code += f"{self.state.sim_name}.Geom.{self.state.indicator_geom_name}.FileName = '{self.state.indicator_filename}'\n"
         self.indicator_code = code
 
-    def set_soils(self):
-        soils = []
-        for soild_id in self.state.soil_ids:
-            proxy = self.pxm.get(soild_id)
-            if not proxy:
-                continue
-
-            soils.append((proxy.get_property("key"), proxy.get_property("Value")))
-
-        soil_list = " ".join([key for (key, _) in soils])
-        self.soil_code = f"{self.state.sim_name}.GeomInput.{self.state.indicator_geom_name}.GeomNames = '{soil_list}'"
-
-        for (key, value) in soils:
-            self.soil_code += f"\n{self.state.sim_name}.GeomInput.{key}.Value = {value}"
-
     @property
     def header(self):
         header = "# ------------------------------\n"
@@ -108,14 +92,11 @@ class DomainSnippet:
         self.set_patches()
         self.set_terrain_files()
         self.set_indicator_file()
-        self.set_soils()
         return "\n".join(
             [
                 self.header,
                 self.grid_code,
                 self.patches_code,
                 self.indicator_code,
-                self.soil_code,
-                "",
             ]
         )
