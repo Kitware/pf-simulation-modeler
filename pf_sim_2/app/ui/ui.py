@@ -46,7 +46,7 @@ class UI:
 
             # Main content
             with layout.content:
-                with vuetify.VContainer(fluid=True):
+                with vuetify.VContainer(fluid=True, classes="pa-0"):
                     with html.Div(v_if="current_view === 'File Database'"):
                         file_db()
 

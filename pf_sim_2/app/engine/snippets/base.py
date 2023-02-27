@@ -43,8 +43,16 @@ def initialize(server):
             "generated_code": "",
             "display_snippet": False,
             "active_snippet": "",
+            "snippet_dirty": False,
         }
     )
+
+    def set_snippet_dirty(topic, **kwargs):
+        if topic == "changed":
+            state.snippet_dirty = True
+
+    pxm = ctrl.get_pxm()
+    pxm.on(set_snippet_dirty)
 
     @state.change("current_view")
     def clear_snippet(**kwargs):
@@ -52,6 +60,8 @@ def initialize(server):
 
     @state.change("current_view")
     def generate_code(**kwargs):
+        state.snippet_dirty = False
+
         # Domain page
         domain_code = domain_snippet.snippet
 
@@ -81,6 +91,8 @@ def initialize(server):
         return code
 
     def get_snippet(snippet):
+        state.snippet_dirty = False
+
         if snippet == "domain":
             state.active_snippet = domain_snippet.snippet
         elif snippet == "timing":
