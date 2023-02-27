@@ -16,9 +16,7 @@ from .cli import ArgumentsValidator
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-DEF_DIR = Path(
-    "/home/local/KHQ/will.dunklin/Desktop/work/pf_sim_2/pf_sim_2/app/engine/model"
-)
+DEF_DIR = Path(__file__).with_name("model").resolve()
 
 
 class PFLogic:
