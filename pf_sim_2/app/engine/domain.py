@@ -31,6 +31,8 @@ class DomainLogic:
                 "x_bound": ["", ""],
                 "y_bound": ["", ""],
                 "z_bound": ["", ""],
+                "domain_geom_name": "box_input",
+                "indicator_geom_name": "indi_input",
             }
         )
 
@@ -61,6 +63,10 @@ class DomainLogic:
 
         entry = file_database.getEntry(indicator_file)
         self.state.indicator_filename = entry.get("origin")
+
+        self.state.indicator_geom_name = "".join(
+            self.state.indicator_filename.split(".")[:-1]
+        )
 
         filename = file_database.getEntryPath(indicator_file)
         try:

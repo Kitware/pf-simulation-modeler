@@ -48,7 +48,7 @@ class DomainBuilderSnippet:
         else:
             code += "    .fully_saturated() \\\n"
         code += "    .water('domain') \\\n"
-        code += "    .box_domain('box_input', 'domain', bounds, domain_patches) \\\n"
+        code += f"    .box_domain('{self.state.domain_geom_name}', 'domain', bounds, domain_patches) \\\n"
         code += "    .homogeneous_subsurface('domain', specific_storage=1.0e-5, isotropic=True) \\\n"
         code += "\n".join(zero_flux_code) + "\n"
         code += f"    .slopes_mannings('domain', slope_x='{slope_x}', slope_y='{slope_y}', mannings=5.52e-6) \\\n"

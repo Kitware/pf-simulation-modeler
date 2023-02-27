@@ -75,11 +75,9 @@ class DomainSnippet:
         self.domain_builder_params["slope_y"] = entry.get("origin")
 
     def set_indicator_file(self):
-        code = f"{self.state.sim_name}.GeomInput.Names = 'box_input indi_input'\n\n"
-        code += (
-            f"{self.state.sim_name}.GeomInput.indi_input.InputType = 'IndicatorField'\n"
-        )
-        code += f"{self.state.sim_name}.Geom.indi_input.FileName = '{self.state.indicator_filename}'\n"
+        code = f"{self.state.sim_name}.GeomInput.Names = '{self.state.domain_geom_name} {self.state.indicator_geom_name}'\n\n"
+        code += f"{self.state.sim_name}.GeomInput.{self.state.indicator_geom_name}.InputType = 'IndicatorField'\n"
+        code += f"{self.state.sim_name}.Geom.{self.state.indicator_geom_name}.FileName = '{self.state.indicator_filename}'\n"
         self.indicator_code = code
 
     def set_soils(self):
@@ -92,9 +90,7 @@ class DomainSnippet:
             soils.append((proxy.get_property("key"), proxy.get_property("Value")))
 
         soil_list = " ".join([key for (key, _) in soils])
-        self.soil_code = (
-            f"{self.state.sim_name}.GeomInput.indi_input.GeomNames = '{soil_list}'"
-        )
+        self.soil_code = f"{self.state.sim_name}.GeomInput.{self.state.indicator_geom_name}.GeomNames = '{soil_list}'"
 
         for (key, value) in soils:
             self.soil_code += f"\n{self.state.sim_name}.GeomInput.{key}.Value = {value}"

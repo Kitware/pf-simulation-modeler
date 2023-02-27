@@ -62,6 +62,11 @@ def terrain_parameters():
 def bounds():
     html.H1("Bounds")
     html.P("Box domain")
+    vuetify.VTextField(
+        label="Domain Name",
+        v_model=("domain_geom_name",),
+        hide_details=True,
+    )
     bounds = {
         "X Bound": "x_bound",
         "Y Bound": "y_bound",
