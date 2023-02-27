@@ -1,6 +1,10 @@
 from trame.app import get_server
-import engine
-import ui
+
+try:
+    from . import engine, ui  # for installed package
+except ImportError:
+    import engine  # for development
+    import ui
 
 
 def main(
