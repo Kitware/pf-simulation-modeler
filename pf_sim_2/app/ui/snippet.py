@@ -1,6 +1,8 @@
+from trame_server.utils.hot_reload import hot_reload
 from trame.widgets import vuetify, html, code
 
 
+@hot_reload
 def show_snippet(ctrl, snippet):
     with html.Div(
         style="position: fixed; top: 64px; right: 0; height: calc(100vh - 64px); display: flex; justify-content: flex-end; align-items: center;",

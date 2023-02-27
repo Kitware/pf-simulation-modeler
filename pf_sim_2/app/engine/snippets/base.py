@@ -7,29 +7,33 @@ from .solver import SolverSnippet
 
 
 class PreambleSnippet:
+    def __init__(self, state):
+        self.state = state
+
     @property
     def snippet(self):
-        return """# Parflow Simulation Modeler - Project Generation Code
+        return f"""# Parflow Simulation Modeler - Project Generation Code
 from parflow import Run
 from parflow.tools.builders import SubsurfacePropertiesBuilder, DomainBuilder
 
 
-LW_Test = Run("LW_Test", __file__)
+{self.state.sim_name} = Run("{self.state.sim_name}", __file__)
 
-LW_Test.FileVersion = 4
+{self.state.sim_name}.FileVersion = 4
 
-LW_Test.Process.Topology.P = 1
-LW_Test.Process.Topology.Q = 1
-LW_Test.Process.Topology.R = 1
+{self.state.sim_name}.Process.Topology.P = 1
+{self.state.sim_name}.Process.Topology.Q = 1
+{self.state.sim_name}.Process.Topology.R = 1
 """
 
 
 def initialize(server):
     state, ctrl = server.state, server.controller
 
+    preamble = PreambleSnippet(state)
     timing_snippet = TimingSnippet(state, ctrl)
     domain_snippet = DomainSnippet(state, ctrl)
-    domain_builder = DomainBuilderSnippet()
+    domain_builder = DomainBuilderSnippet(state)
     boundary_snippet = BoundaryConditionsSnippet(state, ctrl)
     subsurface_snippet = SubsurfacePropertiesSnippet(state, ctrl)
     solver_snippet = SolverSnippet(state, ctrl)
@@ -55,22 +59,22 @@ def initialize(server):
         boundary_code = boundary_snippet.snippet
 
         # DomainBuilder params
-        # domain_builder_params = {
-        #     **boundary_snippet.domain_builder_params,
-        #     **domain_snippet.domain_builder_params,
-        #     **state.simTypeShortcuts,
-        # }
+        domain_builder_params = {
+            **boundary_snippet.domain_builder_params,
+            **domain_snippet.domain_builder_params,
+            **state.simTypeShortcuts,
+        }
 
         code = "\n".join(
             [
-                PreambleSnippet().snippet,
+                preamble.snippet,
                 domain_code,
                 timing_snippet.snippet,
-                # domain_builder.snippet(domain_builder_params),
+                domain_builder.snippet(domain_builder_params),
                 boundary_code,
                 subsurface_snippet.snippet,
                 solver_snippet.snippet,
-                "\nLW_Test.run()\n",
+                f"\n{state.sim_name}.run()\n",
             ]
         )
         state.generated_code = code

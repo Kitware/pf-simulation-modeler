@@ -25,15 +25,15 @@ class DomainSnippet:
         if not all([origin, spacing, size]):
             return
 
-        code = f"LW_Test.ComputationalGrid.Lower.X = {origin[0]}\n"
-        code += f"LW_Test.ComputationalGrid.Lower.Y = {origin[1]}\n"
-        code += f"LW_Test.ComputationalGrid.Lower.Z = {origin[2]}\n\n"
-        code += f"LW_Test.ComputationalGrid.DX = {spacing[0]}\n"
-        code += f"LW_Test.ComputationalGrid.DY = {spacing[1]}\n"
-        code += f"LW_Test.ComputationalGrid.DZ = {spacing[2]}\n\n"
-        code += f"LW_Test.ComputationalGrid.NX = {size[0]}\n"
-        code += f"LW_Test.ComputationalGrid.NY = {size[1]}\n"
-        code += f"LW_Test.ComputationalGrid.NZ = {size[2]}\n\n"
+        code = f"{self.state.sim_name}.ComputationalGrid.Lower.X = {origin[0]}\n"
+        code += f"{self.state.sim_name}.ComputationalGrid.Lower.Y = {origin[1]}\n"
+        code += f"{self.state.sim_name}.ComputationalGrid.Lower.Z = {origin[2]}\n\n"
+        code += f"{self.state.sim_name}.ComputationalGrid.DX = {spacing[0]}\n"
+        code += f"{self.state.sim_name}.ComputationalGrid.DY = {spacing[1]}\n"
+        code += f"{self.state.sim_name}.ComputationalGrid.DZ = {spacing[2]}\n\n"
+        code += f"{self.state.sim_name}.ComputationalGrid.NX = {size[0]}\n"
+        code += f"{self.state.sim_name}.ComputationalGrid.NY = {size[1]}\n"
+        code += f"{self.state.sim_name}.ComputationalGrid.NZ = {size[2]}\n\n"
         code += "bounds = [\n"
         code += f"    {origin[0]}, {origin[0] + (spacing[0] * size[0])},\n"
         code += f"    {origin[1]}, {origin[1] + (spacing[1] * size[1])},\n"
@@ -75,11 +75,11 @@ class DomainSnippet:
         self.domain_builder_params["slope_y"] = entry.get("origin")
 
     def set_indicator_file(self):
-        code = "LW_Test.GeomInput.Names = 'box_input indi_input'\n\n"
-        code += "LW_Test.GeomInput.indi_input.InputType = 'IndicatorField'\n"
+        code = f"{self.state.sim_name}.GeomInput.Names = 'box_input indi_input'\n\n"
         code += (
-            f"LW_Test.Geom.indi_input.FileName = '{self.state.indicator_filename}'\n"
+            f"{self.state.sim_name}.GeomInput.indi_input.InputType = 'IndicatorField'\n"
         )
+        code += f"{self.state.sim_name}.Geom.indi_input.FileName = '{self.state.indicator_filename}'\n"
         self.indicator_code = code
 
     def set_soils(self):
@@ -92,10 +92,12 @@ class DomainSnippet:
             soils.append((proxy.get_property("key"), proxy.get_property("Value")))
 
         soil_list = " ".join([key for (key, _) in soils])
-        self.soil_code = f"LW_Test.GeomInput.indi_input.GeomNames = '{soil_list}'"
+        self.soil_code = (
+            f"{self.state.sim_name}.GeomInput.indi_input.GeomNames = '{soil_list}'"
+        )
 
         for (key, value) in soils:
-            self.soil_code += f"\nLW_Test.GeomInput.{key}.Value = {value}"
+            self.soil_code += f"\n{self.state.sim_name}.GeomInput.{key}.Value = {value}"
 
     @property
     def header(self):

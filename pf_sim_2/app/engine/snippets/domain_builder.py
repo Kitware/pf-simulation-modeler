@@ -1,4 +1,7 @@
 class DomainBuilderSnippet:
+    def __init__(self, state):
+        self.state = state
+
     def snippet(self, params):
         if not params:
             return ""
@@ -35,7 +38,7 @@ class DomainBuilderSnippet:
         code += "# Domain Builder\n"
         code += "# ------------------------------\n"
         code += zero_flux_patches + "\n"
-        code += "DomainBuilder(LW_Test) \\\n"
+        code += f"DomainBuilder({self.state.sim_name}) \\\n"
         if not wells:
             code += "    .no_wells() \\\n"
         if not contaminants:

@@ -1,7 +1,9 @@
+from trame_server.utils.hot_reload import hot_reload
 from trame.widgets import vuetify, html, simput
 from .snippet import show_snippet
 
 
+@hot_reload
 def domain_parameters():
     html.H1("Indicator")
     with vuetify.VRow(classes="ma-6 justify-space-between"):
@@ -20,6 +22,7 @@ def domain_parameters():
             simput.SimputItem(item_id=("grid_id", None))
 
 
+@hot_reload
 def terrain_parameters():
     html.H1("Terrain")
     with html.Div(classes="ma-6"):
@@ -55,6 +58,7 @@ def terrain_parameters():
             )
 
 
+@hot_reload
 def bounds():
     html.H1("Bounds")
     html.P("Box domain")
@@ -84,6 +88,7 @@ def bounds():
     simput.SimputItem(item_id=("patches_id",))
 
 
+@hot_reload
 def domain(ctrl):
     with html.Div(classes="d-flex flex-column fill-height"):
         with vuetify.VToolbar(

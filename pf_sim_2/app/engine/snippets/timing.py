@@ -14,15 +14,13 @@ class TimingSnippet:
         if not proxy:
             return
 
-        code = f"LW_Test.TimingInfo.BaseUnit = {proxy.get_property('BaseUnit')}\n"
-        code += f"LW_Test.TimingInfo.StartCount = {proxy.get_property('StartCount')}\n"
-        code += f"LW_Test.TimingInfo.StartTime = {proxy.get_property('StartTime')}\n"
-        code += f"LW_Test.TimingInfo.StopTime = {proxy.get_property('StopTime')}\n"
-        code += (
-            f"LW_Test.TimingInfo.DumpInterval = {proxy.get_property('DumpInterval')}\n"
-        )
-        code += "LW_Test.TimeStep.Type = 'Constant'\n"
-        code += "LW_Test.TimeStep.Value = 1.0\n"
+        code = f"{self.state.sim_name}.TimingInfo.BaseUnit = {proxy.get_property('BaseUnit')}\n"
+        code += f"{self.state.sim_name}.TimingInfo.StartCount = {proxy.get_property('StartCount')}\n"
+        code += f"{self.state.sim_name}.TimingInfo.StartTime = {proxy.get_property('StartTime')}\n"
+        code += f"{self.state.sim_name}.TimingInfo.StopTime = {proxy.get_property('StopTime')}\n"
+        code += f"{self.state.sim_name}.TimingInfo.DumpInterval = {proxy.get_property('DumpInterval')}\n"
+        code += f"{self.state.sim_name}.TimeStep.Type = 'Constant'\n"
+        code += f"{self.state.sim_name}.TimeStep.Value = 1.0\n"
 
         self.timing_info_code = code
 
@@ -53,13 +51,13 @@ class TimingSnippet:
             cycles.append({"name": name, "repeat": repeat, "subcycles": subcycles})
             names.append(name)
 
-        code = f"LW_Test.Cycle.Names = '{' '.join(names)}'\n\n"
+        code = f"{self.state.sim_name}.Cycle.Names = '{' '.join(names)}'\n\n"
         for cycle in cycles:
-            code += f"LW_Test.Cycle.{cycle['name']}.Names = '{' '.join(sub['name'] for sub in cycle['subcycles'])}'\n"
-            code += f"LW_Test.Cycle.{cycle['name']}.Repeat = {cycle['repeat']}\n"
+            code += f"{self.state.sim_name}.Cycle.{cycle['name']}.Names = '{' '.join(sub['name'] for sub in cycle['subcycles'])}'\n"
+            code += f"{self.state.sim_name}.Cycle.{cycle['name']}.Repeat = {cycle['repeat']}\n"
 
             for subcycle in cycle["subcycles"]:
-                code += f"LW_Test.Cycle.{cycle['name']}.{subcycle['name']}.Length = {subcycle['length']}\n"
+                code += f"{self.state.sim_name}.Cycle.{cycle['name']}.{subcycle['name']}.Length = {subcycle['length']}\n"
             code += "\n"
 
         self.time_cycle_code = code

@@ -50,7 +50,7 @@ class SubsurfacePropertiesSnippet:
 
         code += "'''\n\n"
         code += "# Setting subsurface properties\n"
-        code += "SubsurfacePropertiesBuilder(LW_Test) \\\n"
+        code += f"SubsurfacePropertiesBuilder({self.state.sim_name}) \\\n"
         code += "    .load_txt_content(subsurface_properties) \\\n"
         code += "    .apply()\n"
 

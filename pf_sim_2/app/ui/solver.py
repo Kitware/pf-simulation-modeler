@@ -1,7 +1,9 @@
+from trame_server.utils.hot_reload import hot_reload
 from trame.widgets import vuetify, html, simput
 from .snippet import show_snippet
 
 
+@hot_reload
 def solver(ctrl):
     html.H1("Solver")
 

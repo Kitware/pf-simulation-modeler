@@ -117,22 +117,22 @@ class BoundaryConditionsSnippet:
         patches = []
         for p_patch, p_type, p_cycle, p_subcycle in self.other_flux.values():
             code = f"# {p_patch}\n"
-            code += f"LW_Test.Patch.{p_patch}.BCPressure.Type = '{p_type}'\n"
-            code += f"LW_Test.Patch.{p_patch}.BCPressure.Cycle = '{p_cycle}'\n"
+            code += (
+                f"{self.state.sim_name}.Patch.{p_patch}.BCPressure.Type = '{p_type}'\n"
+            )
+            code += f"{self.state.sim_name}.Patch.{p_patch}.BCPressure.Cycle = '{p_cycle}'\n"
 
             for subcycle, value in p_subcycle.items():
                 if value is None:
                     continue
-                code += (
-                    f"LW_Test.Patch.{p_patch}.BCPressure.{subcycle}.Value = {value}\n"
-                )
+                code += f"{self.state.sim_name}.Patch.{p_patch}.BCPressure.{subcycle}.Value = {value}\n"
 
             patches.append(code)
 
         code = "# ------------------------------\n"
         code += "# Boundary Conditions\n"
         code += "# ------------------------------\n"
-        code += "LW_Test.BCPressure.PatchNames = LW_Test.Geom.domain.Patches\n"
+        code += f"{self.state.sim_name}.BCPressure.PatchNames = {self.state.sim_name}.Geom.domain.Patches\n"
         code += "\n".join(patches)
         self.bc_explicit_code = code
 

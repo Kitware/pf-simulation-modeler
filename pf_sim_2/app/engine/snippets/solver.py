@@ -21,10 +21,10 @@ class SolverSnippet:
     def set_output(self):
         outputs = self.state.solver_outputs
         code = "# Outputs\n"
-        code += f"LW_Test.Solver.PrintSubsurfData = {0 in outputs}\n"
-        code += f"LW_Test.Solver.PrintPressure = {1 in outputs}\n"
-        code += f"LW_Test.Solver.PrintSaturation = {2 in outputs}\n"
-        code += f"LW_Test.Solver.PrintMask = {3 in outputs}\n"
+        code += f"{self.state.sim_name}.Solver.PrintSubsurfData = {0 in outputs}\n"
+        code += f"{self.state.sim_name}.Solver.PrintPressure = {1 in outputs}\n"
+        code += f"{self.state.sim_name}.Solver.PrintSaturation = {2 in outputs}\n"
+        code += f"{self.state.sim_name}.Solver.PrintMask = {3 in outputs}\n"
         self.output_code = code
 
     def set_general(self):
@@ -40,11 +40,11 @@ class SolverSnippet:
         terrain_following_grid = get_prop(proxy, "TerrainFollowingGrid", True)
 
         code = "# General Solver parameters\n"
-        code += f"LW_Test.Solver.MaxIter = {max_iter}\n"
-        code += f"LW_Test.Solver.Drop = {drop}\n"
-        code += f"LW_Test.Solver.AbsTol = {abs_tol}\n"
-        code += f"LW_Test.Solver.MaxConvergenceFailures = {max_convergence_failures}\n"
-        code += f"LW_Test.Solver.TerrainFollowingGrid = {terrain_following_grid}\n"
+        code += f"{self.state.sim_name}.Solver.MaxIter = {max_iter}\n"
+        code += f"{self.state.sim_name}.Solver.Drop = {drop}\n"
+        code += f"{self.state.sim_name}.Solver.AbsTol = {abs_tol}\n"
+        code += f"{self.state.sim_name}.Solver.MaxConvergenceFailures = {max_convergence_failures}\n"
+        code += f"{self.state.sim_name}.Solver.TerrainFollowingGrid = {terrain_following_grid}\n"
         self.general_code = code
 
     def set_nonlinear(self):
@@ -61,13 +61,13 @@ class SolverSnippet:
         variable_dz = get_prop(proxy, "VariableDz", False)
 
         code = "# Nonlinear Solver parameters\n"
-        code += f"LW_Test.Solver.Nonlinear.MaxIter = {max_iter}\n"
-        code += f"LW_Test.Solver.Nonlinear.ResidualTol = {residual_tol}\n"
-        code += f"LW_Test.Solver.Nonlinear.EtaValue = {eta_value}\n"
-        code += f"LW_Test.Solver.Nonlinear.DerivativeEpsilon = {derivative_epsilon}\n"
-        code += f"LW_Test.Solver.Nonlinear.StepTol = {step_tol}\n"
-        code += f"LW_Test.Solver.Nonlinear.Globalization = '{globalization}'\n"
-        code += f"LW_Test.Solver.Nonlinear.VariableDz = {variable_dz}\n"
+        code += f"{self.state.sim_name}.Solver.Nonlinear.MaxIter = {max_iter}\n"
+        code += f"{self.state.sim_name}.Solver.Nonlinear.ResidualTol = {residual_tol}\n"
+        code += f"{self.state.sim_name}.Solver.Nonlinear.EtaValue = {eta_value}\n"
+        code += f"{self.state.sim_name}.Solver.Nonlinear.DerivativeEpsilon = {derivative_epsilon}\n"
+        code += f"{self.state.sim_name}.Solver.Nonlinear.StepTol = {step_tol}\n"
+        code += f"{self.state.sim_name}.Solver.Nonlinear.Globalization = '{globalization}'\n"
+        code += f"{self.state.sim_name}.Solver.Nonlinear.VariableDz = {variable_dz}\n"
         self.nonlinear_code = code
 
     def set_linear(self):
@@ -79,8 +79,8 @@ class SolverSnippet:
         max_restarts = get_prop(proxy, "MaxRestarts", 2)
 
         code = "# Linear Solver parameters\n"
-        code += f"LW_Test.Solver.Linear.KrylovDimension = {krylov_dimension}\n"
-        code += f"LW_Test.Solver.Linear.MaxRestarts = {max_restarts}\n"
+        code += f"{self.state.sim_name}.Solver.Linear.KrylovDimension = {krylov_dimension}\n"
+        code += f"{self.state.sim_name}.Solver.Linear.MaxRestarts = {max_restarts}\n"
         self.linear_code = code
 
     @property

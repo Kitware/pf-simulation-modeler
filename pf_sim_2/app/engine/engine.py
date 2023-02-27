@@ -44,6 +44,7 @@ class PFLogic:
                 ],
                 "cycle_defs": {},
                 "subcycle_defs": {},
+                "sim_name": "PF_Test",
             }
         )
 
