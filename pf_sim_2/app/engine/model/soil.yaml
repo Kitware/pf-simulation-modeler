@@ -42,6 +42,8 @@ Soil:
 Domain:
   key:
     _label: Key
+    _help: >-
+      If a soil property is not set, the domain values are used.
     type: string
     size: 1
     initial: 'domain'
