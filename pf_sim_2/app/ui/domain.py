@@ -66,6 +66,7 @@ def bounds():
         label="Domain Name",
         v_model=("domain_geom_name",),
         hide_details=True,
+        classes="pb-3",
     )
     bounds = {
         "X Bound": "x_bound",

@@ -1,6 +1,8 @@
 BCPressure:
   Patch:
     _label: Patch
+    _help: >-
+      The patch name is defined on the Domain page.
     type: string
     size: 1
   Type:

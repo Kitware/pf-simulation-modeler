@@ -2,7 +2,7 @@
     <ui id="BCPressure">
         <row>
             <col>
-                <input name="Patch" />
+                <input name="Patch" disabled="" />
             </col>
             <col>
                 <input name="Type" />

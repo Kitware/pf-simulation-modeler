@@ -1,3 +1,4 @@
+from trame_simput.core.proxy import Proxy
 from functools import partial
 
 
@@ -7,7 +8,7 @@ class BCLogic:
         self.ctrl = ctrl
         self.pxm = ctrl.get_pxm()
 
-        patches = ["x_lower", "x_upper", "y_lower", "y_upper", "z_lower", "z_upper"]
+        patches = self.get_patch_names()
         bc_pressures = list(
             map(lambda patch: self.pxm.create("BCPressure", Patch=patch), patches)
         )
@@ -22,6 +23,32 @@ class BCLogic:
                 "bc_pressure_value_ids": {},
             }
         )
+
+        patches_proxy: Proxy = self.pxm.get(self.state.patches_id)
+        if not patches_proxy:
+            raise Exception(f"Patches proxy [{self.state.patches_id}] not found.")
+        patches_proxy.on(self.on_patch_name_change)
+
+    def get_patch_names(self):
+        patch_names = ["XLower", "XUpper", "YLower", "YUpper", "ZLower", "ZUpper"]
+        patches_proxy: Proxy = self.pxm.get(self.state.patches_id)
+        if not patches_proxy:
+            return []
+        return [patches_proxy.get_property(name) for name in patch_names]
+
+    def on_patch_name_change(self, topic, **kwargs):
+        if topic != "update":
+            return
+
+        patches = self.get_patch_names()
+        for i, bcp_id in enumerate(self.state.bc_pressure_ids):
+            bcp: Proxy = self.pxm.get(bcp_id)
+            if not bcp:
+                continue
+
+            bcp.set_property("Patch", patches[i])
+            bcp.commit()
+            self.ctrl.simput_push(id=bcp_id)
 
     def on_bcp_change(self, topic, id, **kwargs):
         if topic != "update" and kwargs.get("property_name") != "Cycle":
