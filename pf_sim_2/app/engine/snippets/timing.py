@@ -73,4 +73,5 @@ class TimingSnippet:
     def snippet(self):
         self.set_timing_info()
         self.set_cycles()
-        return "\n".join([self.header, self.timing_info_code, self.time_cycle_code])
+        code = [self.header, self.timing_info_code, self.time_cycle_code]
+        return "\n".join([s for s in code if s])

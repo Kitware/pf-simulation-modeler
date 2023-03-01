@@ -75,18 +75,18 @@ def initialize(server):
             **state.simTypeShortcuts,
         }
 
-        code = "\n".join(
-            [
-                preamble.snippet,
-                domain_code,
-                timing_snippet.snippet,
-                domain_builder.snippet(domain_builder_params),
-                boundary_code,
-                subsurface_snippet.snippet,
-                solver_snippet.snippet,
-                f"\n{state.sim_name}.run()\n",
-            ]
-        )
+        snippets = [
+            preamble.snippet,
+            domain_code,
+            timing_snippet.snippet,
+            domain_builder.snippet(domain_builder_params),
+            boundary_code,
+            subsurface_snippet.snippet,
+            solver_snippet.snippet,
+            f"\n{state.sim_name}.run()\n",
+        ]
+
+        code = "\n".join([s for s in snippets if s])
         state.generated_code = code
         return code
 

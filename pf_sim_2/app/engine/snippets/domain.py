@@ -10,6 +10,7 @@ class DomainSnippet:
         self.indicator_code = ""
         self.grid_code = ""
         self.patches_code = ""
+        self.terrain_files_code = ""
 
         self.domain_builder_params = {}
 
@@ -61,17 +62,30 @@ class DomainSnippet:
 
     def set_terrain_files(self):
         file_database = FileDatabase()
+        code = ""
+
         # Slope X
         entry = file_database.getEntry(self.state.slope_x_file)
-        if not entry:
-            return
-        self.domain_builder_params["slope_x"] = entry.get("origin")
+        if entry:
+            file_name = entry.get("origin")
+            self.domain_builder_params["slope_x"] = file_name
+            code += f"{self.state.sim_name}.dist('{file_name}')\n"
 
         # Slope Y
         entry = file_database.getEntry(self.state.slope_y_file)
-        if not entry:
+        if entry:
+            file_name = entry.get("origin")
+            self.domain_builder_params["slope_y"] = file_name
+            code += f"{self.state.sim_name}.dist('{file_name}')\n"
+
+        # Indicator file
+        if self.state.indicator_filename:
+            code += f"{self.state.sim_name}.dist('{self.state.indicator_filename}')\n"
+
+        if code == "":
             return
-        self.domain_builder_params["slope_y"] = entry.get("origin")
+
+        self.terrain_files_code = "# File distribution\n" + code
 
     def set_indicator_file(self):
         code = f"{self.state.sim_name}.GeomInput.Names = '{self.state.domain_geom_name} {self.state.indicator_geom_name}'\n\n"
@@ -92,11 +106,11 @@ class DomainSnippet:
         self.set_patches()
         self.set_terrain_files()
         self.set_indicator_file()
-        return "\n".join(
-            [
-                self.header,
-                self.grid_code,
-                self.patches_code,
-                self.indicator_code,
-            ]
-        )
+        code = [
+            self.header,
+            self.grid_code,
+            self.patches_code,
+            self.indicator_code,
+            self.terrain_files_code,
+        ]
+        return "\n".join([s for s in code if s])

@@ -96,12 +96,11 @@ class SolverSnippet:
         self.set_general()
         self.set_nonlinear()
         self.set_linear()
-        return "\n".join(
-            [
-                self.header,
-                self.output_code,
-                self.general_code,
-                self.nonlinear_code,
-                self.linear_code,
-            ]
-        )
+        code = [
+            self.header,
+            self.output_code,
+            self.general_code,
+            self.nonlinear_code,
+            self.linear_code,
+        ]
+        return "\n".join([s for s in code if s])
