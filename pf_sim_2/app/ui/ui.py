@@ -35,8 +35,7 @@ class UI:
             with layout.icon:
                 vuetify.VIcon("mdi-water-opacity", color="blue", large=True)
 
-            self.simput_widget.clear()
-            layout.root = self.simput_widget
+            self.simput_widget.register_layout(layout)
 
             with layout.toolbar:
                 vuetify.VSpacer()
