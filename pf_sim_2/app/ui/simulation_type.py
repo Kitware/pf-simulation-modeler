@@ -25,5 +25,6 @@ def simulation_type():
             )
             vuetify.VTextField(
                 label="Simulation Name",
+                prepend_icon="mdi-atom",
                 v_model=("sim_name",),
             )

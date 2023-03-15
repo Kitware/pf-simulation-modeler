@@ -1,6 +1,7 @@
 from trame.ui.vuetify import SinglePageLayout
 from trame.widgets import vuetify, simput, html
 from pf_sim_2.widgets import pf_sim_2 as pf_widgets
+from .save_project import save_project_button
 from .file_db import file_db
 from .simulation_type import simulation_type
 from .domain import domain
@@ -41,7 +42,7 @@ class UI:
                 vuetify.VSpacer()
                 pf_widgets.NavigationDropDown(v_model="current_view", views=("views",))
                 vuetify.VSpacer()
-                vuetify.VBtn("Save", click=self.ctrl.simput_apply)
+                save_project_button(self.ctrl, self.state)
 
             # Main content
             with layout.content:

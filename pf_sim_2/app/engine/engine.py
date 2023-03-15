@@ -11,6 +11,7 @@ from . import timing
 from . import snippets
 from . import boundary_conditions
 from . import solver
+from . import save_project
 from .cli import ArgumentsValidator
 
 logger = logging.getLogger(__name__)
@@ -112,8 +113,6 @@ def initialize(server):
     engine = PFLogic(server)
 
     args = server.cli.parse_known_args()[0]
-    print(args)
-
     validator = ArgumentsValidator(args)
     if not validator.valid:
         raise RuntimeError("Invalid arguments")
@@ -123,6 +122,7 @@ def initialize(server):
     timing.initialize(server)
     boundary_conditions.initialize(server)
     solver.initialize(server)
+    save_project.initialize(server)
 
     snippets.initialize(server)
 

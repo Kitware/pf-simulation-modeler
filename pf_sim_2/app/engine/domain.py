@@ -16,13 +16,17 @@ class DomainLogic:
             {
                 "domain_view": "grid",
                 "soils": [],
+                "soil_ids": [],
                 "current_soil": "all",
+                # Files
                 "indicator_file": None,
-                "indicator_filename": None,
                 "slope_x_file": None,
                 "slope_y_file": None,
                 "elevation_file": None,
-                "soil_ids": [],
+                "indicator_filename": None,
+                "slope_x_filename": None,
+                "slope_y_filename": None,
+                "elevation_filename": None,
                 # Simput
                 "domain_id": self.pxm.create("Domain").id,
                 "grid_id": grid_proxy.id,
@@ -114,6 +118,30 @@ class DomainLogic:
 
         self.state.soil_ids = soil_ids
 
+    def update_slope_x(self, slope_x_file, **kwargs):
+        if not slope_x_file:
+            return
+
+        file_database = FileDatabase()
+        entry = file_database.getEntry(slope_x_file)
+        self.state.slope_x_filename = entry.get("origin")
+
+    def update_slope_y(self, slope_y_file, **kwargs):
+        if not slope_y_file:
+            return
+
+        file_database = FileDatabase()
+        entry = file_database.getEntry(slope_y_file)
+        self.state.slope_y_filename = entry.get("origin")
+
+    def update_elevation(self, elevation_file, **kwargs):
+        if not elevation_file:
+            return
+
+        file_database = FileDatabase()
+        entry = file_database.getEntry(elevation_file)
+        self.state.elevation_filename = entry.get("origin")
+
 
 def initialize(server):
     state, ctrl = server.state, server.controller
@@ -121,3 +149,6 @@ def initialize(server):
     domain_logic = DomainLogic(state, ctrl)
 
     state.change("indicator_file")(domain_logic.update_grid)
+    state.change("slope_x_file")(domain_logic.update_slope_x)
+    state.change("slope_y_file")(domain_logic.update_slope_y)
+    state.change("elevation_file")(domain_logic.update_elevation)

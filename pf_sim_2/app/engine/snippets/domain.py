@@ -1,5 +1,4 @@
 from trame_simput.core.proxy import Proxy
-from ..files import FileDatabase
 
 
 class DomainSnippet:
@@ -61,20 +60,17 @@ class DomainSnippet:
         self.patches_code = code
 
     def set_terrain_files(self):
-        file_database = FileDatabase()
         code = ""
 
         # Slope X
-        entry = file_database.getEntry(self.state.slope_x_file)
-        if entry:
-            file_name = entry.get("origin")
+        if self.state.slope_x_filename:
+            file_name = self.state.slope_x_filename
             self.domain_builder_params["slope_x"] = file_name
             code += f"{self.state.sim_name}.dist('{file_name}')\n"
 
         # Slope Y
-        entry = file_database.getEntry(self.state.slope_y_file)
-        if entry:
-            file_name = entry.get("origin")
+        if self.state.slope_y_filename:
+            file_name = self.state.slope_y_filename
             self.domain_builder_params["slope_y"] = file_name
             code += f"{self.state.sim_name}.dist('{file_name}')\n"
 
