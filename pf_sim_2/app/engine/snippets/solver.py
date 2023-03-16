@@ -17,6 +17,7 @@ class SolverSnippet:
         self.general_code = ""
         self.nonlinear_code = ""
         self.linear_code = ""
+        self.known_solution_code = ""
 
     def set_output(self):
         outputs = self.state.solver_outputs
@@ -83,6 +84,11 @@ class SolverSnippet:
         code += f"{self.state.sim_name}.Solver.Linear.MaxRestarts = {max_restarts}\n"
         self.linear_code = code
 
+    def set_known_solution(self):
+        code = "# Exact solution specification for error calculations\n"
+        code += f"{self.state.sim_name}.KnownSolution = 'NoKnownSolution'\n"  # TODO: Make this a choice
+        self.known_solution_code = code
+
     @property
     def header(self):
         header = "# ------------------------------\n"
@@ -96,11 +102,13 @@ class SolverSnippet:
         self.set_general()
         self.set_nonlinear()
         self.set_linear()
+        self.set_known_solution()
         code = [
             self.header,
             self.output_code,
             self.general_code,
             self.nonlinear_code,
             self.linear_code,
+            self.known_solution_code,
         ]
         return "\n".join([s for s in code if s])
