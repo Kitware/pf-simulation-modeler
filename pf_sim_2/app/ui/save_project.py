@@ -10,7 +10,7 @@ def save_project_button(ctrl, state):
         save_project(ctrl, state)
 
 
-step_2_condition = "(!!indicator_filename && !!slope_x_filename && !!slope_y_filename)"
+step_2_condition = "(!!indicator_filename && !!slope_x_filename && !!slope_y_filename && !!pressure_filename)"
 
 
 @hot_reload
@@ -53,12 +53,13 @@ def save_project(ctrl, state):
                     )
 
                 with vuetify.VStepperContent(step="2"):
-                    with html.Div(classes="mb-12", style="height: 240px"):
+                    with html.Div(classes="mb-12", style="height: 290px"):
                         html.H3("Export ParFlow Binary Files")
                         with html.Ul(
                             classes="d-flex flex-column align-center pa-0 ma-auto",
                             style="width: 80%",
                         ):
+                            # Indicator file
                             with html.Li(
                                 style="width: 100%",
                                 classes="d-flex flex-row align-center justify-space-between mb-2",
@@ -70,6 +71,7 @@ def save_project(ctrl, state):
                                 )
                                 no_file_selected(label="Indicator File")
 
+                            # Slope files
                             with html.Li(
                                 style="width: 100%",
                                 classes="d-flex flex-row align-center justify-space-between mb-2",
@@ -88,6 +90,17 @@ def save_project(ctrl, state):
                                 select_file("slope_y_filename", label="Slope Y File")
                                 no_file_selected(label="Slope Y File")
 
+                            # Pressure file
+                            with html.Li(
+                                style="width: 100%",
+                                classes="d-flex flex-row align-center justify-space-between mb-2",
+                            ):
+                                html.P("Pressure", classes="mb-0 pa-2")
+                                vuetify.VIcon("mdi-arrow-right")
+                                select_file("pressure_filename", label="Pressure File")
+                                no_file_selected(label="Pressure File")
+
+                            # Elevation file (optional)
                             with html.Li(
                                 style="width: 100%",
                                 classes="d-flex flex-row align-center justify-space-between",

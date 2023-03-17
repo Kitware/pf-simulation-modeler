@@ -21,6 +21,7 @@ class BCLogic:
             {
                 "bc_pressure_ids": bc_pressure_ids,
                 "bc_pressure_value_ids": {},
+                "bc_patch_names": self.get_patch_names(),
             }
         )
 
@@ -28,6 +29,8 @@ class BCLogic:
         if not patches_proxy:
             raise Exception(f"Patches proxy [{self.state.patches_id}] not found.")
         patches_proxy.on(self.on_patch_name_change)
+
+        self.ctrl.get_patch_names = self.get_patch_names
 
     def get_patch_names(self):
         patch_names = ["XLower", "XUpper", "YLower", "YUpper", "ZLower", "ZUpper"]
@@ -49,6 +52,7 @@ class BCLogic:
             bcp.set_property("Patch", patches[i])
             bcp.commit()
             self.ctrl.simput_push(id=bcp_id)
+        self.state.bc_patch_names = patches
 
     def on_bcp_change(self, topic, id, **kwargs):
         if topic != "update" and kwargs.get("property_name") != "Cycle":

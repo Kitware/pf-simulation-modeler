@@ -116,6 +116,7 @@ class FileLogic:
                     "Indicator",
                     "Elevation",
                     "Slope",
+                    "Pressure",
                     "Other",
                 ],
                 "upload_error": "",

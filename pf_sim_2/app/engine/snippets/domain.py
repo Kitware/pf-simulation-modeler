@@ -78,6 +78,10 @@ class DomainSnippet:
         if self.state.indicator_filename:
             code += f"{self.state.sim_name}.dist('{self.state.indicator_filename}')\n"
 
+        # Pressure file
+        if self.state.pressure_filename:
+            code += f"{self.state.sim_name}.dist('{self.state.pressure_filename}')\n"
+
         if code == "":
             return
 

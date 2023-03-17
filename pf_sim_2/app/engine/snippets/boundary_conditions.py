@@ -85,12 +85,6 @@ class BoundaryConditionsSnippet:
                         zero_flux[(cycle, interval)] = []
                     zero_flux[(cycle, interval)].append(pressure)
 
-        # # Only accumulate zero_flux patches with more than one group
-        # for key, pressures in list(zero_flux.items()):
-        #     if len(pressures) == 1:
-        #         other_flux[pressures[0][0]] = pressures[0]
-        #         del zero_flux[key]
-
         return zero_flux, other_flux
 
     def set_boundary_conditions(self):

@@ -6,9 +6,10 @@ from .file_db import file_db
 from .simulation_type import simulation_type
 from .domain import domain
 from .timing import timing
+from .boundary_conditions import boundary_conditions
+from .pressure import pressure
 from .subsurface_props import subsurface_props
 from .solver import solver
-from .boundary_conditions import boundary_conditions
 from .code_gen import code_gen
 
 
@@ -61,6 +62,9 @@ class UI:
 
                     with html.Div(v_if="current_view === 'Boundary Conditions'"):
                         boundary_conditions(self.ctrl)
+
+                    with html.Div(v_if="current_view === 'Pressure'"):
+                        pressure(self.ctrl)
 
                     with html.Div(v_if="current_view === 'Subsurface Properties'"):
                         subsurface_props(self.ctrl)

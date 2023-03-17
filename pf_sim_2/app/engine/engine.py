@@ -10,6 +10,7 @@ from . import domain
 from . import timing
 from . import snippets
 from . import boundary_conditions
+from . import pressure
 from . import solver
 from . import save_project
 from .cli import ArgumentsValidator
@@ -36,9 +37,9 @@ class PFLogic:
                     "Domain",
                     "Timing",
                     "Boundary Conditions",
+                    "Pressure",
                     "Subsurface Properties",
                     "Solver",
-                    # "Project Generation",
                     "Code Generation",
                 ],
                 "cycle_defs": {},
@@ -121,6 +122,7 @@ def initialize(server):
     domain.initialize(server)
     timing.initialize(server)
     boundary_conditions.initialize(server)
+    pressure.initialize(server)
     solver.initialize(server)
     save_project.initialize(server)
 

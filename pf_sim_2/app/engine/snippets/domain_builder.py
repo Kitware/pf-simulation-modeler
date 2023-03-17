@@ -52,7 +52,5 @@ class DomainBuilderSnippet:
         code += "    .homogeneous_subsurface('domain', specific_storage=1.0e-5, isotropic=True) \\\n"
         code += "\n".join(zero_flux_code) + "\n"
         code += f"    .slopes_mannings('domain', slope_x='{slope_x}', slope_y='{slope_y}', mannings=5.52e-6) \\\n"
-        code += (
-            "    .ic_pressure('domain', patch='z_upper', pressure='press.init.pfb')\n"
-        )
+        code += f"    .ic_pressure('domain', patch='{self.state.pressure_patch}', pressure='{self.state.pressure_filename}')\n"
         return code
