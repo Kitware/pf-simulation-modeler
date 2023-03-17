@@ -40,13 +40,34 @@ def initialize(server):
             with open(slope_y_file, "wb") as f:
                 f.write(slope_y)
 
+        if state.pressure_file:
+            pressure = file_database.getEntryData(state.pressure_file)
+            pressure_file = Path(output_dir, state.pressure_filename)
+            with open(pressure_file, "wb") as f:
+                f.write(pressure)
+
         if state.elevation_file:
             elevation = file_database.getEntryData(state.elevation_file)
             elevation_file = Path(output_dir, state.elevation_filename)
             with open(elevation_file, "wb") as f:
                 f.write(elevation)
 
+        save_readme()
+
         state.save_dialog = False
+
+    def save_readme():
+        output_dir = state.output_directory
+        os.makedirs(output_dir, exist_ok=True)
+
+        source_file = Path(__file__, "..", "model", "output_readme.md").resolve()
+        with open(source_file, "r") as f:
+            readme = f.read()
+        readme = readme.replace("{project_name}", state.sim_name)
+
+        readme_file = Path(output_dir, "README.md")
+        with open(readme_file, "w") as f:
+            f.write(readme)
 
     @state.change("sim_name")
     def update_output_directory(sim_name, **kwargs):
