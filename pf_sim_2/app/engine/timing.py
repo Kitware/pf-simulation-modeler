@@ -12,10 +12,10 @@ class TimingLogic:
             }
         )
 
-        cycle = self.create_cycle("Cycle", Name="constant", repeat=-1)
+        cycle = self.create_cycle("Cycle", Name="constant", Repeat=-1)
         self.create_cycle("SubCycle", cycle.id, Name="alltime", Length=1)
 
-        cycle = self.create_cycle("Cycle", Name="rainrec", repeat=-1)
+        cycle = self.create_cycle("Cycle", Name="rainrec", Repeat=-1)
         self.create_cycle("SubCycle", cycle.id, Name="rain")
         self.create_cycle("SubCycle", cycle.id, Name="rec")
 
