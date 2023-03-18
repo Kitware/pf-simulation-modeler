@@ -9,9 +9,16 @@ step_2_condition = "(!!indicator_filename && !!slope_x_filename && !!slope_y_fil
 def save_project_button(ctrl, state):
     with vuetify.VDialog(v_model=("save_dialog",), persistent=False, max_width="600px"):
         with vuetify.Template(v_slot_activator="{ on, attrs }"):
-            vuetify.VBtn("Save", v_on="on", v_bind="attrs", click="save_page = 1")
+            vuetify.VBtn(
+                "Save",
+                v_on="on",
+                v_bind="attrs",
+                color=("current_view === 'Code Generation' ? 'primary' : ''",),
+                click="save_page = 1",
+            )
         save_project(ctrl, state)
-    progress_report()
+
+    progress_report()  # display success snackbar
 
 
 @hot_reload
