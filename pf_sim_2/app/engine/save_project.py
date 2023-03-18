@@ -8,8 +8,11 @@ def initialize(server):
 
     state.save_dialog = False
     state.save_page = 1
+    state.success_snackbar = False
 
     def save_project():
+        state.success_snackbar = True
+
         output_dir = state.output_directory
         os.makedirs(output_dir, exist_ok=True)
 

@@ -11,6 +11,7 @@ def save_project_button(ctrl, state):
         with vuetify.Template(v_slot_activator="{ on, attrs }"):
             vuetify.VBtn("Save", v_on="on", v_bind="attrs", click="save_page = 1")
         save_project(ctrl, state)
+    progress_report()
 
 
 @hot_reload
@@ -152,6 +153,28 @@ def step_3(ctrl, state):
                     label="Project Code File",
                 )
         nav_buttons(("Back", "save_page = 2"), ("Save", ctrl.save_project))
+
+
+@hot_reload
+def progress_report():
+    with vuetify.VSnackbar(
+        v_model="success_snackbar",
+        timeout=(5000,),
+        style="top: 0",
+    ):
+        html.Span(
+            "Project Saved Successfully!",
+        )
+
+        with vuetify.Template(
+            v_slot_action="{ attrs }",
+        ):
+            vuetify.VBtn(
+                "Close",
+                color="primary",
+                v_bind="attrs",
+                click="success_snackbar = false",
+            )
 
 
 # ------------------------------------------------------------
