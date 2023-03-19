@@ -31,7 +31,7 @@ pip install -e .
 Run the application
 
 ```bash
-pf_sim_2
+pf_sim_2 --help
 ```
 
 ### Or use the build script
