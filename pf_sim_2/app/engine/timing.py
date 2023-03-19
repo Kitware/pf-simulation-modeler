@@ -23,7 +23,7 @@ class TimingLogic:
         ctrl.create_cycle = self.create_cycle
         ctrl.update_cycle_list = self.update_cycle_list
 
-    def delete_cycle(self, id, proxy_type, owner_id=None):
+    def delete_cycle(self, id, owner_id=None):
         if owner_id is not None:
             owner = self.pxm.get(owner_id)
             owner._own.remove(id)

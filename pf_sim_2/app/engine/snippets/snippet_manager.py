@@ -12,7 +12,8 @@ class PreambleSnippet:
 
     @property
     def snippet(self):
-        return f"""# Parflow Simulation Modeler - Project Generation Code
+        return f"""\
+# Parflow Simulation Modeler - Project Generation Code
 from parflow import Run
 from parflow.tools.builders import SubsurfacePropertiesBuilder, DomainBuilder
 
@@ -53,10 +54,6 @@ def initialize(server):
 
     pxm = ctrl.get_pxm()
     pxm.on(set_snippet_dirty)
-
-    @state.change("current_view")
-    def clear_snippet(**kwargs):
-        state.display_snippet = False
 
     @state.change("current_view")
     def generate_code(**kwargs):

@@ -13,9 +13,9 @@ def subsurface_props(ctrl):
             html.P("Choose an indicator file to define regions.")
 
         with html.Div(v_if="soil_ids.length > 0"):
-            simput.SimputItem(item_id=("domain_id", None))
+            simput.SimputItem(item_id=("domain_id",))
             simput.SimputItem(
                 v_for=("(soil_id, index) in soil_ids",),
-                item_id=("soil_id", None),
+                item_id=("soil_id",),
             )
         show_snippet(ctrl, "subsurface_properties")

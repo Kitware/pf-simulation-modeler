@@ -116,6 +116,7 @@ def domain(ctrl):
                     vuetify.VIcon("mdi-eye", small=True, classes="mr-1")
                     html.Span("Preview")
 
+        # Page content
         with vuetify.VContainer(
             v_if="domain_view=='grid'",
             classes="fill-height fill-width pa-0",

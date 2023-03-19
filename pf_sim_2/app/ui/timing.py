@@ -15,7 +15,7 @@ def timing(ctrl):
             with vuetify.VContainer(style="display: flex;", fluid=True):
                 simput.SimputItem(item_id=("cycle_id",), style="flex-grow: 1;")
                 with vuetify.VBtn(
-                    click=(ctrl.delete_cycle, "[cycle_id, 'Cycle']"),
+                    click=(ctrl.delete_cycle, "[cycle_id,]"),
                     small=True,
                     icon=True,
                 ):
@@ -30,7 +30,7 @@ def timing(ctrl):
                     simput.SimputItem(item_id=("sub_id",), style="flex-grow: 1;")
 
                     with vuetify.VBtn(
-                        click=(ctrl.delete_cycle, "[sub_id, 'SubCycle', cycle_id]"),
+                        click=(ctrl.delete_cycle, "[sub_id, cycle_id]"),
                         small=True,
                         icon=True,
                     ):

@@ -4,11 +4,7 @@ class SolverLogic:
         self.ctrl = ctrl
         self.pxm = ctrl.get_pxm()
 
-        state.update(
-            {
-                "solver_outputs": [1, 2, 3],
-            }
-        )
+        state.solver_outputs = [1, 2, 3]
         state.solver_id = self.pxm.create("Solver").id
         state.solver_nonlinear_id = self.pxm.create("SolverNonlinear").id
         state.solver_linear_id = self.pxm.create("SolverLinear").id

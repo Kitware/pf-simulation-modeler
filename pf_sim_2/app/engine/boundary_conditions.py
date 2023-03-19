@@ -30,8 +30,6 @@ class BCLogic:
             raise Exception(f"Patches proxy [{self.state.patches_id}] not found.")
         patches_proxy.on(self.on_patch_name_change)
 
-        self.ctrl.get_patch_names = self.get_patch_names
-
     def get_patch_names(self):
         patch_names = ["XLower", "XUpper", "YLower", "YUpper", "ZLower", "ZUpper"]
         patches_proxy: Proxy = self.pxm.get(self.state.patches_id)

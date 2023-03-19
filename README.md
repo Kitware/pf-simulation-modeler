@@ -43,6 +43,13 @@ pf_sim_2
 
 *Note: only use `build.sh` after initial setup install.*
 
+## Documentation
+
+- [Engine](docs/engine.md) Structure
+  - [Snippets](docs/snippets.md)
+- [UI](docs/ui.md) Structure
+- Server [`state` and `ctrl`](docs/server.md) variables
+
 ## File Structure
 
 ```bash

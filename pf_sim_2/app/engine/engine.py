@@ -72,6 +72,7 @@ class PFLogic:
         # on view change
         self.state.change("current_view")(self.on_current_view_change)
 
+    # Handle dynamic timing cyces for boundary conditions
     def on_current_view_change(self, current_view, **kwargs):
         if current_view == "Boundary Conditions":
             model_file = DEF_DIR / "boundary.yaml"

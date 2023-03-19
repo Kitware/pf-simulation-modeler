@@ -241,9 +241,5 @@ def initialize(server, args):
             db_selected_file = {**current_entry, **db_selected_file}
             file_database.writeEntry(file_id, db_selected_file)
 
-        state.update(
-            {
-                "db_selected_file": db_selected_file,
-            }
-        )
+        state.db_selected_file = db_selected_file
         state.db_files = file_database.getEntries()

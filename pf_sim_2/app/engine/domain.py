@@ -15,7 +15,6 @@ class DomainLogic:
         state.update(
             {
                 "domain_view": "grid",
-                "soils": [],
                 "soil_ids": [],
                 "current_soil": "all",
                 # Files
@@ -59,7 +58,7 @@ class DomainLogic:
         self.state.y_bound = [origin[1], origin[1] + spacing[1] * size[1]]
         self.state.z_bound = [origin[2], origin[2] + spacing[2] * size[2]]
 
-    def update_grid(self, indicator_file, **kwargs):
+    def update_indicator(self, indicator_file, **kwargs):
         file_database = FileDatabase()
 
         if not indicator_file:
@@ -72,6 +71,7 @@ class DomainLogic:
             self.state.indicator_filename.split(".")[:-1]
         )
 
+        # extract soil data from pfb
         filename = file_database.getEntryPath(indicator_file)
         try:
             handle = PFData(filename)
@@ -148,7 +148,7 @@ def initialize(server):
 
     domain_logic = DomainLogic(state, ctrl)
 
-    state.change("indicator_file")(domain_logic.update_grid)
+    state.change("indicator_file")(domain_logic.update_indicator)
     state.change("slope_x_file")(domain_logic.update_slope_x)
     state.change("slope_y_file")(domain_logic.update_slope_y)
     state.change("elevation_file")(domain_logic.update_elevation)
