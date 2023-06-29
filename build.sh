@@ -1,5 +1,5 @@
 #!/bin/bash
-parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+parent_path=$(cd $(dirname $0); pwd -P)
 cd "$parent_path"
 
 export NODE_OPTIONS=--openssl-legacy-provider
