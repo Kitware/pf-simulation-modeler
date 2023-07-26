@@ -133,6 +133,6 @@ def domain(ctrl):
             v_if="domain_view=='viz'",
             fluid=True,
             classes="pa-0 fill-height",
-        ) as parent:
+        ):
             html.P("TODO: add the visualization here")
         #     domain_viz(parent)

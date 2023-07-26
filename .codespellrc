@@ -1,2 +1,2 @@
 [codespell]
-skip = **/package-lock.json
+skip = **/package-lock.json,pf_simulation_modeler/app/engine/timing.py

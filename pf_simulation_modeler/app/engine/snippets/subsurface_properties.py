@@ -21,7 +21,7 @@ class SubsurfacePropertiesSnippet:
         soil_list = " ".join([key for (key, _) in soils])
         code = f"{self.state.sim_name}.GeomInput.{self.state.indicator_geom_name}.GeomNames = '{soil_list}'"
 
-        for (key, value) in soils:
+        for key, value in soils:
             code += f"\n{self.state.sim_name}.GeomInput.{key}.Value = {value}"
 
         self.soil_name_code = code + "\n"

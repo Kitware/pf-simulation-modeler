@@ -138,7 +138,5 @@ export default {
       this.cancel();
     },
   },
-  inject: [
-    'trame'
-  ],
+  inject: ['trame'],
 };

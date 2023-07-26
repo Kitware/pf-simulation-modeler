@@ -1,8 +1,8 @@
 # Parflow Simulation Modeler
 
-Port of pf-simulation-modeler to trame 2
+## License
 
-- Free software: Apache Software License
+Free software: Apache Software License
 
 ## Installing
 
@@ -16,6 +16,7 @@ source .venv/bin/activate
 Build and install the Vue components
 
 ```bash
+export NODE_OPTIONS=--openssl-legacy-provider
 cd vue-components
 npm i
 npm run build
@@ -31,7 +32,7 @@ pip install -e .
 Run the application
 
 ```bash
-pf_sim_2 --help
+pf-simulation-modeler --help
 ```
 
 ### Or use the build script
@@ -53,7 +54,7 @@ pf_sim_2 --help
 ## File Structure
 
 ```bash
-- pf_sim_2/
+- pf_simulation_modeler/
     - app/
         - engine/
             - model/    # Simput model/UI definitions
@@ -83,7 +84,3 @@ pf_sim_2 --help
     - output/   # Project Output data
     - share/    # Shared data
 ```
-
-## Features
-
-- TODO
