@@ -1,6 +1,7 @@
 from trame_simput.core.proxy import Proxy
-from parflowio.pyParflowio import PFData
 from .files import FileDatabase
+from parflow.tools.io import ParflowBinaryReader
+from pathlib import Path
 
 
 class DomainLogic:
@@ -73,43 +74,39 @@ class DomainLogic:
 
         # extract soil data from pfb
         filename = file_database.getEntryPath(indicator_file)
-        try:
-            handle = PFData(filename)
-        except Exception as e:
+        if not Path(filename).exists():
             print(f"Could not find pfb: {filename}")
-            raise e
-        handle.loadHeader()
+            raise FileNotFoundError()
 
-        change_set = [
-            {
-                "id": self.state.grid_id,
-                "name": "Origin",
-                "value": [handle.getX(), handle.getY(), handle.getZ()],
-            },
-            {
-                "id": self.state.grid_id,
-                "name": "Spacing",
-                "value": [handle.getDX(), handle.getDY(), handle.getDZ()],
-            },
-            {
-                "id": self.state.grid_id,
-                "name": "Size",
-                "value": [handle.getNX(), handle.getNY(), handle.getNZ()],
-            },
-        ]
-        self.pxm.update(change_set)
+        unique_values = set()
+
+        with ParflowBinaryReader(filename) as pfb:
+            grid = pfb.read_all_subgrids(mode="full", z_first=False)
+            dims = grid.shape
+            for val in grid.flat:
+                unique_values.add(round(val))
+
+            change_set = [
+                {
+                    "id": self.state.grid_id,
+                    "name": "Origin",
+                    "value": [pfb.header["x"], pfb.header["y"], pfb.header["z"]],
+                },
+                {
+                    "id": self.state.grid_id,
+                    "name": "Spacing",
+                    "value": [pfb.header["dx"], pfb.header["dy"], pfb.header["dz"]],
+                },
+                {
+                    "id": self.state.grid_id,
+                    "name": "Size",
+                    "value": [dims[0], dims[1], dims[2]],
+                },
+            ]
+            self.pxm.update(change_set)
 
         for soil_id in self.state.soil_ids:
             self.pxm.delete(soil_id)
-
-        handle.loadData()
-        data = handle.viewDataArray()
-
-        unique_values = set()
-        for val in data.flat:
-            unique_values.add(round(val))
-
-        handle.close()
 
         soil_ids = []
         for val in unique_values:
