@@ -12,7 +12,7 @@ def domain_parameters():
                 v_model=("indicator_file", None),
                 placeholder="Select an indicator file",
                 items=(
-                    "Object.values(db_files).filter(function(file){return file.category === 'Indicator'})",
+                    "Object.values(db_files).filter(f => f.category.toLowerCase() === 'indicator')",
                 ),
                 item_text="name",
                 item_value="id",
@@ -31,7 +31,7 @@ def terrain_parameters():
                 v_model=("slope_x_file",),
                 placeholder="Select a Slope X file",
                 items=(
-                    "Object.values(db_files).filter(function(file){return file.category === 'Slope'})",
+                    "Object.values(db_files).filter(f => f.category.toLowerCase() === 'slope')",
                 ),
                 item_text="name",
                 item_value="id",
@@ -41,7 +41,7 @@ def terrain_parameters():
                 v_model=("slope_y_file",),
                 placeholder="Select a Slope Y file",
                 items=(
-                    "Object.values(db_files).filter(function(file){return file.category === 'Slope'})",
+                    "Object.values(db_files).filter(f => f.category.toLowerCase() === 'slope')",
                 ),
                 item_text="name",
                 item_value="id",
@@ -51,7 +51,7 @@ def terrain_parameters():
                 v_model=("elevation_file",),
                 placeholder="Select an elevation file",
                 items=(
-                    "Object.values(db_files).filter(function(file){return file.category === 'Elevation'})",
+                    "Object.values(db_files).filter(f => f.category.toLowerCase() === 'elevation')",
                 ),
                 item_text="name",
                 item_value="id",
