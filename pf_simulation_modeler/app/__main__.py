@@ -1,10 +1,6 @@
 from trame.app import get_server
 
-try:
-    from . import engine, ui  # for installed package
-except ImportError:
-    import engine  # for development
-    import ui
+from . import engine, ui
 
 
 def main(
@@ -44,6 +40,7 @@ def main(
         )
 
     # Init application
+    server.client_type = "vue2"
     engine.initialize(server)
     ui.UI(server)
 

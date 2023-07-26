@@ -1,6 +1,6 @@
 from trame.ui.vuetify import SinglePageLayout
 from trame.widgets import vuetify, simput, html
-from pf_sim_2.widgets import pf_sim_2 as pf_widgets
+from pf_simulation_modeler.widgets import pfsm as pf_widgets
 from .save_project import save_project_button
 from .file_db import file_db
 from .simulation_type import simulation_type

@@ -1,5 +1,5 @@
 from trame.app import get_server, jupyter
-from pf_sim_2.app import engine, ui
+from pf_simulation_modeler.app import engine, ui
 
 
 def show(server=None, **kwargs):
@@ -16,7 +16,7 @@ def show(server=None, **kwargs):
     # Disable logging
     import logging
 
-    engine_logger = logging.getLogger("pf_sim_2.app.engine")
+    engine_logger = logging.getLogger("pf_simulation_modeler.app.engine")
     engine_logger.setLevel(logging.WARNING)
 
     # Initialize app
@@ -35,5 +35,5 @@ def jupyter_proxy_info():
     process.
     """
     return {
-        "command": ["pf_sim_2", "-p", "0", "--server"],
+        "command": ["pf-simulation-modeler", "-p", "0", "--server"],
     }

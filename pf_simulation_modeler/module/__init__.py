@@ -4,18 +4,18 @@ from pathlib import Path
 serve_path = str(Path(__file__).with_name("serve").resolve())
 
 # Serve directory for JS/CSS files
-serve = {"__pf_sim_2": serve_path}
+serve = {"__pfsm": serve_path}
 
 # List of JS files to load (usually from the serve path above)
-scripts = ["__pf_sim_2/vue-pf_sim_2.umd.min.js"]
+scripts = ["__pfsm/vue-pfsm.umd.min.js"]
 
 # List of CSS files to load (usually from the serve path above)
-styles = ["__pf_sim_2/vue-pf_sim_2.css"]
+styles = ["__pfsm/vue-pfsm.css"]
 
 vuetify_config = {}
 
 # List of Vue plugins to install/load
-vue_use = ["pf_sim_2", ("trame_vuetify", vuetify_config)]
+vue_use = ["pfsm", ("trame_vuetify", vuetify_config)]
 
 # Uncomment to add entries to the shared state
 # state = {}

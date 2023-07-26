@@ -33,16 +33,8 @@ Run the application
 
 ```bash
 pf-simulation-modeler --help
+pf-simulation-modeler --server --port 1234 -D data/database/ -S data/share/ -O data/output/
 ```
-
-### Or use the build script
-
-```bash
-./build.sh   # for development (will not rebuild vue components)
-./build.sh b # for full rebuild (hot reloads will not work)
-```
-
-*Note: only use `build.sh` after initial setup install.*
 
 ## Documentation
 

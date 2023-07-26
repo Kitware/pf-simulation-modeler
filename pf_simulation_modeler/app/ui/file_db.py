@@ -1,5 +1,5 @@
 from trame_server.utils.hot_reload import hot_reload
-from pf_sim_2.widgets import pf_sim_2 as pf_widgets
+from pf_simulation_modeler.widgets import pfsm as pf_widgets
 
 
 @hot_reload

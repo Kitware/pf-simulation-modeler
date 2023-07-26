@@ -1,6 +1,4 @@
 trame: # Default app under /index.html
   www_modules:
-    - pf_sim_2.module
-  app: pf_sim_2
-pf_sim_2: # /pf_sim_2.html
-  app: pf_sim_2
+    - pf_simulation_modeler.module
+  app: pf_simulation_modeler.app

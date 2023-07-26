@@ -1,6 +1,6 @@
-========================
-Contributing to pf_sim_2
-========================
+===========================================
+Contributing to pf-simimulation-modeler
+===========================================
 
 #. Clone the repository using ``git clone``
 #. Install pre-commit via ``pip install pre-commit``
