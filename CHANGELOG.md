@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.1 (2023-07-26)
+
+### Fix
+
+* Add README to PyPI ([`fd298c9`](https://github.com/Kitware/pf-simulation-modeler/commit/fd298c9ac1d81dc50db1a4e96261a60224f0e4e3))
+
 ## v0.1.0 (2023-07-26)
 
 ### Feature
